@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>소통 · 기구개발팀 October Town Hall</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    /* Rolex Deepsea D-Blue inspired: rich deep ocean blue fading to black */
+    --navy:#01060F; --deep-blue:#0E448C; --bright-blue:#1E6FD0;
+    --white:#FFFFFF; --accent-glow:rgba(30,111,208,0.45);
+    --accent-soft:#7fbfff;
+    /* the section hue: the motion layer shifts it as the deck moves */
+    --hue:218;
+  }
+
+  html, body { height:100%; }
+  /* Buttons/links don't inherit type by default - make them follow the body */
+  button, a, input, textarea, select { font-family: inherit; }
+
+  body {
+    font-family:"SamsungOneKoreanOTF","SamsungOneKorean","SamsungOne",
+                -apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",
+                "Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    color: var(--white);
+    background: var(--navy);
+    overflow: hidden;              /* carousel: page itself never scrolls */
+  }
+
+  /* ===== Fixed backdrop (shared across every slide) ===== */
+  .backdrop {
+    position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+    background:
+      radial-gradient(58% 48% at 18% 8%, rgba(60,86,255,.30) 0%, transparent 70%),
+      radial-gradient(46% 40% at 88% 22%, rgba(0,188,190,.16) 0%, transparent 72%),
+      radial-gradient(70% 55% at 62% 108%, rgba(122,58,240,.24) 0%, transparent 72%),
+      linear-gradient(
+        to bottom,
+        #071C3E 0%, #061834 24%, #041228 48%, #030C1C 70%, #020712 88%, #01050C 100%
+      );
+  }
+
+  /* Cinematic vignette: darkens the frame edges like a film print */
+  .vignette { position:fixed; inset:0; z-index:2; pointer-events:none;
+    background: radial-gradient(ellipse at center,
+      transparent 44%, rgba(0,3,10,.40) 74%, rgba(0,3,10,.78) 100%); }
+
+  /* ===== Motion field: aurora silk + flow dust, drawn on one canvas ===== */
+  .fx-field { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  /* a fine film grain over the field keeps the gradients from banding */
+  .grain { position:absolute; inset:-50%; opacity:.06; mix-blend-mode:overlay;
+    background-image:repeating-radial-gradient(circle at 17% 32%, #fff 0 .6px, transparent .6px 2.4px),
+                     repeating-radial-gradient(circle at 71% 64%, #fff 0 .5px, transparent .5px 3.1px);
+    animation:grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%{transform:translate(0,0);} 20%{transform:translate(-3%,2%);}
+    40%{transform:translate(2%,-3%);} 60%{transform:translate(-2%,-1%);}
+    80%{transform:translate(3%,3%);} 100%{transform:translate(0,0);} }
+
+  .horizon { position:absolute; left:0; bottom:11vh; width:100%; height:1px;
+    background:linear-gradient(to right,transparent 0%,rgba(255,255,255,.15) 15%,
+      rgba(255,255,255,.95) 50%,rgba(255,255,255,.15) 85%,transparent 100%);
+    box-shadow:0 0 24px 4px hsla(var(--hue),90%,58%,.45); opacity:.6;
+    transition:box-shadow 1.2s ease; }
+  .horizon-glow { position:absolute; left:50%; bottom:0; transform:translateX(-50%);
+    width:90vw; height:28vh;
+    background:radial-gradient(ellipse at center bottom,hsla(var(--hue),70%,55%,.40) 0%,
+      hsla(var(--hue),78%,38%,.24) 28%,transparent 70%);
+    filter:blur(10px); animation:horizonBreathe 7s ease-in-out infinite; }
+  @keyframes horizonBreathe { 0%,100%{opacity:.7;} 50%{opacity:1;} }
+
+  /* ===== Transition light sweep ===== */
+  .wipe { position:fixed; inset:0; z-index:125; pointer-events:none; overflow:hidden; }
+  .wipe::before { content:''; position:absolute; top:-20%; left:0; width:38vw; height:140%;
+    transform:translateX(-60vw) skewX(-16deg); opacity:0; mix-blend-mode:screen;
+    background:linear-gradient(90deg, transparent 0%,
+      hsla(var(--hue),90%,70%,.10) 30%, rgba(255,255,255,.42) 50%,
+      hsla(var(--hue),90%,70%,.10) 70%, transparent 100%); }
+  .wipe.go::before   { animation:wipeFwd .85s cubic-bezier(.65,0,.25,1) both; }
+  .wipe.back::before { animation:wipeBack .85s cubic-bezier(.65,0,.25,1) both; }
+  @keyframes wipeFwd  { 0%{transform:translateX(-60vw) skewX(-16deg);opacity:0;}
+    15%{opacity:1;} 85%{opacity:1;} 100%{transform:translateX(120vw) skewX(-16deg);opacity:0;} }
+  @keyframes wipeBack { 0%{transform:translateX(120vw) skewX(16deg);opacity:0;}
+    15%{opacity:1;} 85%{opacity:1;} 100%{transform:translateX(-60vw) skewX(16deg);opacity:0;} }
+
+  /* ===== Carousel deck ===== */
+  .deck { position:fixed; inset:0; z-index:1; overflow:hidden; perspective:1800px; }
+  .track { display:flex; height:100%; width:100%; transform-style:preserve-3d;
+    transition: transform .6s cubic-bezier(.76,0,.24,1); will-change: transform; }
+  .slide {
+    flex: 0 0 100%; width:100%; height:100%;
+    position: relative; overflow-y: auto;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 7vh 6vw;
+    transform-origin: center center; backface-visibility: hidden;
+    will-change: transform, opacity, filter;
+    transition: transform .6s cubic-bezier(.76,0,.24,1),
+                opacity .45s ease, filter .45s ease;
+  }
+
+  /* ===== Scroll-reveal primitives ===== */
+  .reveal { opacity: 0; transform: translateY(30px) scale(.98);
+    transition: opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1);
+    transition-delay: var(--d, 0s); }
+  .slide.in-view .reveal { opacity: 1; transform: none; }
+
+  /* ===== Shared typography ===== */
+  .eyebrow, .kicker { font-size:clamp(11px,1.05vw,16px); letter-spacing:.5em;
+    text-transform:uppercase; font-weight:600; color:rgba(180,215,255,.9);
+    padding-left:.5em; }
+  .kicker { margin-bottom:2.6vh; position:relative; z-index:1; }
+  .headline { font-size:clamp(32px,5vw,96px); font-weight:800; letter-spacing:.02em;
+    line-height:1.06; color:var(--white); white-space:nowrap; position:relative; z-index:1;
+    text-shadow:0 0 34px hsla(var(--hue),88%,56%,.5),0 0 70px hsla(var(--hue),88%,56%,.22); }
+  .subhead { margin-top:2.4vh; font-size:clamp(15px,1.6vw,24px); font-weight:400;
+    letter-spacing:.02em; color:rgba(214,232,255,.82); max-width:900px; }
+  .rule { width:0; height:2px; margin:3.4vh auto 0; position:relative; z-index:1;
+    background:linear-gradient(to right,transparent,hsl(var(--hue),75%,55%),transparent);
+    box-shadow:0 0 14px 2px hsla(var(--hue),75%,50%,.45);
+    transition:width 1.1s ease; transition-delay:var(--d,.6s); }
+  .slide.in-view .rule { width:clamp(200px,26vw,460px); }
+  /* a spark runs along the rule once it has drawn */
+  .rule::after { content:''; position:absolute; top:50%; left:0; width:70px; height:8px;
+    margin:-4px 0 0 -35px; border-radius:50%; opacity:0;
+    background:radial-gradient(ellipse at center,#fff 0%,hsla(var(--hue),90%,75%,.7) 35%,transparent 70%); }
+  .slide.in-view .rule::after { animation:spark 1.5s cubic-bezier(.5,0,.3,1) calc(var(--d,.6s) + 1.6s) both; }
+  @keyframes spark { 0%{left:0;opacity:0;} 12%{opacity:1;} 88%{opacity:1;} 100%{left:100%;opacity:0;} }
+
+  /* ===== Section titles: letters arrive one by one ===== */
+  .headline .ch { display:inline-block; opacity:0;
+    transform:translateY(.5em) rotateX(-75deg) scale(.92); filter:blur(10px);
+    transform-origin:50% 100%;
+    transition:opacity .7s ease, transform .9s cubic-bezier(.2,.9,.25,1.15), filter .7s ease;
+    transition-delay:calc(var(--d0,.25s) + var(--i) * 48ms); }
+  .slide.in-view .headline .ch { opacity:1; transform:none; filter:none;
+    animation:glint 1.1s ease calc(var(--d0,.25s) + 1s + var(--i) * 48ms) 1 both; }
+  @keyframes glint { 0%,100%{color:#fff;}
+    40%{color:hsl(var(--hue),100%,86%);
+        text-shadow:0 0 18px #fff,0 0 42px hsla(var(--hue),95%,65%,.9);} }
+
+  /* the oversized chapter number drifting behind every section title */
+  .chapter { position:absolute; left:50%; top:50%; z-index:0; pointer-events:none;
+    font-size:min(62vh,44vw); font-weight:800; line-height:1; letter-spacing:-.04em;
+    color:transparent; -webkit-text-stroke:1.5px hsla(var(--hue),85%,72%,.55);
+    opacity:0; transform:translate(-50%,-50%) scale(1.3);
+    transition:opacity 1.4s ease .1s, transform 2.2s cubic-bezier(.16,1,.3,1) .1s; }
+  .slide.in-view .chapter { opacity:.3; transform:translate(-50%,-50%) scale(1);
+    animation:chapterDrift 14s ease-in-out 2.3s infinite alternate; }
+  @keyframes chapterDrift { from{transform:translate(-50%,-50%) scale(1);}
+    to{transform:translate(-47%,-52%) scale(1.04);} }
+
+  /* two thin orbits around the title: one dashed, one carrying a satellite */
+  .orbit { position:absolute; left:50%; top:50%; width:min(78vh,58vw); aspect-ratio:1;
+    z-index:0; pointer-events:none; opacity:0;
+    transform:translate(-50%,-50%) scale(.6) rotate(-30deg);
+    transition:opacity 1.2s ease .2s, transform 1.8s cubic-bezier(.16,1,.3,1) .2s; }
+  .slide.in-view .orbit { opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg); }
+  .orbit i { position:absolute; inset:0; border-radius:50%; }
+  .orbit i:nth-child(1) { border:1px dashed hsla(var(--hue),80%,75%,.22);
+    animation:spin 60s linear infinite; }
+  .orbit i:nth-child(2) { inset:9%; border:1px solid hsla(var(--hue),80%,70%,.14);
+    animation:spin 22s linear infinite reverse; }
+  .orbit i:nth-child(2)::after { content:''; position:absolute; top:-4px; left:50%;
+    width:8px; height:8px; margin-left:-4px; border-radius:50%; background:#fff;
+    box-shadow:0 0 12px 3px hsla(var(--hue),95%,70%,.9); }
+  .orbit i:nth-child(3) { inset:-12%; border:1px solid transparent;
+    border-top-color:hsla(var(--hue),90%,72%,.35); border-left-color:hsla(var(--hue),90%,72%,.12);
+    animation:spin 9s cubic-bezier(.6,.1,.4,.9) infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  /* ===== Intro slide ===== */
+  .title { font-size:clamp(46px,5.4vw,88px); font-weight:800; letter-spacing:.10em;
+    line-height:1.02; color:var(--white); position:relative; z-index:1;
+    text-shadow:0 0 30px rgba(30,136,255,.5),0 0 60px rgba(30,136,255,.22); }
+  /* the particle title: the real text waits until the dust has formed it */
+  .title.fx { opacity:0; filter:blur(6px); transition:opacity 1s ease, filter 1s ease; }
+  .title.fx.formed { opacity:1; filter:none; }
+  .intro-fx { position:absolute; inset:0; width:100%; height:100%; z-index:2;
+    pointer-events:none; }
+  .at { font-size:clamp(26px,2.8vw,44px); font-weight:300;
+    color:rgba(255,255,255,.7); margin:1.2vh 0 .5vh; }
+  .team { font-size:clamp(22px,2.4vw,40px); font-weight:500; letter-spacing:.12em;
+    color:var(--white); text-shadow:0 0 22px rgba(30,136,255,.4); }
+  .title-rule { width:0; height:2px; margin-top:2.2vh;
+    background:linear-gradient(to right,transparent,var(--bright-blue),transparent);
+    box-shadow:0 0 14px 2px var(--accent-glow); transition:width 1.2s ease 2.4s; }
+  .slide.in-view .title-rule { width:clamp(160px,18vw,320px); }
+  #intro .eyebrow, #intro .at, #intro .team { position:relative; z-index:1; }
+
+  /* ===== Embedded page (사내 깃헙 페이지 임베드) ===== */
+  /* Full-bleed: the embedded page fills the whole browser window */
+  .slide--embed { padding:0; }
+  .embed-wrap { width:100%; height:100%; margin:0; border:0; border-radius:0;
+    overflow:hidden; box-shadow:none; background:#fff; }
+  .embed-wrap iframe { width:100%; height:100%; border:0; display:block; }
+  /* small, unobtrusive escape hatch pinned to the corner */
+  .embed-open { position:absolute; top:14px; right:14px; z-index:5;
+    padding:7px 15px; border-radius:999px; text-decoration:none;
+    font-size:12px; font-weight:600; color:#fff;
+    background:rgba(4,20,46,.6); border:1px solid rgba(255,255,255,.22);
+    -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+    opacity:.3; transition:opacity .3s ease, background .3s ease; }
+  .embed-open:hover { opacity:1; background:rgba(30,111,208,.55); }
+  /* drop the cinematic vignette while a full-bleed page is on screen */
+  .vignette { transition:opacity .45s ease; }
+  body.embed-mode .vignette { opacity:0; }
+  /* ===== Closing video: full-bleed, one click to browser fullscreen ===== */
+  .slide--video { padding:0; background:#000; cursor:pointer; }
+  .slide--video video { position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; background:#000; }
+  .video-play { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    padding:26px 34px; border-radius:24px; cursor:pointer; color:#fff;
+    background:rgba(3,11,26,.55); border:1px solid rgba(255,255,255,.25);
+    -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+    box-shadow:0 10px 40px rgba(3,11,26,.5), 0 0 30px 2px var(--accent-glow);
+    transition:opacity .3s ease, transform .3s ease; }
+  .video-play__icon { font-size:clamp(40px,5vw,72px); line-height:1; }
+  .video-play__label { font-size:clamp(14px,1.3vw,20px); font-weight:600; letter-spacing:.1em; }
+  .video-play:hover { transform:translate(-50%,-50%) scale(1.05); }
+  .slide--video.playing .video-play { opacity:0; pointer-events:none; }
+  /* started muted because the browser refused sound: the button stays up */
+  .slide--video.playing.silent .video-play { opacity:.92; pointer-events:auto;
+    padding:14px 22px; }
+  .slide--video.playing.silent .video-play__icon { font-size:clamp(22px,2.4vw,36px); }
+  .slide--video:fullscreen video { object-fit:contain; }
+
+  /* ===== Progress bar ===== */
+  .progress { position:fixed; top:0; left:0; height:3px; width:0%; z-index:200;
+    background:linear-gradient(90deg,var(--deep-blue),hsl(var(--hue),75%,55%));
+    box-shadow:0 0 12px 1px hsla(var(--hue),75%,50%,.45); transition:width .5s ease; }
+
+  /* ===== Presenter remote ===== */
+  .remote-btn { position:fixed; right:18px; bottom:22px; z-index:130;
+    padding:8px 14px; border-radius:999px; cursor:pointer;
+    font-size:12px; letter-spacing:.06em; color:rgba(220,236,255,.7);
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.18);
+    transition:opacity .3s ease, background .25s ease; }
+  .remote-btn:hover { background:rgba(30,111,208,.3); color:#fff; }
+  body.remote-on .controls, body.remote-on .remote-btn { opacity:0; pointer-events:none; }
+  .controls { transition:opacity .4s ease; }
+  html.remote-mode body > :not(.remote-ui) { display:none !important; }
+  html.remote-mode body { overflow:auto; background:#02070F; }
+  .remote-ui { position:fixed; inset:0; display:flex; flex-direction:column;
+    padding:16px; gap:12px; color:#fff; background:linear-gradient(180deg,#041229,#02070F); }
+  .remote-head { display:flex; justify-content:space-between; align-items:baseline;
+    font-size:13px; letter-spacing:.14em; color:rgba(190,215,255,.7); }
+  .remote-head b { font-size:18px; color:#fff; letter-spacing:0; }
+  .remote-big { display:flex; gap:10px; }
+  .remote-big button { flex:1 1 0; padding:20px 0; border-radius:16px; cursor:pointer;
+    font-size:20px; font-weight:700; color:#fff;
+    background:rgba(30,111,208,.32); border:1px solid rgba(30,111,208,.75); }
+  .remote-big button:active { background:rgba(30,111,208,.6); }
+  .remote-list { list-style:none; margin:0; padding:0; overflow-y:auto; flex:1 1 auto;
+    display:flex; flex-direction:column; gap:6px; }
+  .remote-list button { width:100%; text-align:left; padding:11px 14px; border-radius:12px;
+    cursor:pointer; font-size:15px; color:rgba(232,242,255,.92);
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); }
+  .remote-list .sub button { padding-left:30px; font-size:13px; color:rgba(190,215,255,.75); }
+  .remote-list .cur button { background:rgba(30,111,208,.35); border-color:rgba(127,216,232,.8);
+    color:#fff; box-shadow:0 0 18px 1px rgba(30,136,255,.35); }
+  .remote-list button .n { display:inline-block; width:2em; color:rgba(255,227,154,.85); font-weight:700; }
+  .remote-hint { font-size:11px; color:rgba(190,215,255,.5); line-height:1.5; }
+  .remote-hint.warn { color:#FFB3C7; }
+
+  /* ===== Dot navigation ===== */
+  /* prev + dots + next share one bar pinned to the bottom */
+  .controls { position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    z-index:130; display:flex; align-items:center; gap:22px; }
+  .nav-dots { display:flex; flex-direction:row; align-items:center; gap:14px; }
+  .nav-dot { width:11px; height:11px; border-radius:50%;
+    background:rgba(4,20,46,.38);
+    border:1.5px solid rgba(255,255,255,.92); cursor:pointer; padding:0;
+    position:relative; transition:all .35s ease;
+    /* dual-tone ring: the white edge reads on dark slides, the dark halo
+       around it reads on white pages such as the embedded decks */
+    box-shadow:0 0 0 1.5px rgba(0,10,26,.55), 0 1px 4px rgba(0,0,0,.35); }
+  .nav-dot--sub { width:7px; height:7px; }
+  .nav-dot:hover { background:rgba(30,111,208,.65); border-color:#fff; }
+  .nav-dot.active { background:hsl(var(--hue),75%,55%); border-color:#fff;
+    transform:scale(1.4);
+    box-shadow:0 0 0 1.5px rgba(0,10,26,.6), 0 0 12px 2px hsla(var(--hue),75%,50%,.45); }
+  .nav-dot::after { content:attr(data-label); position:absolute; bottom:24px; left:50%;
+    transform:translateX(-50%); white-space:nowrap; font-size:12px; letter-spacing:.04em;
+    color:rgba(220,236,255,.92); background:rgba(4,20,46,.78);
+    -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+    padding:5px 11px; border-radius:8px; border:1px solid rgba(255,255,255,.12);
+    opacity:0; pointer-events:none; transition:opacity .25s ease; }
+  .nav-dot:hover::after { opacity:1; }
+
+  /* ===== Carousel arrows ===== */
+  .nav-arrow { flex:0 0 auto;
+    width:46px; height:46px; border-radius:50%; cursor:pointer; padding:0;
+    background:rgba(4,20,46,.5); border:1px solid rgba(255,255,255,.45);
+    -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+    box-shadow:0 0 0 1px rgba(0,10,26,.45), 0 4px 14px rgba(0,0,0,.3);
+    color:#fff; font-size:26px; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .3s ease, border-color .3s ease, opacity .3s ease,
+               box-shadow .3s ease; }
+  .nav-arrow:hover:not([disabled]) { background:rgba(30,111,208,.26);
+    border-color:rgba(30,111,208,.65); box-shadow:0 0 22px 2px var(--accent-glow); }
+  .nav-arrow[disabled] { opacity:.2; cursor:default; }
+
+  @media (max-width:780px) {
+    .controls { bottom:16px; gap:14px; }
+    .nav-dots { gap:9px; }
+    .nav-arrow { width:38px; height:38px; font-size:20px; }
+    .slide { padding:6vh 5vw; }
+  }
+
+  /* Respect reduced-motion: content simply appears and the motion field holds
+     still (it is drawn once per slide, so the colours still follow the deck). */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .headline .ch { opacity:1 !important; transform:none !important;
+      filter:none !important; transition:none !important; animation:none !important; }
+    .title-rule { width:clamp(160px,18vw,320px) !important; transition:none !important; }
+    .rule { width:clamp(200px,26vw,460px) !important; transition:none !important; }
+    .rule::after, .grain, .wipe, .orbit i { animation:none !important; }
+    .wipe { display:none; }
+    .chapter, .orbit { transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+  <!-- Progress + dot nav -->
+  <div class="progress" id="progress"></div>
+  <button class="remote-btn" id="remoteBtn" title="리모컨 창 열기 (R)">&#9654; 리모컨</button>
+  <div class="controls">
+    <button class="nav-arrow nav-arrow--prev" id="prevBtn" aria-label="이전 페이지">&#8249;</button>
+    <nav class="nav-dots" id="navDots">
+      <button class="nav-dot" data-target="intro" data-label="소통"></button>
+      <button class="nav-dot" data-target="culture" data-label="함께 만드는 조직문화"></button>
+      <button class="nav-dot nav-dot--sub" data-target="culture-content" data-label="함께 만드는 조직문화 내용"></button>
+      <button class="nav-dot" data-target="video" data-label="The way we work"></button>
+      <button class="nav-dot nav-dot--sub" data-target="video-content" data-label="The way we work 내용"></button>
+      <button class="nav-dot" data-target="team-lead" data-label="성장하는 조직문화"></button>
+      <button class="nav-dot nav-dot--sub" data-target="team-lead-content" data-label="성장하는 조직문화 내용"></button>
+      <button class="nav-dot" data-target="mi-part" data-label="AX전략과 미래"></button>
+      <button class="nav-dot nav-dot--sub" data-target="mi-part-content" data-label="AX전략과 미래 내용"></button>
+      <button class="nav-dot" data-target="qna" data-label="소통이 필요해"></button>
+      <button class="nav-dot nav-dot--sub" data-target="qna-content" data-label="소통이 필요해 내용"></button>
+      <button class="nav-dot" data-target="closing" data-label="마무리 영상"></button>
+    </nav>
+    <button class="nav-arrow nav-arrow--next" id="nextBtn" aria-label="다음 페이지">&#8250;</button>
+  </div>
+
+  <!-- Shared fixed backdrop: gradient base, motion field, grain, horizon -->
+  <div class="backdrop">
+    <canvas class="fx-field" id="fxField" aria-hidden="true"></canvas>
+    <div class="grain"></div>
+    <div class="horizon-glow"></div>
+    <div class="horizon"></div>
+  </div>
+  <div class="vignette"></div>
+  <div class="wipe" id="wipe"></div>
+
+  <!-- ===== Slides ===== -->
+  <main class="deck" id="deck">
+    <div class="track" id="track">
+    <!-- 1 · Title -->
+    <section id="intro" class="slide">
+      <div class="eyebrow reveal" style="--d:.1s">October Town Hall</div>
+      <h1 class="title" style="font-size:clamp(72px,10vw,168px); letter-spacing:.06em">소통</h1>
+      <div class="at reveal" style="--d:2.1s">@</div>
+      <div class="team reveal" style="--d:2.25s">기구개발팀</div>
+      <div class="title-rule"></div>
+    </section>
+
+    <!-- 함께 만드는 조직문화 (제목) -->
+    <section id="culture" class="slide">
+      <h2 class="headline">함께 만드는 조직문화</h2>
+      <div class="rule" style="--d:.55s"></div>
+    </section>
+
+    <!-- 함께 만드는 조직문화 (내용) -->
+    <section id="culture-content" class="slide slide--embed">
+      <div class="embed-wrap">
+        <iframe src="https://pages.github.sec.samsung.net/yonche-lee/team_culture" title="함께 만드는 조직문화" allow="fullscreen"></iframe>
+      </div>
+      <a class="embed-open" href="https://pages.github.sec.samsung.net/yonche-lee/team_culture"
+         target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
+    </section>
+
+    <!-- The way we work (제목) -->
+    <section id="video" class="slide">
+      <h2 class="headline">The way we work</h2>
+      <div class="rule" style="--d:.55s"></div>
+    </section>
+
+    <!-- The way we work (내용) -->
+    <section id="video-content" class="slide slide--embed">
+      <div class="embed-wrap">
+        <iframe src="https://pages.github.sec.samsung.net/yonche-lee/team_video" title="The way we work"
+                allow="autoplay; fullscreen; encrypted-media"></iframe>
+      </div>
+      <a class="embed-open" href="https://pages.github.sec.samsung.net/yonche-lee/team_video"
+         target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
+    </section>
+
+    <!-- 성장하는 조직문화 (제목) -->
+    <section id="team-lead" class="slide">
+      <h2 class="headline">성장하는 조직문화</h2>
+      <div class="rule" style="--d:.55s"></div>
+    </section>
+
+    <!-- 성장하는 조직문화 (내용) -->
+    <section id="team-lead-content" class="slide slide--embed">
+      <div class="embed-wrap">
+        <iframe src="https://pages.github.sec.samsung.net/yonche-lee/team_leader" title="성장하는 조직문화" allow="fullscreen"></iframe>
+      </div>
+      <a class="embed-open" href="https://pages.github.sec.samsung.net/yonche-lee/team_leader"
+         target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
+    </section>
+
+    <!-- AX전략과 미래 (제목) -->
+    <section id="mi-part" class="slide">
+      <h2 class="headline">AX전략과 미래</h2>
+      <div class="rule" style="--d:.55s"></div>
+    </section>
+
+    <!-- AX전략과 미래 (내용) -->
+    <section id="mi-part-content" class="slide slide--embed">
+      <div class="embed-wrap">
+        <iframe src="https://pages.github.sec.samsung.net/yonche-lee/team_mi" title="AX전략과 미래" allow="fullscreen"></iframe>
+      </div>
+      <a class="embed-open" href="https://pages.github.sec.samsung.net/yonche-lee/team_mi"
+         target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
+    </section>
+
+    <!-- Q&A (제목) -->
+    <section id="qna" class="slide">
+      <h2 class="headline">소통이 필요해</h2>
+      <div class="rule" style="--d:.55s"></div>
+    </section>
+
+    <!-- Q&A (내용) -->
+    <section id="qna-content" class="slide slide--embed">
+      <div class="embed-wrap">
+        <iframe src="https://pages.github.sec.samsung.net/yonche-lee/team_qna" title="소통이 필요해" allow="fullscreen"></iframe>
+      </div>
+      <a class="embed-open" href="https://pages.github.sec.samsung.net/yonche-lee/team_qna"
+         target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
+    </section>
+
+    <!-- 마무리 영상: full-bleed, plays when the slide arrives -->
+    <section id="closing" class="slide slide--embed slide--video">
+      <video id="closingVideo" src="media/closing.mp4" playsinline preload="auto"
+             aria-label="마무리 영상"></video>
+      <button class="video-play" id="closingPlay" aria-label="재생">
+        <span class="video-play__icon">&#9654;</span>
+        <span class="video-play__label">재생</span>
+      </button>
+    </section>
+    </div>
+  </main>
+
+  <script>
+    // ?remote=1 turns this same file into the presenter's remote (a popup
+    // opened from the deck), so nothing heavy runs there
+    var REMOTE_MODE = /[?&]remote=1/.test(location.search);
+    if (REMOTE_MODE) document.documentElement.classList.add('remote-mode');
+    var REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var track   = document.getElementById('track');
+    var slides  = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var dots    = Array.prototype.slice.call(document.querySelectorAll('.nav-dot'));
+    var progress = document.getElementById('progress');
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var TOTAL   = slides.length;
+    var current = 0;
+    var revealTimer = null;
+
+    // ----- Section hues: each chapter has its own colour, its content inherits it -----
+    var HUES = [218, 196, 262, 172, 236, 288, 205];
+    var slideHue = (function () {
+      var out = [], ch = 0;
+      slides.forEach(function (sl, i) {
+        var isTitle = i > 0 && !sl.classList.contains('slide--embed');
+        if (isTitle) ch++;
+        out.push(HUES[ch % HUES.length]);
+      });
+      return out;
+    })();
+
+    // ----- Chapter dressing: number, orbits, kicker, letters (built from the markup) -----
+    (function () {
+      var ch = 0;
+      slides.forEach(function (sl, i) {
+        var h = sl.querySelector('.headline');
+        if (!h || i === 0) return;
+        ch++;
+        var n = (ch < 10 ? '0' : '') + ch;
+        var num = document.createElement('div');
+        num.className = 'chapter'; num.setAttribute('aria-hidden', 'true'); num.textContent = n;
+        var orb = document.createElement('div');
+        orb.className = 'orbit'; orb.setAttribute('aria-hidden', 'true');
+        orb.innerHTML = '<i></i><i></i><i></i>';
+        var kick = document.createElement('div');
+        kick.className = 'kicker reveal'; kick.style.setProperty('--d', '.15s');
+        kick.textContent = 'Chapter ' + n;
+        sl.insertBefore(orb, sl.firstChild);
+        sl.insertBefore(num, sl.firstChild);
+        sl.insertBefore(kick, h);
+        // one span per letter; the label stays readable as a whole
+        var text = h.textContent;
+        h.setAttribute('aria-label', text);
+        h.textContent = '';
+        Array.prototype.forEach.call(text, function (c, k) {
+          var s = document.createElement('span');
+          s.className = 'ch'; s.setAttribute('aria-hidden', 'true');
+          s.style.setProperty('--i', k);
+          s.textContent = c === ' ' ? ' ' : c;
+          h.appendChild(s);
+        });
+      });
+    })();
+
+    // ----- Motion field: aurora silk ribbons + flow dust on the fixed backdrop -----
+    // Hand-written on a 2D canvas (no libraries: the internal network blocks CDNs).
+    // It sleeps whenever a full-bleed page or the video covers it.
+    var fxField = (function () {
+      if (REMOTE_MODE) return null;
+      var cv = document.getElementById('fxField');
+      var ctx = cv && cv.getContext('2d');
+      if (!ctx) return null;
+      var TAU = Math.PI * 2, W = 0, H = 0, dpr = 1;
+      var hue = slideHue[0], hueTo = hue;
+      var energy = 0, dir = 1, t = Math.random() * 100, last = 0, raf = 0, awake = false;
+      var RIBBONS = [
+        { base: .34, a1: .07, k1: .8, s1: .11, a2: .035, k2: 2.1, s2: .17, w: .09, dh: 0,   al: .55, p: 0 },
+        { base: .52, a1: .09, k1: .6, s1: .08, a2: .03,  k2: 1.7, s2: .13, w: .13, dh: 34,  al: .42, p: 2.1 },
+        { base: .70, a1: .06, k1: 1.1, s1: .14, a2: .04, k2: 2.6, s2: .09, w: .07, dh: -28, al: .36, p: 4.3 },
+        { base: .22, a1: .05, k1: 1.4, s1: .06, a2: .02, k2: 3.1, s2: .21, w: .05, dh: 62,  al: .28, p: 5.7 }
+      ];
+      var STRANDS = 16, SEG = 90;
+      var dust = [], DUST = 0;
+      // a soft glow sprite, drawn once
+      var glow = document.createElement('canvas');
+      glow.width = glow.height = 32;
+      (function () {
+        var g = glow.getContext('2d'), rg = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+        rg.addColorStop(0, 'rgba(255,255,255,1)');
+        rg.addColorStop(.25, 'rgba(200,225,255,.55)');
+        rg.addColorStop(1, 'rgba(160,200,255,0)');
+        g.fillStyle = rg; g.fillRect(0, 0, 32, 32);
+      })();
+
+      function size() {
+        dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        W = Math.round(innerWidth * dpr); H = Math.round(innerHeight * dpr);
+        cv.width = W; cv.height = H;
+        var want = Math.min(220, Math.max(90, Math.round(innerWidth * innerHeight / 11000)));
+        while (dust.length < want) dust.push(newDust(true));
+        dust.length = want; DUST = want;
+      }
+      function newDust(anywhere) {
+        return { x: Math.random() * W, y: anywhere ? Math.random() * H : H + 10,
+                 r: (Math.random() * 1.6 + .6), tw: Math.random() * TAU,
+                 sp: Math.random() * .6 + .4 };
+      }
+
+      function ribbon(r, time) {
+        var g = ctx.createLinearGradient(0, 0, W, 0);
+        g.addColorStop(0,   'hsla(' + (hue + r.dh - 20) + ',90%,60%,0)');
+        g.addColorStop(.25, 'hsla(' + (hue + r.dh) + ',92%,64%,1)');
+        g.addColorStop(.6,  'hsla(' + (hue + r.dh + 30) + ',95%,70%,1)');
+        g.addColorStop(1,   'hsla(' + (hue + r.dh + 50) + ',90%,60%,0)');
+        ctx.strokeStyle = g;
+        ctx.lineWidth = 1.1 * dpr;
+        for (var s = 0; s < STRANDS; s++) {
+          var u = s / (STRANDS - 1), mid = 1 - Math.abs(u - .5) * 1.8;
+          ctx.globalAlpha = r.al * Math.max(.05, mid) * (.55 + energy * .6);
+          ctx.beginPath();
+          for (var i = 0; i <= SEG; i++) {
+            var f = i / SEG, x = f * W;
+            var spread = .6 + .4 * Math.sin(f * TAU * 1.3 + time * .23 + r.p);
+            var y = H * (r.base
+              + Math.sin(f * r.k1 * TAU + time * r.s1 + r.p) * r.a1
+              + Math.sin(f * r.k2 * TAU - time * r.s2 + u * 1.4) * r.a2
+              + (u - .5) * r.w * spread);
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        }
+      }
+
+      function frame(dt) {
+        hue += (hueTo - hue) * Math.min(1, .04 * dt);
+        energy *= Math.pow(.955, dt);
+        t += .016 * dt * (1 + energy * 7);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.clearRect(0, 0, W, H);
+        ctx.globalCompositeOperation = 'lighter';
+        for (var k = 0; k < RIBBONS.length; k++) ribbon(RIBBONS[k], t);
+
+        // dust drifts up through a slow flow field; a slide change throws it sideways
+        var push = -dir * energy * 22 * dpr;
+        for (var j = 0; j < DUST; j++) {
+          var d = dust[j];
+          var a = Math.sin(d.x / W * 5 + t * .4) * Math.cos(d.y / H * 4 - t * .3) * Math.PI;
+          var vx = (Math.cos(a) * .35 * d.sp) * dpr + push * d.sp;
+          var vy = (Math.sin(a) * .25 - .45) * d.sp * dpr;
+          d.x += vx * dt; d.y += vy * dt; d.tw += .05 * dt;
+          if (d.y < -20) { dust[j] = newDust(false); continue; }
+          if (d.x < -40) d.x += W + 80; else if (d.x > W + 40) d.x -= W + 80;
+          var tw = .45 + .55 * Math.sin(d.tw);
+          ctx.globalAlpha = .25 + .6 * tw;
+          if (energy > .08) {
+            // streaks while the deck is moving
+            ctx.strokeStyle = 'hsla(' + (hue + 20) + ',90%,80%,1)';
+            ctx.lineWidth = d.r * dpr;
+            ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - vx * 6, d.y - vy * 6); ctx.stroke();
+          }
+          var sz = d.r * 7 * dpr;
+          ctx.drawImage(glow, d.x - sz / 2, d.y - sz / 2, sz, sz);
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function loop(now) {
+        raf = 0;
+        if (!awake) return;
+        var dt = last ? Math.min(3, (now - last) / 16.667) : 1;
+        last = now;
+        frame(dt);
+        raf = requestAnimationFrame(loop);
+      }
+      function wake(on) {
+        if (REDUCED) { energy = 0; hue = hueTo; frame(0); return; }
+        if (on === awake) return;
+        awake = on;
+        if (on) { last = 0; if (!raf) raf = requestAnimationFrame(loop); }
+        else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      }
+      size();
+      var rt = null;
+      window.addEventListener('resize', function () {
+        clearTimeout(rt); rt = setTimeout(function () { size(); if (REDUCED) frame(0); }, 150);
+      });
+      document.addEventListener('visibilitychange', function () {
+        wake(!document.hidden && !document.body.classList.contains('embed-mode'));
+      });
+      frame(0);
+      return {
+        // called by render(): new colour, a burst of energy, sleep under full-bleed pages
+        slide: function (index, direction, covered) {
+          hueTo = slideHue[index];
+          document.documentElement.style.setProperty('--hue', String(hueTo));
+          if (direction) { dir = direction; energy = 1; }
+          wake(!covered && !document.hidden);
+        },
+        state: function () { return { awake: awake, hue: Math.round(hue), energy: +energy.toFixed(3), dust: DUST }; }
+      };
+    })();
+
+    // ----- Intro: the title is assembled out of dust, then the real text takes over -----
+    var introFx = (function () {
+      if (REMOTE_MODE) return null;
+      var sec = document.getElementById('intro');
+      var h = sec && sec.querySelector('.title');
+      if (!h) return null;
+      h.classList.add('fx');
+      if (REDUCED) { h.classList.add('formed'); return null; }
+      var cv = document.createElement('canvas');
+      cv.className = 'intro-fx'; cv.setAttribute('aria-hidden', 'true');
+      sec.appendChild(cv);
+      var ctx = cv.getContext('2d');
+      var pts = [], W = 0, H = 0, dpr = 1, raf = 0, t0 = 0, on = false, built = false;
+      var FLY = 1.5, FORM = 2.0;
+
+      function build() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = sec.clientWidth; H = sec.clientHeight;
+        if (!W || !H) return;
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        var off = document.createElement('canvas'); off.width = W; off.height = H;
+        var o = off.getContext('2d');
+        var cs = getComputedStyle(h), fs = parseFloat(cs.fontSize) || 120;
+        o.font = cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+        try { o.letterSpacing = cs.letterSpacing; } catch (e) {}
+        o.textAlign = 'center'; o.textBaseline = 'middle'; o.fillStyle = '#fff';
+        // offsets ignore the slide's 3D transform, so they are safe to use here
+        var cx = h.offsetLeft + h.offsetWidth / 2, cy = h.offsetTop + h.offsetHeight / 2;
+        o.fillText(h.textContent, cx, cy);
+        var data = o.getImageData(0, 0, W, H).data;
+        var gap = Math.max(3, Math.round(fs / 42)), targets;
+        do {
+          targets = [];
+          for (var y = 0; y < H; y += gap) for (var x = 0; x < W; x += gap) {
+            if (data[(y * W + x) * 4 + 3] > 140) targets.push(x, y);
+          }
+          gap++;
+        } while (targets.length / 2 > 3200);
+        var minX = W, maxX = 0;
+        for (var i = 0; i < targets.length; i += 2) { minX = Math.min(minX, targets[i]); maxX = Math.max(maxX, targets[i]); }
+        var span = Math.max(1, maxX - minX), R = Math.max(W, H);
+        pts = [];
+        for (var j = 0; j < targets.length; j += 2) {
+          var ang = Math.random() * Math.PI * 2, rad = R * (.55 + Math.random() * .5);
+          pts.push({
+            tx: targets[j], ty: targets[j + 1],
+            sx: cx + Math.cos(ang) * rad, sy: cy + Math.sin(ang) * rad * .7,
+            delay: (targets[j] - minX) / span * .45 + Math.random() * .25,
+            swirl: (Math.random() - .5) * 220, r: Math.random() * .9 + .7,
+            warm: Math.random() < .18, ph: (targets[j] - minX) / span
+          });
+        }
+        built = true;
+      }
+      function ease(x) { return x >= 1 ? 1 : 1 - Math.pow(2, -10 * x); }
+      function draw(now) {
+        raf = 0;
+        if (!on) return;
+        var el = (now - t0) / 1000;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, W, H);
+        ctx.globalCompositeOperation = 'lighter';
+        if (el > FORM && !h.classList.contains('formed')) h.classList.add('formed');
+        // after forming, a band of light keeps sweeping across the letters
+        var band = ((el - FORM) * .35) % 1.6 - .3;
+        for (var i = 0; i < pts.length; i++) {
+          var p = pts[i];
+          var k = Math.max(0, Math.min(1, (el - p.delay) / FLY)), e = ease(k);
+          var bend = Math.sin(k * Math.PI) * p.swirl * (1 - e);
+          var x = p.sx + (p.tx - p.sx) * e + bend * .6;
+          var y = p.sy + (p.ty - p.sy) * e - bend * .4;
+          var a;
+          if (el < FORM) a = .35 + .65 * k;
+          else {
+            var fade = Math.max(0, 1 - (el - FORM) / 1.0);
+            var b = Math.max(0, 1 - Math.abs(p.ph - band) * 7);
+            a = Math.max(fade, b * .85);
+            x += Math.sin(el * 2 + p.ty * .05) * .6;
+          }
+          if (a < .02) continue;
+          ctx.globalAlpha = a;
+          ctx.fillStyle = p.warm ? '#ffe9b0' : (k < 1 ? '#9fd0ff' : '#ffffff');
+          ctx.fillRect(x - p.r, y - p.r, p.r * 2, p.r * 2);
+        }
+        ctx.globalAlpha = 1;
+        raf = requestAnimationFrame(draw);
+      }
+      function start() {
+        if (!built) build();
+        h.classList.remove('formed');
+        t0 = performance.now();
+        if (!raf) raf = requestAnimationFrame(draw);
+      }
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () { build(); }).catch(function () {});
+      }
+      var rt = null;
+      window.addEventListener('resize', function () {
+        clearTimeout(rt); rt = setTimeout(function () { build(); }, 200);
+      });
+      return function (active) {
+        if (active === on) return;
+        on = active;
+        if (active) start();
+        else {
+          if (raf) { cancelAnimationFrame(raf); raf = 0; }
+          ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
+          // leave the text up while the slide slides away; reset for the next visit
+          setTimeout(function () { if (!on) h.classList.remove('formed'); }, 700);
+        }
+      };
+    })();
+
+    // ----- Transition light sweep -----
+    var wipe = document.getElementById('wipe');
+    function sweep(direction) {
+      if (!wipe || REDUCED || REMOTE_MODE) return;
+      wipe.classList.remove('go', 'back');
+      void wipe.offsetWidth;                       // restart the animation
+      wipe.classList.add(direction > 0 ? 'go' : 'back');
+    }
+
+    // ----- Render current carousel position -----
+    var lastRendered = -1;
+    function render() {
+      var direction = lastRendered < 0 ? 0 : (current > lastRendered ? 1 : current < lastRendered ? -1 : 0);
+      lastRendered = current;
+      track.style.transform = 'translate3d(' + (-current * 100) + '%,0,0)';
+      dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
+      progress.style.width = ((current + 1) / TOTAL * 100) + '%';
+      prevBtn.disabled = (current === 0);
+      nextBtn.disabled = (current === TOTAL - 1);
+
+      // a full-bleed embed gets the whole frame: drop the vignette
+      var covered = slides[current].classList.contains('slide--embed');
+      document.body.classList.toggle('embed-mode', covered);
+      // the motion layer recolours, surges with the move and sleeps under a full-bleed page
+      if (fxField) fxField.slide(current, direction, covered);
+      if (direction && !covered) sweep(direction);
+      if (introFx) introFx(slides[current].id === 'intro');
+      // the closing video plays when its slide arrives and rests when it leaves
+      if (typeof closingVideoOn === 'function') closingVideoOn(slides[current].id === 'closing');
+      if (typeof embedVideoOn === 'function') {
+        embedVideoOn(slides[current].id === 'video-content' ? 'play'
+                   : slides[current].id === 'video' ? 'warm' : 'off');
+      }
+      pushRemote();
+
+      // Cinematic depth: the focused slide sits forward, sharp and lit;
+      // its neighbours fall back — smaller, dimmer, out of focus, tilted away.
+      slides.forEach(function (sl, i) {
+        var off = i - current, a = Math.abs(off);
+        if (a === 0) {
+          sl.style.transform = 'scale(1) rotateY(0deg)';
+          sl.style.opacity = '1';
+          sl.style.filter = 'none';
+        } else if (a === 1) {
+          sl.style.transform = 'scale(.86) rotateY(' + (off > 0 ? -12 : 12) + 'deg)';
+          sl.style.opacity = '.3';
+          sl.style.filter = 'blur(6px)';
+        } else {
+          // far slides: no blur filter, keeps the GPU cost down
+          sl.style.transform = 'scale(.8)';
+          sl.style.opacity = '0';
+          sl.style.filter = 'none';
+        }
+      });
+
+      // play the entrance animation on the slide we landed on
+      slides[current].classList.add('in-view');
+      // clear the others only after the slide finishes moving, so the
+      // outgoing slide doesn't blank out mid-transition
+      clearTimeout(revealTimer);
+      revealTimer = setTimeout(function () {
+        slides.forEach(function (sl, i) {
+          if (i !== current) sl.classList.remove('in-view');
+        });
+      }, 700);
+    }
+
+    function goTo(i) {
+      i = Math.max(0, Math.min(TOTAL - 1, i));
+      if (i === current) return;
+      current = i;
+      render();
+    }
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+    dots.forEach(function (d, i) {
+      d.addEventListener('click', function () { goTo(i); });
+    });
+
+    // ----- Presenter remote: a popup of this same page that drives the deck -----
+    var remoteWin = null, remoteSeen = 0;
+    function remoteState() {
+      return { type: 'townhall-state', current: current, total: TOTAL,
+               labels: dots.map(function (d) { return { t: d.dataset.label, sub: d.classList.contains('nav-dot--sub') }; }) };
+    }
+    function pushRemote() {
+      if (remoteWin && !remoteWin.closed) { try { remoteWin.postMessage(remoteState(), '*'); } catch (err) {} }
+    }
+    function openRemote() {
+      var url = location.href.split('#')[0].split('?')[0] + '?remote=1';
+      remoteWin = window.open(url, 'townhallRemote', 'width=440,height=780,menubar=no,toolbar=no,location=no,status=no');
+      if (remoteWin) remoteWin.focus();
+    }
+    window.addEventListener('message', function (ev) {
+      var m = ev.data || {};
+      if (m.type !== 'townhall-cmd') return;
+      remoteSeen = Date.now();
+      if (ev.source) remoteWin = ev.source;
+      document.body.classList.add('remote-on');   // the bottom bar steps aside
+      if (m.cmd === 'next') next();
+      else if (m.cmd === 'prev') prev();
+      else if (m.cmd === 'goto') goTo(m.index | 0);
+      pushRemote();
+    });
+    setInterval(function () {
+      if (document.body.classList.contains('remote-on') &&
+          (Date.now() - remoteSeen > 4500 || !remoteWin || remoteWin.closed)) {
+        document.body.classList.remove('remote-on');
+      }
+    }, 1000);
+    var remoteBtn = document.getElementById('remoteBtn');
+    if (remoteBtn) remoteBtn.addEventListener('click', openRemote);
+
+    // ----- Keyboard -----
+    window.addEventListener('keydown', function (e) {
+      if (e.defaultPrevented) return;
+      var tg = e.target;
+      if (tg && /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName)) return;
+      if (document.fullscreenElement) return;   // the fullscreen video owns the keys
+      if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].indexOf(e.key) !== -1) {
+        e.preventDefault(); next();
+      } else if (['ArrowLeft', 'ArrowUp', 'PageUp'].indexOf(e.key) !== -1) {
+        e.preventDefault(); prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault(); goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault(); goTo(TOTAL - 1);
+      } else if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault(); openRemote();
+      }
+    });
+
+    // ----- Wheel / trackpad (throttled so one gesture = one slide) -----
+    var wheelLock = false;
+    window.addEventListener('wheel', function (e) {
+      var d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if (Math.abs(d) < 12 || wheelLock) return;
+      wheelLock = true;
+      setTimeout(function () { wheelLock = false; }, 700);
+      if (d > 0) next(); else prev();
+    }, { passive: true });
+
+    // ----- Touch swipe -----
+    var tX = 0, tY = 0;
+    window.addEventListener('touchstart', function (e) {
+      tX = e.touches[0].clientX; tY = e.touches[0].clientY;
+    }, { passive: true });
+    window.addEventListener('touchend', function (e) {
+      var dx = e.changedTouches[0].clientX - tX;
+      var dy = e.changedTouches[0].clientY - tY;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+        if (dx < 0) next(); else prev();
+      }
+    }, { passive: true });
+
+    // ----- Titles: as large as they can be on one line -----
+    // Measured rather than guessed: the size that fits depends on the font
+    // actually in use (SamsungOne vs a fallback) and on the viewport.
+    (function () {
+      var titles = Array.prototype.slice.call(document.querySelectorAll('.headline'));
+      if (!titles.length) return;
+
+      function fitTitles() {
+        titles.forEach(function (h) {
+          h.style.fontSize = '100px';            // measure at a known size
+          var avail = h.clientWidth;             // block width = slide content
+          var need = h.scrollWidth;              // full text width, unwrapped
+          if (!avail || !need) return;
+          // width scales linearly with font-size, so one ratio lands it
+          var size = 100 * (avail * 0.98) / need;
+          size = Math.max(28, Math.min(size, 280));
+          h.style.fontSize = size.toFixed(1) + 'px';
+        });
+      }
+
+      fitTitles();
+      // remeasure once the real font is in use, and on any resize
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(fitTitles).catch(function () {});
+      }
+      var ft = null;
+      window.addEventListener('resize', function () {
+        clearTimeout(ft);
+        ft = setTimeout(fitTitles, 150);
+      });
+    })();
+
+    // ----- the remote popup -----
+    (function () {
+      if (!REMOTE_MODE) return;
+      document.title = '리모컨 · 소통 @ 기구개발팀';
+      var ui = document.createElement('div');
+      ui.className = 'remote-ui';
+      ui.innerHTML =
+        '<div class="remote-head"><b>소통 @ 기구개발팀</b><span>리모컨 · <span id="rmPos">–</span></span></div>' +
+        '<div class="remote-big"><button id="rmPrev">&#8249; 이전</button><button id="rmNext">다음 &#8250;</button></div>' +
+        '<ol class="remote-list" id="rmList"></ol>' +
+        '<div class="remote-hint" id="rmHint">← → 또는 Space 키로 넘길 수 있습니다. 이 창이 열려 있는 동안 본 화면의 하단 컨트롤은 숨겨집니다.</div>';
+      document.body.appendChild(ui);
+      var main = window.opener, list = document.getElementById('rmList');
+      var pos = document.getElementById('rmPos'), hint = document.getElementById('rmHint');
+      var state = null;
+      function send(cmd, index) {
+        if (!main || main.closed) {
+          hint.className = 'remote-hint warn';
+          hint.textContent = '본 화면과 연결되지 않았습니다. 본 화면 오른쪽 아래의 리모컨 버튼(또는 R 키)으로 이 창을 열어 주세요.';
+          return;
+        }
+        main.postMessage({ type: 'townhall-cmd', cmd: cmd, index: index }, '*');
+      }
+      function draw() {
+        if (!state) return;
+        pos.textContent = (state.current + 1) + ' / ' + state.total;
+        list.innerHTML = '';
+        state.labels.forEach(function (l, i) {
+          var li = document.createElement('li');
+          li.className = (l.sub ? 'sub ' : '') + (i === state.current ? 'cur' : '');
+          var b = document.createElement('button');
+          b.innerHTML = '<span class="n">' + (i + 1) + '</span>';
+          b.appendChild(document.createTextNode(l.t));
+          b.addEventListener('click', function () { send('goto', i); });
+          li.appendChild(b); list.appendChild(li);
+        });
+        var cur = list.querySelector('.cur');
+        if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: 'nearest' });
+      }
+      window.addEventListener('message', function (ev) {
+        var m = ev.data || {};
+        if (m.type !== 'townhall-state') return;
+        state = m; draw();
+      });
+      document.getElementById('rmPrev').addEventListener('click', function () { send('prev'); });
+      document.getElementById('rmNext').addEventListener('click', function () { send('next'); });
+      document.addEventListener('keydown', function (e) {
+        if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].indexOf(e.key) !== -1) { e.preventDefault(); send('next'); }
+        else if (['ArrowLeft', 'ArrowUp', 'PageUp'].indexOf(e.key) !== -1) { e.preventDefault(); send('prev'); }
+        else if (e.key === 'Home') { e.preventDefault(); send('goto', 0); }
+        else if (e.key === 'End' && state) { e.preventDefault(); send('goto', state.total - 1); }
+      });
+      // a heartbeat keeps the deck's bar hidden while this window lives
+      send('hello');
+      setInterval(function () { send('hello'); }, 1500);
+    })();
+
+    // ----- closing video: plays on arrival, click for fullscreen, rests on leaving -----
+    var closingVideoOn = (function () {
+      var sec = document.getElementById('closing');
+      var v = document.getElementById('closingVideo');
+      var btn = document.getElementById('closingPlay');
+      if (!sec || !v || !btn) return null;
+      var label = btn.querySelector('.video-play__label');
+      function setPlaying(on) { sec.classList.toggle('playing', on); }
+      // A browser will refuse to start a video with sound on its own. Ask for
+      // sound first; if that is refused, start it muted — the picture always
+      // runs — and offer one click to turn the sound on.
+      function tryPlay(withSound) {
+        v.muted = !withSound;
+        var p = v.play();
+        if (!p || !p.then) { setPlaying(true); return; }
+        p.then(function () {
+          setPlaying(true);
+          sec.classList.toggle('silent', v.muted);
+          if (v.muted) label.textContent = '소리 켜기';
+        }).catch(function () {
+          if (withSound) { tryPlay(false); return; }   // second try, muted
+          setPlaying(false);
+          label.textContent = '재생';
+        });
+      }
+      function goFull() {
+        var el = sec;
+        var rf = el.requestFullscreen || el.webkitRequestFullscreen;
+        if (rf && !document.fullscreenElement) { try { rf.call(el); } catch (e) {} }
+      }
+      function leaveFull() {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(function () {});
+        }
+      }
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        v.muted = false; sec.classList.remove('silent');
+        label.textContent = '재생';
+        tryPlay(true); goFull();
+      });
+      sec.addEventListener('click', function () {
+        if (v.paused || v.muted) {
+          v.muted = false; sec.classList.remove('silent');
+          label.textContent = '재생';
+          tryPlay(true); goFull();
+        } else { v.pause(); setPlaying(false); }
+      });
+      v.addEventListener('play', function () { setPlaying(true); });
+      v.addEventListener('pause', function () { setPlaying(false); });
+      v.addEventListener('ended', function () {
+        setPlaying(false); leaveFull();
+        sec.classList.remove('silent');
+        label.textContent = '다시 재생';
+      });
+      return function (active) {
+        if (active) { v.currentTime = 0; tryPlay(true); }
+        else {
+          if (!v.paused) v.pause();
+          setPlaying(false); sec.classList.remove('silent'); leaveFull();
+        }
+      };
+    })();
+
+    // ----- the embedded video page -----
+    // Nothing on this side can press play inside another site's frame, so the
+    // frame is reloaded with an autoplay hint when the slide arrives (the page
+    // itself decides what to do with it) and blanked when it leaves, which
+    // stops whatever is playing behind the deck.
+    var embedVideoOn = (function () {
+      var sec = document.getElementById('video-content');
+      if (!sec) return null;
+      var fr = sec.querySelector('iframe');
+      if (!fr) return null;
+      var base = fr.getAttribute('src');
+      var state = '';
+      fr.removeAttribute('src');
+      return function (where) {
+        if (state === where) return;
+        state = where;
+        if (where === 'play') {
+          fr.src = base + (base.indexOf('?') < 0 ? '?' : '&') + 'autoplay=1&muted=1';
+        } else if (where === 'warm') {
+          fr.src = base;                 // the title slide: load it ready to go
+        } else {
+          fr.removeAttribute('src');
+        }
+      };
+    })();
+
+    render();
+  </script>
+</body>
+</html>
