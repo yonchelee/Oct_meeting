@@ -394,6 +394,178 @@
     .duo { flex-direction:column; } .duo__link { display:none; }
   }
 
+  /* ===== 2026 showreel: a 15-second opener cut on a 0.4s beat ===== */
+  /* Every scene is a full-bleed layer, hidden until its moment (--at) and hidden
+     again after its length (--len). One class (.play) starts the whole timeline. */
+  .slide--reel { padding:0; }
+  .reel { position:absolute; inset:0; overflow:hidden; background:#04060c; cursor:pointer;
+    --acc:hsl(var(--hue),92%,58%); --acc2:hsl(calc(var(--hue) + 60),90%,62%); }
+  .reel .sc { position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; visibility:hidden; }
+  .reel.play .sc { animation:scOn var(--len) linear var(--at) forwards; }
+  .reel.play .sc--hold { animation:scHold .01s linear var(--at) forwards; }
+  .reel.final .sc--hold { visibility:visible; }
+  @keyframes scOn { 0%,99.5%{visibility:visible;} 100%{visibility:hidden;} }
+  @keyframes scHold { to{visibility:visible;} }
+  .reel b { font-weight:900; line-height:1; }
+
+  /* 1 · counter on black */
+  .sc1 { background:#000; gap:3vh; }
+  .s1-line { position:absolute; top:50%; left:50%; height:2px; width:0; background:#fff; transform:translateX(-50%); }
+  .reel.play .s1-line { animation:s1line .5s cubic-bezier(.7,0,.2,1) var(--at) both; }
+  @keyframes s1line { 0%{width:0;} 60%{width:70vw;opacity:1;} 100%{width:70vw;opacity:0;} }
+  .s1-num { position:relative; font-family:"SFMono-Regular",Consolas,monospace; font-size:26vh;
+    letter-spacing:-.04em; color:#fff; font-variant-numeric:tabular-nums; opacity:0; }
+  .reel.play .s1-num { animation:fadeIn .15s linear calc(var(--at) + .25s) both; }
+  .s1-cap { font-size:clamp(12px,1.1vw,18px); letter-spacing:.5em; color:rgba(255,255,255,.6); opacity:0; }
+  .reel.play .s1-cap { animation:fadeIn .3s linear calc(var(--at) + .5s) both; }
+  @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+  /* 2 · slam on electric colour, chromatic split */
+  .sc2 { background:var(--acc); gap:2vh; }
+  .slam { font-size:44vh; letter-spacing:-.04em; color:#fff; }
+  .reel.play .slam { animation:slam 1.2s cubic-bezier(.2,.9,.2,1) var(--at) both,
+                                 rgb .5s steps(4) var(--at) both; }
+  @keyframes slam { 0%{transform:scale(2.8);filter:blur(24px);opacity:0;} 25%{transform:scale(.96);filter:none;opacity:1;}
+    35%{transform:scale(1);} 100%{transform:scale(1.06);} }
+  @keyframes rgb { 0%{text-shadow:-14px 0 #ff2d55,14px 0 #00e5ff;} 50%{text-shadow:8px 0 #ff2d55,-8px 0 #00e5ff;}
+    100%{text-shadow:0 0 transparent,0 0 transparent;} }
+  .sc2 .cap, .sc7 span { font-size:clamp(14px,1.6vw,26px); letter-spacing:.6em; font-weight:700; color:rgba(255,255,255,.85); }
+
+  /* 3 · split screen, the right word flips */
+  .reel .sc3 { flex-direction:row; }
+  .half { flex:1 1 50%; height:100%; display:flex; align-items:center; overflow:hidden; }
+  .half b { font-size:20vh; letter-spacing:-.03em; }
+  .half--l { background:#fff; color:#04060c; justify-content:flex-end; padding-right:2vw; }
+  .half--r { background:#04060c; color:#fff; justify-content:flex-start; padding-left:2vw; }
+  .reel.play .half--l { animation:dropIn .45s cubic-bezier(.7,0,.2,1) var(--at) both; }
+  .reel.play .half--r { animation:riseIn .45s cubic-bezier(.7,0,.2,1) var(--at) both; }
+  @keyframes dropIn { from{transform:translateY(-100%);} to{transform:none;} }
+  @keyframes riseIn { from{transform:translateY(100%);} to{transform:none;} }
+  .half--r b { position:relative; display:inline-block; height:1.2em; overflow:hidden; }
+  .half--r b span { display:block; height:1.2em; line-height:1.2em; }
+  .half--r .w2 { color:var(--acc2); }
+  .reel.play .half--r b span { animation:flipWord .35s cubic-bezier(.7,0,.2,1) calc(var(--at) + .62s) both; }
+  @keyframes flipWord { from{transform:none;} to{transform:translateY(-100%);} }
+
+  /* 4 · iris open, outline marquees at speed */
+  .sc4 { background:#04060c; }
+  .iris { position:absolute; inset:0; background:radial-gradient(circle at 50% 50%,var(--acc2),var(--acc) 45%,#120a3a 100%);
+    clip-path:circle(0% at 50% 50%); }
+  .reel.play .iris { animation:iris .55s cubic-bezier(.7,0,.2,1) var(--at) both; }
+  @keyframes iris { to{clip-path:circle(80% at 50% 50%);} }
+  .fast { position:relative; width:100%; white-space:nowrap; overflow:hidden; }
+  .fast span { display:inline-block; font-size:16vh; font-weight:900; letter-spacing:-.02em; }
+  .fast--a span { color:#fff; }
+  .fast--b span { color:transparent; -webkit-text-stroke:2px rgba(255,255,255,.85); }
+  .reel.play .fast--a span { animation:runL 1.2s linear var(--at) both; }
+  .reel.play .fast--b span { animation:runR 1.2s linear var(--at) both; }
+  @keyframes runL { from{transform:translateX(10%);} to{transform:translateX(-45%);} }
+  @keyframes runR { from{transform:translateX(-45%);} to{transform:translateX(5%);} }
+
+  /* 5 · tile grid flipping in */
+  .sc5 { background:#070b18; perspective:1400px; }
+  .tiles { display:grid; grid-template-columns:repeat(4,1fr); gap:1.2vh; width:86vw; height:76vh; }
+  .tiles i { display:flex; align-items:center; justify-content:center; font-style:normal;
+    font-size:5.4vh; font-weight:900; border-radius:1.6vh; background:#131a30; color:#fff;
+    transform:rotateX(-90deg); opacity:0; transform-origin:50% 0; }
+  .tiles i.hl { background:var(--acc); } .tiles i.hl2 { background:#fff; color:#04060c; }
+  .reel.play .tiles i { animation:tile .45s cubic-bezier(.2,.9,.25,1.2) calc(var(--at) + var(--k) * 45ms) both; }
+  @keyframes tile { to{transform:none;opacity:1;} }
+
+  /* 6 · terminal, then a glitching title */
+  .sc6 { background:#000; gap:4vh; }
+  .tty { font-family:"SFMono-Regular",Consolas,"D2Coding",monospace; font-size:5vh; color:#7CF0B5; }
+  .tty em { font-style:normal; color:var(--acc2); }
+  .glitch { position:relative; font-size:22vh; letter-spacing:-.03em; color:#fff; opacity:0; }
+  .glitch::before, .glitch::after { content:attr(data-t); position:absolute; inset:0; }
+  .glitch::before { color:#ff2d55; clip-path:inset(0 0 60% 0); }
+  .glitch::after  { color:#00e5ff; clip-path:inset(60% 0 0 0); }
+  .reel.play .glitch { animation:fadeIn .05s linear calc(var(--at) + .55s) both; }
+  .reel.play .glitch::before { animation:gl1 .5s steps(5) calc(var(--at) + .55s) both; }
+  .reel.play .glitch::after  { animation:gl2 .5s steps(5) calc(var(--at) + .55s) both; }
+  @keyframes gl1 { 0%{transform:translate(-12px,-4px);} 40%{transform:translate(10px,2px);clip-path:inset(10% 0 55% 0);}
+    80%{transform:translate(-4px,0);} 100%{transform:none;clip-path:inset(0 0 100% 0);} }
+  @keyframes gl2 { 0%{transform:translate(12px,4px);} 40%{transform:translate(-10px,-2px);clip-path:inset(55% 0 10% 0);}
+    80%{transform:translate(4px,0);} 100%{transform:none;clip-path:inset(100% 0 0 0);} }
+
+  /* 7 · number cuts on flat colour */
+  .sc7 { gap:1vh; }
+  .sc7 .big { font-size:46vh; letter-spacing:-.06em; font-variant-numeric:tabular-nums; }
+  .cut-y { background:#FFD43B; color:#04060c; } .cut-y span { color:#04060c; }
+  .cut-v { background:var(--acc2); color:#fff; }
+  .cut-w { background:#fff; color:#04060c; } .cut-w span { color:#04060c; }
+  .cut-k { background:#04060c; color:#fff; }
+  .cut-a { background:var(--acc); color:#fff; }
+  .reel.play .sc7 .big, .reel.play .sc10 .word { animation:punch .4s cubic-bezier(.2,.9,.2,1) var(--at) both; }
+  @keyframes punch { from{transform:scale(1.25);} to{transform:scale(1);} }
+
+  /* 8 · box reveals: a bar wipes on, the word appears, the bar wipes off */
+  .reel .sc8 { background:#070b18; align-items:flex-start; padding-left:10vw; gap:3vh; }
+  .box { position:relative; overflow:hidden; }
+  .box b { display:block; font-size:13vh; letter-spacing:-.03em; color:#fff; opacity:0; padding:.05em .1em; }
+  .box::after { content:''; position:absolute; inset:0; background:var(--acc); transform:scaleX(0); transform-origin:left; }
+  .reel.play .box::after { animation:barWipe .6s cubic-bezier(.7,0,.2,1) calc(var(--at) + var(--o)) both; }
+  .reel.play .box b { animation:fadeIn .01s linear calc(var(--at) + var(--o) + .3s) both; }
+  @keyframes barWipe { 0%{transform:scaleX(0);transform-origin:left;} 50%{transform:scaleX(1);transform-origin:left;}
+    50.1%{transform-origin:right;} 100%{transform:scaleX(0);transform-origin:right;} }
+
+  /* 9 · AX turns in 3D over spinning rays */
+  .sc9 { background:#03050d; perspective:900px; }
+  .rays { position:absolute; left:50%; top:50%; width:160vmax; height:160vmax; margin:-80vmax 0 0 -80vmax;
+    background:repeating-conic-gradient(from 0deg,hsla(var(--hue),90%,60%,.28) 0 4deg,transparent 4deg 16deg);
+    -webkit-mask-image:radial-gradient(circle,#000 10%,transparent 60%); mask-image:radial-gradient(circle,#000 10%,transparent 60%); }
+  .reel.play .rays { animation:raySpin 3s linear var(--at) both; }
+  .ax { position:relative; font-size:52vh; letter-spacing:-.05em; color:transparent;
+    -webkit-text-stroke:3px #fff; text-shadow:0 0 60px hsla(var(--hue),95%,60%,.6); }
+  .reel.play .ax { animation:axTurn 1.2s cubic-bezier(.2,.9,.2,1) var(--at) both; }
+  @keyframes axTurn { 0%{transform:rotateY(90deg) scale(.6);opacity:0;} 45%{transform:rotateY(-8deg) scale(1.02);opacity:1;}
+    70%{transform:none;color:transparent;} 100%{transform:scale(1.04);color:#fff;} }
+
+  @keyframes raySpin { to { transform:rotate(360deg); } }
+
+  /* 10 · three words, three cuts */
+  .sc10 .word { font-size:30vh; letter-spacing:-.04em; }
+
+  /* 11 · lockup inside converging crop marks */
+  .sc11 { background:radial-gradient(70% 70% at 50% 50%,hsla(var(--hue),70%,22%,1),#04060c 75%); }
+  .crop { position:absolute; width:6vh; height:6vh; border:2px solid rgba(255,255,255,.8); }
+  .crop--tl { top:8vh; left:8vw; border-right:0; border-bottom:0; }
+  .crop--tr { top:8vh; right:8vw; border-left:0; border-bottom:0; }
+  .crop--bl { bottom:14vh; left:8vw; border-right:0; border-top:0; }
+  .crop--br { bottom:14vh; right:8vw; border-left:0; border-top:0; }
+  .reel.play .crop { animation:cropIn .7s cubic-bezier(.2,.9,.2,1) var(--at) both; }
+  @keyframes cropIn { from{transform:scale(2.2);opacity:0;} to{transform:none;opacity:1;} }
+  .lock { display:flex; flex-direction:column; align-items:center; gap:2.4vh; }
+  .lock__k { font-size:clamp(12px,1.1vw,18px); letter-spacing:.6em; color:rgba(210,228,255,.8); text-transform:uppercase; }
+  .lock__t { font-size:20vh; letter-spacing:-.04em; color:#fff; display:flex; gap:.25em; }
+  .lock__t span { display:inline-block; }
+  .lock__t span:last-child { color:transparent; -webkit-text-stroke:2px #fff; }
+  .lock__rule { display:block; height:2px; width:0; background:linear-gradient(90deg,transparent,#fff,transparent); }
+  .lock__s { font-size:clamp(14px,1.5vw,24px); letter-spacing:.2em; color:rgba(230,240,255,.85); }
+  .reel.play .lock__k { animation:fadeIn .4s ease calc(var(--at) + .2s) both; }
+  .reel.play .lock__t span { animation:lockUp .8s cubic-bezier(.19,1,.22,1) calc(var(--at) + .3s) both; }
+  .reel.play .lock__t span:last-child { animation-delay:calc(var(--at) + .45s); }
+  @keyframes lockUp { from{transform:translateY(40%);opacity:0;filter:blur(10px);} to{transform:none;opacity:1;filter:none;} }
+  .reel.play .lock__rule { animation:rule .9s cubic-bezier(.19,1,.22,1) calc(var(--at) + .8s) both; }
+  @keyframes rule { to{width:40vw;} }
+  .reel.play .lock__s { animation:fadeIn .6s ease calc(var(--at) + 1.1s) both; }
+  .reel.final .lock__rule { width:40vw; }
+
+  /* HUD: REC dot and running timecode, the "camera" feel */
+  .hud { position:absolute; top:3vh; left:3vw; z-index:5; display:flex; align-items:center; gap:10px;
+    font-family:"SFMono-Regular",Consolas,monospace; font-size:clamp(11px,1vw,15px); letter-spacing:.14em;
+    color:rgba(255,255,255,.85); mix-blend-mode:difference; }
+  .hud i { width:9px; height:9px; border-radius:50%; background:#ff2d55; animation:blink 1s steps(1) infinite; }
+  .reel-replay { position:absolute; right:3vw; top:3vh; z-index:6; padding:8px 16px; border-radius:999px; cursor:pointer;
+    font-size:13px; color:#fff; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.3);
+    -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); opacity:0; pointer-events:none;
+    transition:opacity .4s ease; }
+  .reel.done .reel-replay, .reel.final .reel-replay { opacity:1; pointer-events:auto; }
+  /* while the reel runs the frame is all picture: the bars step aside (keys still work) */
+  body.reel-playing .controls, body.reel-playing .remote-btn, body.reel-playing .progress {
+    opacity:0; pointer-events:none; }
+
   /* ===== Intro slide ===== */
   .title { font-size:clamp(46px,5.4vw,88px); font-weight:800; letter-spacing:.04em;
     line-height:1.02; position:relative; z-index:1; margin:1.6vh 0 .4vh;
@@ -542,6 +714,7 @@
   <div class="controls">
     <button class="nav-arrow nav-arrow--prev" id="prevBtn" aria-label="이전 페이지">&#8249;</button>
     <nav class="nav-dots" id="navDots">
+      <button class="nav-dot" data-target="reel" data-label="2026 REPLAY · 쇼릴"></button>
       <button class="nav-dot" data-target="intro" data-label="잇고, 이루고, 나아가다"></button>
       <button class="nav-dot" data-target="answer" data-label="오늘의 결론"></button>
       <button class="nav-dot" data-target="part-connect" data-label="Part 1 · 잇다"></button>
@@ -574,6 +747,75 @@
   <!-- ===== Slides ===== -->
   <main class="deck" id="deck">
     <div class="track" id="track">
+    <!-- 2026 쇼릴: 15초 오프닝 (?reel=1 일 때만 덱에 남는다) -->
+    <section id="reel" class="slide slide--reel">
+      <div class="reel" id="reelBox" aria-label="2026 REPLAY 쇼릴">
+        <!-- 00.0 counter -->
+        <div class="sc sc1" style="--at:0s; --len:1.2s">
+          <i class="s1-line"></i><b class="s1-num" id="reelNum">0000</b><span class="s1-cap">선행기구개발그룹 · 2026</span>
+        </div>
+        <!-- 01.2 slam -->
+        <div class="sc sc2" style="--at:1.2s; --len:1.2s">
+          <b class="slam">복기</b><span class="cap">2026 REPLAY</span>
+        </div>
+        <!-- 02.4 split screen -->
+        <div class="sc sc3" style="--at:2.4s; --len:1.2s">
+          <div class="half half--l"><b>관계를</b></div>
+          <div class="half half--r"><b><span class="w1">읽다</span><span class="w2">잇다</span></b></div>
+        </div>
+        <!-- 03.6 iris + marquee -->
+        <div class="sc sc4" style="--at:3.6s; --len:1.2s">
+          <div class="iris"></div>
+          <div class="fast fast--a"><span>Q1 GWP · 03.26 · 관계를 읽다 · 관계를 잇다 · Q1 GWP · 03.26 · 관계를 읽다 · 관계를 잇다 · </span></div>
+          <div class="fast fast--b"><span>DISC · 팀빌딩 · 레이저 서바이벌 · 볼링 · 연화담 · DISC · 팀빌딩 · 레이저 서바이벌 · 볼링 · 연화담 · </span></div>
+        </div>
+        <!-- 04.8 tile grid -->
+        <div class="sc sc5" style="--at:4.8s; --len:1.2s">
+          <div class="tiles">
+            <i style="--k:0">DISC</i><i style="--k:1" class="hl">팀빌딩</i><i style="--k:2">레이저</i><i style="--k:3">볼링</i>
+            <i style="--k:4" class="hl2">연화담</i><i style="--k:5">PS5</i><i style="--k:6">다이슨</i><i style="--k:7" class="hl">15명</i>
+            <i style="--k:8">파이썬</i><i style="--k:9" class="hl2">GitHub</i><i style="--k:10">AI 비서</i><i style="--k:11" class="hl">138명</i>
+          </div>
+        </div>
+        <!-- 06.0 terminal + glitch -->
+        <div class="sc sc6" style="--at:6s; --len:1.2s">
+          <p class="tty"><em>&gt;</em> <span id="reelType"></span><i class="caret"></i></p>
+          <b class="glitch" data-t="AI 첫발">AI 첫발</b>
+        </div>
+        <!-- 07.2 number cuts -->
+        <div class="sc sc7 cut-y" style="--at:7.2s; --len:.4s"><b class="big">3</b><span>AI 활동</span></div>
+        <div class="sc sc7 cut-v" style="--at:7.6s; --len:.4s"><b class="big">4</b><span>단계</span></div>
+        <div class="sc sc7 cut-w" style="--at:8s;   --len:.4s"><b class="big">138</b><span>명</span></div>
+        <!-- 08.4 box reveals -->
+        <div class="sc sc8" style="--at:8.4s; --len:1.2s">
+          <div class="box" style="--o:0s"><b>특허</b></div>
+          <div class="box" style="--o:.25s"><b>출장 효율화</b></div>
+          <div class="box" style="--o:.5s"><b>퀵 자동화</b></div>
+        </div>
+        <!-- 09.6 AX 3D -->
+        <div class="sc sc9" style="--at:9.6s; --len:1.2s">
+          <div class="rays"></div><b class="ax">AX</b>
+        </div>
+        <!-- 10.8 word cuts -->
+        <div class="sc sc10 cut-w" style="--at:10.8s; --len:.4s"><b class="word">잇고</b></div>
+        <div class="sc sc10 cut-k" style="--at:11.2s; --len:.4s"><b class="word">이루고</b></div>
+        <div class="sc sc10 cut-a" style="--at:11.6s; --len:.4s"><b class="word">나아가다</b></div>
+        <!-- 12.0 lockup (holds) -->
+        <div class="sc sc11 sc--hold" style="--at:12s">
+          <i class="crop crop--tl"></i><i class="crop crop--tr"></i><i class="crop crop--bl"></i><i class="crop crop--br"></i>
+          <div class="lock">
+            <span class="lock__k">October Town Hall</span>
+            <b class="lock__t"><span>2026</span> <span>REPLAY</span></b>
+            <i class="lock__rule"></i>
+            <span class="lock__s">선행기구개발그룹 · 잇고, 이루고, 나아가다</span>
+          </div>
+        </div>
+        <!-- HUD over everything -->
+        <div class="hud" aria-hidden="true"><i></i>REC <span id="reelTc">00:00:00</span></div>
+        <button class="reel-replay" id="reelReplay">&#8635; 다시 보기</button>
+      </div>
+    </section>
+
     <!-- 0 · Title -->
     <section id="intro" class="slide">
       <div class="eyebrow" data-scramble>October Town Hall</div>
@@ -809,6 +1051,15 @@
     // opened from the deck), so nothing heavy runs there
     var REMOTE_MODE = /[?&]remote=1/.test(location.search);
     if (REMOTE_MODE) document.documentElement.classList.add('remote-mode');
+    // ?reel=1 keeps the 15-second showreel opener; without it the deck starts on the title
+    var REEL = /[?&]reel=1/.test(location.search);
+    if (!REEL) {
+      ['reel'].forEach(function (id) {
+        var sl = document.getElementById(id), d = document.querySelector('.nav-dot[data-target="' + id + '"]');
+        if (sl) sl.parentNode.removeChild(sl);
+        if (d) d.parentNode.removeChild(d);
+      });
+    }
     var REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     var track   = document.getElementById('track');
@@ -1090,6 +1341,46 @@
       };
     })();
 
+    // ----- Showreel: one class runs the CSS timeline; JS adds the counter, typing, timecode -----
+    var reelOn = (function () {
+      var box = document.getElementById('reelBox');
+      if (!box || REMOTE_MODE) return null;
+      var num = document.getElementById('reelNum'), typ = document.getElementById('reelType');
+      var tc = document.getElementById('reelTc'), timers = [], raf = 0, t0 = 0, LEN = 15;
+      function later(ms, fn) { timers.push(setTimeout(fn, ms)); }
+      function stop() {
+        timers.forEach(clearTimeout); timers = [];
+        if (raf) cancelAnimationFrame(raf); raf = 0;
+      }
+      function tick(now) {
+        var t = Math.min(LEN, (now - t0) / 1000);
+        var f = Math.floor((t % 1) * 24);
+        tc.textContent = '00:' + (t < 10 ? '0' : '') + Math.floor(t) + ':' + (f < 10 ? '0' : '') + f;
+        // the year counts up through the first scene
+        var k = Math.max(0, Math.min(1, (t - .25) / .8));
+        num.textContent = String(Math.round(2026 * (1 - Math.pow(1 - k, 3)))).padStart(4, '0');
+        raf = t < LEN ? requestAnimationFrame(tick) : 0;
+      }
+      function play() {
+        stop();
+        box.classList.remove('play', 'done', 'final');
+        if (REDUCED) { box.classList.add('final'); num.textContent = '2026'; typ.textContent = 'ai.first_step()'; return; }
+        void box.offsetWidth;                       // restart every CSS animation
+        box.classList.add('play');
+        document.body.classList.add('reel-playing');
+        typ.textContent = ''; t0 = performance.now();
+        raf = requestAnimationFrame(tick);
+        var cmd = 'ai.first_step()';
+        for (var i = 1; i <= cmd.length; i++) (function (n) { later(6050 + n * 28, function () { typ.textContent = cmd.slice(0, n); }); })(i);
+        later(LEN * 1000, function () { box.classList.add('done'); document.body.classList.remove('reel-playing'); });
+      }
+      box.addEventListener('click', function () { play(); });
+      return function (active) {
+        if (active) play();
+        else { stop(); box.classList.remove('play', 'done'); document.body.classList.remove('reel-playing'); }
+      };
+    })();
+
     // ----- Page transition: a curtain in the chapter colour, naming where we land -----
     var veil = document.getElementById('veil'), veilLabel = document.getElementById('veilLabel');
     var VEIL_IN = 380;                              // ms until the curtain fully covers
@@ -1121,7 +1412,8 @@
       nextBtn.disabled = (current === TOTAL - 1);
 
       // a full-bleed embed gets the whole frame: drop the vignette
-      var covered = slides[current].classList.contains('slide--embed');
+      var covered = slides[current].classList.contains('slide--embed') ||
+                    slides[current].classList.contains('slide--reel');
       document.body.classList.toggle('embed-mode', covered);
       // the liquid field recolours, surges with the move and sleeps under a full-bleed page
       if (fxField) fxField.slide(current, direction, covered);
@@ -1154,6 +1446,7 @@
 
       // play the entrance on the slide we landed on — once the curtain has
       // covered the move, so the words rise as it opens
+      if (reelOn && slides[current].id !== 'reel') reelOn(false);
       var landing = current;
       clearTimeout(enterTimer);
       enterTimer = setTimeout(function () {
@@ -1162,6 +1455,7 @@
         slides[current].querySelectorAll('[data-scramble]').forEach(scramble);
         slides[current].querySelectorAll('[data-count]').forEach(countUp);
         slides[current].querySelectorAll('[data-type]').forEach(typeOut);
+        if (reelOn && slides[current].id === 'reel') reelOn(true);
       }, veiled ? VEIL_IN : 0);
       // clear the others only after the slide finishes moving, so the
       // outgoing slide doesn't blank out mid-transition
