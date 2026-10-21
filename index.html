@@ -275,28 +275,64 @@
     letter-spacing:.12em; color:#fff; background:rgba(255,255,255,.1);
     border:1px solid rgba(255,255,255,.22); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); }
 
-  /* Q1 gifts: cards flip up one after another */
-  .prizes { position:relative; z-index:1; display:grid; grid-template-columns:repeat(6,1fr);
-    gap:clamp(10px,1.1vw,18px); width:min(1500px,90vw); margin-top:6vh; perspective:1200px; }
-  .prize { display:flex; flex-direction:column; gap:8px; text-align:left; padding:clamp(14px,1.5vw,24px);
-    border-radius:20px; background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03));
-    border:1px solid rgba(255,255,255,.16);
-    -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 16px 36px rgba(0,0,0,.28);
-    opacity:0; transform:rotateX(70deg) translateY(30px); transform-origin:50% 100%;
-    transition:opacity .6s ease, transform 1s cubic-bezier(.2,.9,.25,1.2);
-    transition-delay:calc(.9s + var(--k) * .14s); }
-  .slide.in-view .prize { opacity:1; transform:none; }
-  .prize b { font-size:clamp(11px,.9vw,14px); letter-spacing:.24em; color:rgba(210,228,255,.7); }
-  .prize strong { font-size:clamp(16px,1.45vw,24px); font-weight:800; line-height:1.25; }
-  .prize span { font-size:clamp(11px,.9vw,14px); color:rgba(210,228,255,.65); }
-  .prize em { margin-top:auto; padding-top:10px; font-style:normal; font-size:clamp(20px,2vw,34px);
-    font-weight:800; border-top:1px solid rgba(255,255,255,.12); }
-  .prize--gold   { border-color:rgba(255,206,110,.6); } .prize--gold b   { color:#FFD27A; }
-  .prize--silver { border-color:rgba(220,230,245,.5); } .prize--silver b { color:#E3EAF5; }
-  .prize--bronze { border-color:rgba(235,160,110,.5); } .prize--bronze b { color:#F0B48A; }
-  .slide.in-view .prize--gold { animation:goldPulse 2.8s ease-in-out 2.4s infinite; }
-  @keyframes goldPulse { 50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 0 34px 4px rgba(255,200,100,.45);} }
+  /* Q1 winners: a prize ticket slides in, flips to the winner's photo, flies off */
+  .slide--gift { padding:6vh 5vw 11vh; }
+  .gift { position:relative; z-index:1; width:100%; height:100%; display:flex; align-items:center;
+    gap:clamp(24px,4vw,80px); }
+  .gift__stage { flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
+  .gcard { position:relative; height:min(74vh,1000px); aspect-ratio:3/4; perspective:2000px; cursor:pointer;
+    transition:transform .75s cubic-bezier(.19,1,.22,1), opacity .5s ease; }
+  .gcard.from-right { transform:translateX(70vw) rotate(10deg); opacity:0; transition:none; }
+  .gcard.to-left { transform:translateX(-70vw) rotate(-12deg); opacity:0;
+    transition:transform .55s cubic-bezier(.7,0,.84,0), opacity .45s ease .1s; }
+  .gcard__in { position:absolute; inset:0; transform-style:preserve-3d;
+    transition:transform 1s cubic-bezier(.35,.1,.15,1); }
+  .gcard.flipped .gcard__in { transform:rotateY(180deg); }
+  .gcard.flipped { animation:cardPop 1s ease; }
+  @keyframes cardPop { 50%{scale:1.05;} }
+  .gface { position:absolute; inset:0; border-radius:18px; overflow:hidden;
+    backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+  /* front: a big flat lottery ticket */
+  .gface--front { display:flex; flex-direction:column; justify-content:center; gap:2vh;
+    padding:0 8%; text-align:left; background:#fff; color:#04060c; }
+  .gf-tag { font-family:"SFMono-Regular",Consolas,monospace; font-size:clamp(11px,1vw,15px);
+    letter-spacing:.3em; opacity:.6; }
+  .gf-rank { align-self:flex-start; padding:6px 14px; border-radius:999px; background:#04060c; color:#FFD43B;
+    font-size:clamp(13px,1.3vw,20px); font-weight:800; letter-spacing:.1em; }
+  .gf-name { font-size:clamp(34px,4.4vw,80px); font-weight:900; line-height:1.05; letter-spacing:-.04em; }
+  .gf-sub { font-size:clamp(13px,1.2vw,19px); opacity:.65; }
+  .gf-stub { position:absolute; left:0; right:0; bottom:0; display:flex; justify-content:space-between;
+    padding:2.4vh 8%; font-style:normal; font-family:"SFMono-Regular",Consolas,monospace;
+    font-size:clamp(11px,1vw,15px); letter-spacing:.24em; border-top:3px dashed #04060c; background:#FFD43B; }
+  .gcard.gold .gface--front { background:#FFD43B; } .gcard.gold .gf-stub { background:#fff; }
+  /* back: the winner, edge to edge */
+  .gface--back { transform:rotateY(180deg); background:#04060c; }
+  .gface--back img { width:100%; height:100%; object-fit:cover; object-position:50% 38%; display:block; }
+  .gface--back::after { content:''; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) 48%,transparent 62%);
+    transform:translateX(-120%); }
+  .gcard.flipped .gface--back::after { animation:glare 1.1s ease .7s both; }
+  @keyframes glare { to{transform:translateX(120%);} }
+  .gf-cap { position:absolute; left:4%; right:4%; bottom:3.5%; padding:10px 16px; border-radius:12px;
+    background:#04060c; color:#fff; font-size:clamp(14px,1.4vw,22px); font-weight:800; letter-spacing:-.01em;
+    transform:translateY(140%); transition:transform .6s cubic-bezier(.19,1,.22,1) 1s; }
+  .gcard.flipped .gf-cap { transform:none; }
+  .gf-cap em { font-style:normal; color:#FFD43B; margin-right:.5em; }
+
+  .gift__info { flex:1 1 auto; min-width:0; text-align:left; display:flex; flex-direction:column; gap:2vh; }
+  .gift__info .msg-title { font-size:clamp(36px,4.6vw,88px); }
+  .gift__sub { font-size:clamp(14px,1.3vw,20px); opacity:.8; }
+  .gift__count { display:flex; align-items:baseline; gap:12px; font-family:"SFMono-Regular",Consolas,monospace; }
+  .gift__count b { font-size:clamp(48px,6vw,110px); font-weight:900; line-height:1; letter-spacing:-.04em; }
+  .gift__count span { font-size:clamp(16px,1.6vw,26px); opacity:.6; }
+  .gift__thumbs { display:grid; grid-template-columns:repeat(9,1fr); gap:8px; max-width:780px; }
+  .gift__thumbs button { position:relative; aspect-ratio:3/4; padding:0; border:0; border-radius:8px;
+    overflow:hidden; cursor:pointer; background:#000; opacity:.38; filter:grayscale(1);
+    transition:opacity .3s ease, filter .3s ease, transform .3s ease; }
+  .gift__thumbs button img { width:100%; height:100%; object-fit:cover; object-position:50% 35%; display:block; }
+  .gift__thumbs button.seen { opacity:.75; filter:none; }
+  .gift__thumbs button.cur { opacity:1; filter:none; transform:translateY(-6px); outline:3px solid #FFD43B; outline-offset:2px; }
+  @media (max-width:780px) { .gift { flex-direction:column; } .gcard { height:52vh; } }
 
   /* Q2 cover: a glass terminal typing the first step */
   .term { position:relative; z-index:1; width:min(760px,84vw); margin-top:5vh; text-align:left;
@@ -375,7 +411,6 @@
   .slide--story .stats { margin-top:5vh; }
 
   @media (max-width:780px) {
-    .prizes { grid-template-columns:repeat(2,1fr); }
     .acts { grid-template-columns:repeat(2,1fr); }
     .duo { flex-direction:column; } .duo__link { display:none; }
   }
@@ -721,15 +756,13 @@
   .theme-reel .slide.in-view .marquee--b { opacity:.5; }
 
   /* glass → flat tiles */
-  .theme-reel :is(.card, .stat, .step, .prize, .act, .duo__side) { background:var(--tile); color:var(--tilefg);
+  .theme-reel :is(.card, .stat, .step, .act, .duo__side) { background:var(--tile); color:var(--tilefg);
     border:0; border-radius:14px; -webkit-backdrop-filter:none; backdrop-filter:none; box-shadow:none; }
-  .theme-reel :is(.card, .stat, .step, .prize, .act, .duo__side) :is(span, em, strong) { color:inherit; }
-  .theme-reel :is(.card, .step, .prize, .act, .duo__side) :is(span, em) { opacity:.75; }
-  .theme-reel .card em, .theme-reel .prize em { border-top-color:currentColor; }
-  .theme-reel :is(.card b, .prize b, .duo__side b) , .theme-reel .step::before { color:var(--tacc); }
+  .theme-reel :is(.card, .stat, .step, .act, .duo__side) :is(span, em, strong) { color:inherit; }
+  .theme-reel :is(.card, .step, .act, .duo__side) :is(span, em) { opacity:.75; }
+  .theme-reel .card em { border-top-color:currentColor; }
+  .theme-reel :is(.card b, .duo__side b), .theme-reel .step::before { color:var(--tacc); }
   .theme-reel .stat b { background:none; color:var(--tilefg); -webkit-text-fill-color:currentColor; }
-  .theme-reel .slide.in-view .prize--gold { animation:none; }
-  .theme-reel .prize--gold { outline:3px solid var(--tacc); outline-offset:-3px; }
   .theme-reel .act__viz { border:0; border-radius:10px; }
   .theme-reel .step:not(:last-child)::after { color:var(--fg); opacity:.6; }
   .theme-reel .duo__link { background:var(--fg); }
@@ -777,7 +810,7 @@
     .veil { display:none; }
     .mq-track, .glass i { animation:none !important; }
     .chapter, .chapter .strip, .marquee { transition:none !important; }
-    .ring img, .prize, .flow__step, .flow__line i, .duo__link {
+    .ring img, .flow__step, .flow__line i, .duo__link {
       opacity:1 !important; transform:none !important; transition:none !important; }
     .ring, .moments-bg { animation:none !important; }
   }
@@ -797,7 +830,7 @@
       <button class="nav-dot" data-target="part-connect" data-label="Part 1 · 잇다"></button>
       <button class="nav-dot nav-dot--sub" data-target="gwp-q1" data-label="1분기 GWP · 관계를 읽다, 관계를 잇다"></button>
       <button class="nav-dot nav-dot--sub" data-target="gwp-q1-moments" data-label="1분기 GWP · 그날의 사진"></button>
-      <button class="nav-dot nav-dot--sub" data-target="gwp-q1-gift" data-label="1분기 GWP · 선물 추첨"></button>
+      <button class="nav-dot nav-dot--sub" data-target="gwp-q1-gift" data-label="1분기 GWP · 행운의 주인공"></button>
       <button class="nav-dot nav-dot--sub" data-target="gwp-q2" data-label="2분기 GWP · AI 첫발, 함께 내딛다"></button>
       <button class="nav-dot nav-dot--sub" data-target="gwp-q2-acts" data-label="2분기 GWP · 세 가지 AI 활동"></button>
       <button class="nav-dot nav-dot--sub" data-target="gwp-q2-day" data-label="2분기 GWP · 하루의 흐름"></button>
@@ -952,19 +985,31 @@
       </div>
     </section>
 
-    <!-- 1분기 GWP · 선물 추첨 -->
-    <section id="gwp-q1-gift" class="slide slide--msg slide--story tone-v">
-      <div class="eyebrow" data-scramble>Q1 GWP · Gift Raffle</div>
-      <h3 class="msg-title reveal" style="--d:.2s"><span class="num" data-count="15">15</span>명에게 행운이 이어졌다</h3>
-      <div class="prizes">
-        <div class="prize prize--gold"  style="--k:0"><b>1등</b><strong>PS5 슬림</strong><span>디지털에디션 825GB</span><em>1명</em></div>
-        <div class="prize prize--silver" style="--k:1"><b>2등</b><strong>다이슨 슈퍼소닉</strong><span>니켈코퍼</span><em>1명</em></div>
-        <div class="prize prize--silver" style="--k:2"><b>2등</b><strong>다이슨 에어랩</strong><span>오리진 플러스</span><em>1명</em></div>
-        <div class="prize prize--bronze" style="--k:3"><b>3등</b><strong>가민 포러너 165</strong><span>스마트워치</span><em>2명</em></div>
-        <div class="prize" style="--k:4"><b>특별</b><strong>신세계 상품권</strong><span>5만원권</span><em>5명</em></div>
-        <div class="prize" style="--k:5"><b>특별</b><strong>아웃백 상품권</strong><span>5만원권</span><em>5명</em></div>
+    <!-- 1분기 GWP · 행운의 주인공: 상품 카드가 뒤집히면 당첨 사진 (스포트라이트 플립) -->
+    <section id="gwp-q1-gift" class="slide slide--msg slide--story slide--gift tone-v">
+      <div class="gift" id="gift">
+        <div class="gift__stage">
+          <div class="gcard" id="gcard" title="클릭하면 다음 카드">
+            <div class="gcard__in">
+              <div class="gface gface--front">
+                <span class="gf-tag" id="gfTag"></span>
+                <span class="gf-rank" id="gfRank"></span>
+                <b class="gf-name" id="gfName"></b>
+                <span class="gf-sub" id="gfSub"></span>
+                <i class="gf-stub"><span>LUCKY TICKET</span><span id="gfNo"></span></i>
+              </div>
+              <div class="gface gface--back"><img id="gfImg" alt=""><span class="gf-cap" id="gfCap"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="gift__info">
+          <div class="eyebrow" data-scramble>Q1 GWP · Winners</div>
+          <h3 class="msg-title" data-split="words">행운의 주인공들</h3>
+          <p class="gift__sub reveal" style="--d:.8s">GWP 석식 추첨 · 월례회 추첨</p>
+          <div class="gift__count reveal" style="--d:1s"><b id="giftIdx">01</b><span>/ 09</span></div>
+          <div class="gift__thumbs reveal" style="--d:1.2s" id="giftThumbs"></div>
+        </div>
       </div>
-      <p class="msg-note reveal" style="--d:2.2s">월례회 입장 때 받은 추첨권으로 진행</p>
     </section>
 
     <!-- 2분기 GWP · 표지 -->
@@ -1116,8 +1161,8 @@
     // opened from the deck), so nothing heavy runs there
     var REMOTE_MODE = /[?&]remote=1/.test(location.search);
     if (REMOTE_MODE) document.documentElement.classList.add('remote-mode');
-    // ?reel=1 keeps the 15-second showreel opener; without it the deck starts on the title
-    var REEL = /[?&]reel=1/.test(location.search);
+    // the 15-second showreel opens the deck; ?reel=0 leaves it out and starts on the title
+    var REEL = !/[?&]reel=0/.test(location.search);
     if (!REEL) {
       ['reel'].forEach(function (id) {
         var sl = document.getElementById(id), d = document.querySelector('.nav-dot[data-target="' + id + '"]');
@@ -1449,6 +1494,68 @@
       };
     })();
 
+    // ----- Q1 winners: prize ticket → flip → winner photo → fly off → next -----
+    // Photos are media/gwp-q1/*.jpg; the order saves the biggest prize for last.
+    var GIFTS = [
+      { img: '07', tag: '월례회 추첨', rank: 'LUCKY',  name: 'LUCKY BOX',              sub: '무엇이 들었을까' },
+      { img: '06', tag: '월례회 추첨', rank: 'LEGO',   name: 'LEGO 원피스<br>고잉 메리호', sub: '1,376 pcs' },
+      { img: '08', tag: '월례회 추첨', rank: 'LEGO',   name: 'LEGO 마블<br>스파이더맨', sub: 'Marvel' },
+      { img: '09', tag: '월례회 추첨', rank: 'LEGO',   name: 'LEGO 테크닉<br>스페이스 로켓', sub: 'NASA · 632 pcs' },
+      { img: '10', tag: '월례회 추첨', rank: 'LEGO',   name: 'LEGO 테크닉<br>스페이스 로켓', sub: '두 번째 주인공' },
+      { img: '04', tag: 'GWP 석식 추첨', rank: 'No. 080', name: '추첨권<br>080번',   sub: '행운의 번호', no: '080' },
+      { img: '03', tag: 'GWP 석식 추첨', rank: 'No. 103', name: '추첨권<br>103번',   sub: '행운의 번호', no: '103' },
+      { img: '02', tag: 'GWP 석식 추첨', rank: '2등',  name: '다이슨<br>에어랩 오리진', sub: '플러스' },
+      { img: '05', tag: 'GWP 석식 추첨', rank: '1등',  name: 'PS5 슬림',               sub: '디지털에디션 825GB', gold: true }
+    ];
+    var giftOn = (function () {
+      var card = document.getElementById('gcard');
+      if (!card || REMOTE_MODE) return null;
+      var $ = function (id) { return document.getElementById(id); };
+      var thumbs = $('giftThumbs'), idx = $('giftIdx'), timers = [], i = 0, active = false;
+      GIFTS.forEach(function (g, k) {
+        var b = document.createElement('button');
+        b.setAttribute('aria-label', (k + 1) + '번째 · ' + g.name.replace('<br>', ' '));
+        b.innerHTML = '<img src="media/gwp-q1/' + g.img + '.jpg" alt="">';
+        b.addEventListener('click', function (e) { e.stopPropagation(); show(k); });
+        thumbs.appendChild(b);
+      });
+      var buttons = Array.prototype.slice.call(thumbs.children);
+      function later(ms, fn) { timers.push(setTimeout(fn, ms)); }
+      function clear() { timers.forEach(clearTimeout); timers = []; }
+      function fill(g, k) {
+        $('gfTag').textContent = g.tag; $('gfRank').textContent = g.rank;
+        $('gfName').innerHTML = g.name; $('gfSub').textContent = g.sub;
+        $('gfNo').textContent = 'No. ' + (g.no || String(k + 1).padStart(3, '0'));
+        $('gfImg').src = 'media/gwp-q1/' + g.img + '.jpg';
+        $('gfCap').innerHTML = '<em>' + g.rank + '</em>' + g.name.replace('<br>', ' ');
+        card.classList.toggle('gold', !!g.gold);
+        idx.textContent = String(k + 1).padStart(2, '0');
+        buttons.forEach(function (b, j) { b.classList.toggle('cur', j === k); b.classList.toggle('seen', j < k); });
+      }
+      function show(k) {
+        clear(); i = (k + GIFTS.length) % GIFTS.length;
+        card.classList.remove('flipped', 'to-left');
+        fill(GIFTS[i], i);
+        if (REDUCED) { card.classList.add('flipped'); return; }
+        card.classList.add('from-right');
+        void card.offsetWidth;                       // land it off-screen first
+        card.classList.remove('from-right');
+        later(750, function () { card.classList.add('flipped'); });
+        if (!active) return;
+        // the finale holds a little longer, then the whole run starts again
+        later(750 + 1000 + (GIFTS[i].gold ? 4200 : 2600), function () {
+          card.classList.add('to-left');
+          later(560, function () { show(i + 1); });
+        });
+      }
+      card.addEventListener('click', function () { show(i + 1); });
+      return function (on) {
+        active = on;
+        if (on) show(0);
+        else { clear(); card.classList.remove('flipped', 'to-left'); }
+      };
+    })();
+
     // ----- Page transition: a curtain in the chapter colour, naming where we land -----
     var veil = document.getElementById('veil'), veilLabel = document.getElementById('veilLabel');
     var VEIL_IN = THEME === 'reel' ? 240 : 380;     // ms until the curtain fully covers
@@ -1527,6 +1634,7 @@
       // play the entrance on the slide we landed on — once the curtain has
       // covered the move, so the words rise as it opens
       if (reelOn && slides[current].id !== 'reel') reelOn(false);
+      if (giftOn && slides[current].id !== 'gwp-q1-gift') giftOn(false);
       var landing = current;
       clearTimeout(enterTimer);
       enterTimer = setTimeout(function () {
@@ -1536,6 +1644,7 @@
         slides[current].querySelectorAll('[data-count]').forEach(countUp);
         slides[current].querySelectorAll('[data-type]').forEach(typeOut);
         if (reelOn && slides[current].id === 'reel') reelOn(true);
+        if (giftOn && slides[current].id === 'gwp-q1-gift') giftOn(true);
       }, veiled ? VEIL_IN : 0);
       // clear the others only after the slide finishes moving, so the
       // outgoing slide doesn't blank out mid-transition

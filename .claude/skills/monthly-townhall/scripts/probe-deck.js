@@ -32,7 +32,12 @@ const ok = (cond, what, detail) => {
   pg.on('pageerror', e => errs.push('pageerror: ' + e.message));
   pg.on('console', m => { if (m.type() === 'error') errs.push('console: ' + m.text()); });
 
-  await pg.goto('file://' + DECK);
+  // the opener first: on by default, first slide, plays on load
+  await pg.goto('file://' + DECK); await pg.waitForTimeout(900);
+  ok(await pg.evaluate(() => document.querySelector('.slide').id === 'reel'
+    && document.getElementById('reelBox').classList.contains('play')), 'the showreel opens the deck and plays');
+  // the rest of the checks walk the deck without it
+  await pg.goto('file://' + DECK + '?reel=0');
   await pg.waitForTimeout(800);
 
   const slides = await pg.evaluate(() => [...document.querySelectorAll('.slide')].map(s => s.id));
@@ -120,6 +125,14 @@ const ok = (cond, what, detail) => {
   }
   ok(dotFails === 0, 'every dot jumps to its slide', dotFails ? `${dotFails} wrong` : 'all');
 
+  // the winners slide: a ticket flips to a photo, then the next one comes in
+  await pg.evaluate(() => document.querySelector('.nav-dot[data-target="gwp-q1-gift"]').click());
+  await pg.waitForTimeout(2600);
+  ok(await pg.evaluate(() => document.getElementById('gcard').classList.contains('flipped')
+    && document.querySelectorAll('#giftThumbs button').length === GIFTS.length), 'the winner card flips to its photo');
+  await pg.evaluate(() => document.getElementById('gcard').click()); await pg.waitForTimeout(300);
+  ok(await pg.evaluate(() => document.getElementById('giftIdx').textContent === '02'), 'clicking the card moves to the next winner');
+
   // the presenter remote
   await pg.keyboard.press('Home'); await pg.waitForTimeout(600);
   const [popup] = await Promise.all([ctx.waitForEvent('page'), pg.click('#remoteBtn')]);
@@ -138,7 +151,7 @@ const ok = (cond, what, detail) => {
   const rctx = await br.newContext({ viewport: { width: 1280, height: 720 }, reducedMotion: 'reduce' });
   const rp = await rctx.newPage();
   rp.on('pageerror', e => errs.push('reduced pageerror: ' + e.message));
-  await rp.goto('file://' + DECK); await rp.waitForTimeout(600);
+  await rp.goto('file://' + DECK + '?reel=0'); await rp.waitForTimeout(600);
   ok(await rp.evaluate(() => { const e = document.querySelector('#intro .eyebrow');
     return e.textContent === 'October Town Hall' && !fxField.state().awake
       && getComputedStyle(document.querySelector('#intro .title .wi')).transform === 'none'; }),
