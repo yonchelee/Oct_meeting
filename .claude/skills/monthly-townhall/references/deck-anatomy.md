@@ -1,6 +1,6 @@
 # index.html 해부
 
-약 56KB, 한 파일. 위에서부터 `<style>` → 마크업 → `<script>` 순서다.
+약 79KB, 한 파일. 위에서부터 `<style>` → 마크업 → `<script>` 순서다.
 
 ## 파일 지도
 
@@ -31,12 +31,13 @@ render();                                 ← 스크립트 마지막 줄
 
 ## 섹션 — 피라미드 구조 (2026년 10월: 잇고, 이루고, 나아가다)
 
-현재 13장. 결론을 먼저 말하고(오늘의 결론), 그 아래 세 파트가 근거를 받친다.
+현재 17장. 결론을 먼저 말하고(오늘의 결론), 그 아래 세 파트가 근거를 받친다.
 
 ```
 intro          잇고, 이루고, 나아가다 · 2026 복기 · 2027 구상
 answer         오늘의 결론 — 핵심 메시지 + 세 파트 카드          (slide--msg)
-part-connect   Part 1 잇다      → gwp-q1, gwp-q2              (임베드)
+part-connect   Part 1 잇다      → gwp-q1, gwp-q1-day, gwp-q1-gift,
+                                 gwp-q2, gwp-q2-acts, gwp-q2-day  (모션 스토리 장)
 part-achieve   Part 2 이루다    → patent, travel (msg), quick (임베드)
 part-forward   Part 3 나아가다  → ax, newcomers (msg)
 leader         그룹장 말씀                                     (msg, data-palette="5")
@@ -68,6 +69,12 @@ leader         그룹장 말씀                                     (msg, data-p
 </section>
 ```
 
+**GWP 스토리 장** (`slide--msg slide--story`) — 임베드 대신 행사 내용을 직접 모션으로 다시 그린 장.
+1분기: 표지(읽다↔잇다) · 간트 타임라인(`.gantt`, 행마다 `--s`/`--e` 시각, 플레이헤드가 오후를 훑음) ·
+선물 카드(`.prizes`, 뒤집히며 등장). 2분기: 표지(글래스 터미널 타이핑) · 활동 4카드(`.acts`, 파이썬·웹·
+어시스턴트·소감 미니 장면) · 흐름 4단계(`.flow`)와 숫자. 타이핑은 `data-type="문장"`과
+`data-type-delay="초"`. 원자료: `GWP-guide`, `2026_2nd_GWP`, `2026_2nd_GWP_result` 저장소.
+
 `data-palette="N"`을 주면 그 장만 `PALETTES[N]` 색을 쓴다(그룹장 말씀의 따뜻한 색).
 
 섹션을 추가·삭제할 때 같이 손볼 곳:
@@ -81,8 +88,7 @@ leader         그룹장 말씀                                     (msg, data-p
 
 ## 임베드
 
-GitHub Pages(`yonchelee.github.io/...`) 자료도 같은 방식으로 임베드한다
-(1분기 GWP 안내, 퀵 자동화 발표). 2분기 GWP 결과는 Cloudflare Pages(`gwp-2026-2nd-result.pages.dev`).
+GitHub Pages(`yonchelee.github.io/...`) 자료도 같은 방식으로 임베드한다(퀵 자동화 발표).
 
 ```html
 <section id="x-content" class="slide slide--embed">

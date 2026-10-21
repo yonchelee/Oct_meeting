@@ -217,6 +217,183 @@
     .step:not(:last-child)::after { display:none; }
   }
 
+  /* ===== GWP story slides: the events retold as motion graphics ===== */
+  .slide--story .msg-title:not(.msg-title--xl) { font-size:clamp(26px,3.1vw,58px); }
+  .slide--story .num { font-variant-numeric:tabular-nums; color:hsl(var(--hue),95%,78%); }
+  :root { --read:hsl(var(--hue),90%,64%); --link:hsl(calc(var(--hue) + 70),88%,66%); --all:#FFC861; }
+
+  /* Q1 cover: two halves joined by a running link */
+  .duo { position:relative; z-index:1; display:flex; align-items:stretch; gap:0; margin-top:6vh;
+    width:min(1200px,86vw); }
+  .duo__side { flex:1 1 0; text-align:left; padding:clamp(18px,2vw,30px); border-radius:22px;
+    background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03));
+    border:1px solid rgba(255,255,255,.18);
+    -webkit-backdrop-filter:blur(18px) saturate(160%); backdrop-filter:blur(18px) saturate(160%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 18px 40px rgba(0,0,0,.28); }
+  .duo__side b { display:block; font-size:clamp(30px,3.2vw,56px); font-weight:800; margin-bottom:10px; }
+  .duo__side:first-child b { color:var(--read); }
+  .duo__side:last-child b { color:var(--link); }
+  .duo__side span { display:block; font-size:clamp(15px,1.4vw,22px); font-weight:600; }
+  .duo__side em { display:block; margin-top:8px; font-style:normal; font-size:clamp(13px,1.1vw,17px);
+    color:rgba(210,228,255,.7); }
+  .duo__link { flex:0 0 clamp(60px,8vw,140px); position:relative; align-self:center; height:2px;
+    background:linear-gradient(90deg,var(--read),var(--link)); transform:scaleX(0);
+    transition:transform 1s cubic-bezier(.19,1,.22,1) 1.6s; }
+  .slide.in-view .duo__link { transform:scaleX(1); }
+  .duo__link i { position:absolute; top:50%; left:0; width:10px; height:10px; margin:-5px 0 0 -5px;
+    border-radius:50%; background:#fff; box-shadow:0 0 14px 3px rgba(255,255,255,.8); opacity:0; }
+  .slide.in-view .duo__link i { animation:shuttle 2.4s ease-in-out 2.4s infinite; }
+  @keyframes shuttle { 0%{left:0;opacity:0;} 15%,85%{opacity:1;} 50%{left:100%;} 100%{left:0;opacity:0;} }
+
+  /* Q1 day: a gantt that draws itself while a playhead sweeps the afternoon */
+  .gantt { position:relative; z-index:1; width:min(1500px,90vw); margin-top:5vh;
+    --name:clamp(200px,22vw,380px); }
+  .gantt__axis { position:relative; height:24px; margin-left:var(--name); margin-bottom:8px; }
+  .gantt__axis span { position:absolute; left:calc((var(--t) - var(--from)) / (var(--to) - var(--from)) * 100%);
+    transform:translateX(-50%); font-size:clamp(11px,.9vw,14px); letter-spacing:.08em;
+    color:rgba(210,228,255,.55); font-variant-numeric:tabular-nums; }
+  .gantt__row { display:flex; align-items:center; min-height:clamp(46px,6.4vh,72px);
+    border-top:1px solid rgba(255,255,255,.08); opacity:0; transform:translateX(-20px);
+    transition:opacity .6s ease, transform .8s cubic-bezier(.19,1,.22,1);
+    transition-delay:calc(.9s + var(--r) * .12s); }
+  .slide.in-view .gantt__row { opacity:1; transform:none; }
+  .gantt__row--all { border-top-color:rgba(255,200,97,.35); }
+  .gantt__name { flex:0 0 var(--name); text-align:left; padding-right:18px; }
+  .gantt__name b { display:block; font-size:clamp(15px,1.4vw,22px); font-weight:700; }
+  .gantt__name span { display:block; margin-top:3px; font-size:clamp(11px,.85vw,13px); color:rgba(200,220,255,.6); }
+  .gantt__lane { position:relative; flex:1 1 auto; height:clamp(28px,3.6vh,40px);
+    background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px calc(100% / 6)); }
+  .bar { position:absolute; top:0; bottom:0; border-radius:999px; font-style:normal;
+    left:calc((var(--s) - 13) / 6 * 100%); width:calc((var(--e) - var(--s)) / 6 * 100%);
+    display:flex; align-items:center; justify-content:center; white-space:nowrap;
+    font-size:clamp(11px,.9vw,14px); font-weight:700; color:#06101f; letter-spacing:.02em;
+    transform:scaleX(0); transform-origin:left center;
+    transition:transform 1.1s cubic-bezier(.19,1,.22,1);
+    transition-delay:calc(1.3s + (var(--s) - 13) * .35s); }
+  .slide.in-view .bar { transform:scaleX(1); }
+  .bar--read { background:var(--read); box-shadow:0 0 18px hsla(var(--hue),90%,60%,.5); }
+  .bar--link { background:var(--link); box-shadow:0 0 18px hsla(calc(var(--hue) + 70),88%,60%,.5); }
+  .bar--all { background:linear-gradient(90deg,#FFE29A,#FFB347); box-shadow:0 0 26px rgba(255,190,90,.65); }
+  .slide.in-view .bar--all { animation:allGlow 2.6s ease-in-out 3.6s infinite; }
+  @keyframes allGlow { 50%{box-shadow:0 0 44px 6px rgba(255,190,90,.85);} }
+  .gantt__head { position:absolute; top:24px; bottom:0; left:var(--name); width:2px; opacity:0;
+    background:linear-gradient(180deg,rgba(255,255,255,0),#fff 20%,#fff 80%,rgba(255,255,255,0));
+    box-shadow:0 0 12px 2px rgba(255,255,255,.6); }
+  .slide.in-view .gantt__head { animation:playhead 3.2s cubic-bezier(.45,0,.25,1) 1.2s both; }
+  @keyframes playhead { 0%{opacity:0;left:var(--name);} 8%{opacity:1;} 92%{opacity:1;}
+    100%{opacity:0;left:100%;} }
+  .legend { position:relative; z-index:1; display:flex; gap:22px; margin-top:3vh;
+    font-size:clamp(12px,1vw,15px); color:rgba(220,234,255,.8); }
+  .lg::before { content:''; display:inline-block; width:22px; height:8px; margin-right:8px;
+    border-radius:99px; vertical-align:middle; }
+  .lg--read::before { background:var(--read); } .lg--link::before { background:var(--link); }
+  .lg--all::before { background:var(--all); }
+
+  /* Q1 gifts: cards flip up one after another */
+  .prizes { position:relative; z-index:1; display:grid; grid-template-columns:repeat(6,1fr);
+    gap:clamp(10px,1.1vw,18px); width:min(1500px,90vw); margin-top:6vh; perspective:1200px; }
+  .prize { display:flex; flex-direction:column; gap:8px; text-align:left; padding:clamp(14px,1.5vw,24px);
+    border-radius:20px; background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03));
+    border:1px solid rgba(255,255,255,.16);
+    -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 16px 36px rgba(0,0,0,.28);
+    opacity:0; transform:rotateX(70deg) translateY(30px); transform-origin:50% 100%;
+    transition:opacity .6s ease, transform 1s cubic-bezier(.2,.9,.25,1.2);
+    transition-delay:calc(.9s + var(--k) * .14s); }
+  .slide.in-view .prize { opacity:1; transform:none; }
+  .prize b { font-size:clamp(11px,.9vw,14px); letter-spacing:.24em; color:rgba(210,228,255,.7); }
+  .prize strong { font-size:clamp(16px,1.45vw,24px); font-weight:800; line-height:1.25; }
+  .prize span { font-size:clamp(11px,.9vw,14px); color:rgba(210,228,255,.65); }
+  .prize em { margin-top:auto; padding-top:10px; font-style:normal; font-size:clamp(20px,2vw,34px);
+    font-weight:800; border-top:1px solid rgba(255,255,255,.12); }
+  .prize--gold   { border-color:rgba(255,206,110,.6); } .prize--gold b   { color:#FFD27A; }
+  .prize--silver { border-color:rgba(220,230,245,.5); } .prize--silver b { color:#E3EAF5; }
+  .prize--bronze { border-color:rgba(235,160,110,.5); } .prize--bronze b { color:#F0B48A; }
+  .slide.in-view .prize--gold { animation:goldPulse 2.8s ease-in-out 2.4s infinite; }
+  @keyframes goldPulse { 50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 0 34px 4px rgba(255,200,100,.45);} }
+
+  /* Q2 cover: a glass terminal typing the first step */
+  .term { position:relative; z-index:1; width:min(760px,84vw); margin-top:5vh; text-align:left;
+    border-radius:16px; overflow:hidden; background:rgba(4,10,24,.55);
+    border:1px solid rgba(255,255,255,.18);
+    -webkit-backdrop-filter:blur(18px) saturate(160%); backdrop-filter:blur(18px) saturate(160%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 24px 50px rgba(0,0,0,.35); }
+  .term__bar { display:flex; align-items:center; gap:7px; padding:10px 14px;
+    background:rgba(255,255,255,.06); border-bottom:1px solid rgba(255,255,255,.08); }
+  .term__bar i { width:10px; height:10px; border-radius:50%; background:#FF5F57; }
+  .term__bar i:nth-child(2) { background:#FEBC2E; } .term__bar i:nth-child(3) { background:#28C840; }
+  .term__bar span { margin-left:10px; font-size:12px; color:rgba(220,234,255,.55); letter-spacing:.06em; }
+  .term__body { padding:18px 20px 22px; min-height:7.5em;
+    font-family:"SFMono-Regular",Consolas,"D2Coding","Malgun Gothic",monospace;
+    font-size:clamp(14px,1.25vw,20px); line-height:1.75; color:#E8F0FF; }
+  .term__body em { font-style:normal; color:hsl(var(--hue),95%,72%); }
+  .term__body .ok { color:#7CF0B5; }
+  .caret { display:inline-block; width:.55em; height:1.05em; margin-left:3px; vertical-align:-.15em;
+    background:#E8F0FF; animation:caret 1s steps(1) infinite; }
+  @keyframes caret { 50%{opacity:0;} }
+  /* Q2 activities: four glass cards, each with a tiny live scene */
+  .acts { position:relative; z-index:1; display:grid; grid-template-columns:repeat(4,1fr);
+    gap:clamp(12px,1.3vw,22px); width:min(1500px,90vw); margin-top:5vh; }
+  .act { display:flex; flex-direction:column; gap:6px; text-align:left; padding:clamp(14px,1.4vw,22px);
+    border-radius:22px; background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03));
+    border:1px solid rgba(255,255,255,.18);
+    -webkit-backdrop-filter:blur(18px) saturate(160%); backdrop-filter:blur(18px) saturate(160%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 18px 40px rgba(0,0,0,.28); }
+  .act b { margin-top:12px; font-size:clamp(15px,1.35vw,22px); font-weight:800; }
+  .act > span { font-size:clamp(12px,1vw,15px); color:rgba(210,228,255,.72); }
+  .act__viz { position:relative; height:clamp(110px,15vh,170px); border-radius:14px; overflow:hidden;
+    background:rgba(3,8,20,.55); border:1px solid rgba(255,255,255,.08); padding:12px 14px;
+    font-family:"SFMono-Regular",Consolas,"D2Coding","Malgun Gothic",monospace;
+    font-size:clamp(11px,.95vw,15px); line-height:1.7; color:#E8F0FF; }
+  .viz-py em { font-style:normal; color:#FFD43B; } .viz-py .out { color:#7CF0B5; }
+  .viz-web .url { font-size:.85em; padding:4px 10px; border-radius:99px; background:rgba(255,255,255,.08);
+    color:rgba(220,234,255,.8); margin-bottom:10px; white-space:nowrap; overflow:hidden; }
+  .viz-web i { display:block; height:9%; margin-bottom:5%; border-radius:6px;
+    background:linear-gradient(90deg,hsla(var(--hue),90%,65%,.75),hsla(calc(var(--hue) + 70),90%,70%,.55));
+    transform:scaleX(0); transform-origin:left; }
+  .viz-web i:nth-of-type(2) { width:70%; } .viz-web i:nth-of-type(3) { width:85%; } .viz-web i:nth-of-type(4) { width:45%; }
+  .slide.in-view .viz-web i { animation:build 4.5s cubic-bezier(.19,1,.22,1) calc(1.8s + var(--k) * .25s) infinite; }
+  @keyframes build { 0%{transform:scaleX(0);} 18%,85%{transform:scaleX(1);} 100%{transform:scaleX(0);} }
+  .viz-bot { display:flex; flex-direction:column; gap:7px; font-family:inherit; }
+  .viz-bot p { max-width:82%; padding:6px 11px; border-radius:14px; font-size:clamp(11px,.9vw,14px);
+    opacity:0; transform:translateY(8px) scale(.95); }
+  .viz-bot .me { align-self:flex-end; background:hsla(var(--hue),90%,60%,.55); border-bottom-right-radius:4px; }
+  .viz-bot .ai { align-self:flex-start; background:rgba(255,255,255,.14); border-bottom-left-radius:4px; }
+  .slide.in-view .viz-bot p { animation:bubble 6s ease calc(1.6s + var(--k) * .9s) infinite; }
+  @keyframes bubble { 0%{opacity:0;transform:translateY(8px) scale(.95);} 6%,80%{opacity:1;transform:none;}
+    90%,100%{opacity:0;} }
+  .viz-talk { display:flex; align-items:center; justify-content:center; font-family:inherit;
+    font-size:clamp(14px,1.25vw,20px); font-weight:700; }
+  .viz-talk i { position:absolute; bottom:-10px; font-style:normal; color:#FF7AA2; font-size:1.2em; opacity:0; }
+  .viz-talk i:nth-of-type(1) { left:22%; } .viz-talk i:nth-of-type(2) { left:52%; } .viz-talk i:nth-of-type(3) { left:76%; }
+  .slide.in-view .viz-talk i { animation:heart 3.6s ease-out calc(1.8s + var(--k) * .7s) infinite; }
+  @keyframes heart { 0%{opacity:0;transform:translateY(0) scale(.6);} 15%{opacity:1;}
+    100%{opacity:0;transform:translateY(-120px) scale(1.2);} }
+
+  /* Q2 day: four steps on a line that draws, then the figures */
+  .flow { position:relative; z-index:1; display:grid; grid-template-columns:repeat(4,1fr);
+    width:min(1300px,88vw); margin-top:6vh; }
+  .flow__line { position:absolute; left:12.5%; right:12.5%; top:22px; height:2px; background:rgba(255,255,255,.12); }
+  .flow__line i { position:absolute; inset:0; background:linear-gradient(90deg,var(--read),var(--link),var(--all));
+    transform:scaleX(0); transform-origin:left; transition:transform 1.8s cubic-bezier(.65,0,.35,1) 1s; }
+  .slide.in-view .flow__line i { transform:scaleX(1); }
+  .flow__step { position:relative; display:flex; flex-direction:column; align-items:center; gap:6px;
+    opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .7s cubic-bezier(.2,.9,.25,1.2);
+    transition-delay:calc(1s + var(--k) * .45s); }
+  .slide.in-view .flow__step { opacity:1; transform:none; }
+  .flow__step b { width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:14px; letter-spacing:.06em; background:rgba(6,14,32,.8); border:2px solid hsl(var(--hue),90%,70%);
+    box-shadow:0 0 18px hsla(var(--hue),90%,60%,.55); margin-bottom:8px; }
+  .flow__step strong { font-size:clamp(17px,1.6vw,26px); font-weight:800; }
+  .flow__step span { font-size:clamp(12px,1vw,15px); color:rgba(210,228,255,.7); }
+  .slide--story .stats { margin-top:5vh; }
+
+  @media (max-width:780px) {
+    .prizes { grid-template-columns:repeat(2,1fr); }
+    .acts { grid-template-columns:repeat(2,1fr); }
+    .duo { flex-direction:column; } .duo__link { display:none; }
+  }
+
   /* ===== Intro slide ===== */
   .title { font-size:clamp(46px,5.4vw,88px); font-weight:800; letter-spacing:.04em;
     line-height:1.02; position:relative; z-index:1; margin:1.6vh 0 .4vh;
@@ -352,6 +529,9 @@
     .veil { display:none; }
     .mq-track, .glass i { animation:none !important; }
     .chapter, .chapter .strip, .marquee { transition:none !important; }
+    .gantt__row, .bar, .prize, .flow__step, .flow__line i, .duo__link {
+      opacity:1 !important; transform:none !important; transition:none !important; }
+    .gantt__head { display:none; }
   }
 </style>
 </head>
@@ -365,8 +545,12 @@
       <button class="nav-dot" data-target="intro" data-label="잇고, 이루고, 나아가다"></button>
       <button class="nav-dot" data-target="answer" data-label="오늘의 결론"></button>
       <button class="nav-dot" data-target="part-connect" data-label="Part 1 · 잇다"></button>
-      <button class="nav-dot nav-dot--sub" data-target="gwp-q1" data-label="1분기 GWP"></button>
-      <button class="nav-dot nav-dot--sub" data-target="gwp-q2" data-label="2분기 GWP"></button>
+      <button class="nav-dot nav-dot--sub" data-target="gwp-q1" data-label="1분기 GWP · 관계를 읽다, 관계를 잇다"></button>
+      <button class="nav-dot nav-dot--sub" data-target="gwp-q1-day" data-label="1분기 GWP · 하루의 흐름"></button>
+      <button class="nav-dot nav-dot--sub" data-target="gwp-q1-gift" data-label="1분기 GWP · 선물 추첨"></button>
+      <button class="nav-dot nav-dot--sub" data-target="gwp-q2" data-label="2분기 GWP · AI 첫발, 함께 내딛다"></button>
+      <button class="nav-dot nav-dot--sub" data-target="gwp-q2-acts" data-label="2분기 GWP · 세 가지 AI 활동"></button>
+      <button class="nav-dot nav-dot--sub" data-target="gwp-q2-day" data-label="2분기 GWP · 하루의 흐름"></button>
       <button class="nav-dot" data-target="part-achieve" data-label="Part 2 · 이루다"></button>
       <button class="nav-dot nav-dot--sub" data-target="patent" data-label="특허 성과"></button>
       <button class="nav-dot nav-dot--sub" data-target="travel" data-label="출장 효율화"></button>
@@ -416,22 +600,133 @@
       <div class="rule" style="--d:.9s"></div>
     </section>
 
-    <!-- 1분기 GWP (내용) -->
-    <section id="gwp-q1" class="slide slide--embed">
-      <div class="embed-wrap">
-        <iframe src="https://yonchelee.github.io/GWP-guide/" title="1분기 GWP · 관계를 읽다, 관계를 잇다" allow="fullscreen"></iframe>
+    <!-- 1분기 GWP · 표지 -->
+    <section id="gwp-q1" class="slide slide--msg slide--story">
+      <div class="eyebrow" data-scramble>Q1 GWP · 2026.03.26 THU</div>
+      <h3 class="msg-title msg-title--xl" data-split="words">관계를 읽다,<br>관계를 잇다</h3>
+      <div class="duo">
+        <div class="duo__side reveal" style="--d:1.2s"><b>읽다</b><span>팀빌딩 워크샵 &amp; DISC 평가</span><em>서로의 성향과 업무 방식 이해</em></div>
+        <div class="duo__link" aria-hidden="true"><i></i></div>
+        <div class="duo__side reveal" style="--d:1.4s"><b>잇다</b><span>레이저 서바이벌 &amp; 볼링</span><em>몰입하며 관계를 이어가는 시간</em></div>
       </div>
-      <a class="embed-open" href="https://yonchelee.github.io/GWP-guide/"
-         target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
     </section>
 
-    <!-- 2분기 GWP (내용) -->
-    <section id="gwp-q2" class="slide slide--embed">
-      <div class="embed-wrap">
-        <iframe src="https://gwp-2026-2nd-result.pages.dev/" title="2분기 GWP · AI 첫발, 함께 내딛다" allow="fullscreen"></iframe>
+    <!-- 1분기 GWP · 하루의 흐름 -->
+    <section id="gwp-q1-day" class="slide slide--msg slide--story">
+      <div class="eyebrow" data-scramble>Q1 GWP · One Afternoon</div>
+      <h3 class="msg-title" data-split="words">따로 읽고, 함께 잇고, 한 식탁에 모였다</h3>
+      <div class="gantt" style="--from:13; --to:19">
+        <div class="gantt__axis" aria-hidden="true">
+          <span style="--t:13">13:00</span><span style="--t:14">14:00</span><span style="--t:15">15:00</span>
+          <span style="--t:16">16:00</span><span style="--t:17">17:00</span><span style="--t:18">18:00</span><span style="--t:19">19:00</span>
+        </div>
+        <div class="gantt__row" style="--r:0">
+          <div class="gantt__name"><b>DISC 평가</b><span>NE파트 · CMF2파트 · 센트럴파크 ART 8실</span></div>
+          <div class="gantt__lane"><i class="bar bar--read" style="--s:13.5; --e:15">13:30 – 15:00</i></div>
+        </div>
+        <div class="gantt__row" style="--r:1">
+          <div class="gantt__name"><b>팀빌딩</b><span>Hinge 개발Lab. · R5 B112</span></div>
+          <div class="gantt__lane"><i class="bar bar--read" style="--s:14; --e:16">14:00 – 16:00</i></div>
+        </div>
+        <div class="gantt__row" style="--r:2">
+          <div class="gantt__name"><b>레이저 서바이벌</b><span>패키지파트 · 접합기술파트 · 판타지움</span></div>
+          <div class="gantt__lane"><i class="bar bar--link" style="--s:14; --e:16">14:00 – 16:00</i></div>
+        </div>
+        <div class="gantt__row" style="--r:3">
+          <div class="gantt__name"><b>볼링</b><span>CMF1파트 · CMF3파트 · 판타지움</span></div>
+          <div class="gantt__lane"><i class="bar bar--link" style="--s:14; --e:16">14:00 – 16:00</i></div>
+        </div>
+        <div class="gantt__row gantt__row--all" style="--r:4">
+          <div class="gantt__name"><b>석식 · 전체 합류</b><span>망포 연화담</span></div>
+          <div class="gantt__lane"><i class="bar bar--all" style="--s:16.5; --e:18.5">16:30 – 18:30</i></div>
+        </div>
+        <div class="gantt__head" aria-hidden="true"></div>
       </div>
-      <a class="embed-open" href="https://gwp-2026-2nd-result.pages.dev/"
-         target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
+      <div class="legend reveal" style="--d:2.6s"><span class="lg lg--read">읽다</span><span class="lg lg--link">잇다</span><span class="lg lg--all">함께</span></div>
+    </section>
+
+    <!-- 1분기 GWP · 선물 추첨 -->
+    <section id="gwp-q1-gift" class="slide slide--msg slide--story">
+      <div class="eyebrow" data-scramble>Q1 GWP · Gift Raffle</div>
+      <h3 class="msg-title reveal" style="--d:.2s"><span class="num" data-count="15">15</span>명에게 행운이 이어졌다</h3>
+      <div class="prizes">
+        <div class="prize prize--gold"  style="--k:0"><b>1등</b><strong>PS5 슬림</strong><span>디지털에디션 825GB</span><em>1명</em></div>
+        <div class="prize prize--silver" style="--k:1"><b>2등</b><strong>다이슨 슈퍼소닉</strong><span>니켈코퍼</span><em>1명</em></div>
+        <div class="prize prize--silver" style="--k:2"><b>2등</b><strong>다이슨 에어랩</strong><span>오리진 플러스</span><em>1명</em></div>
+        <div class="prize prize--bronze" style="--k:3"><b>3등</b><strong>가민 포러너 165</strong><span>스마트워치</span><em>2명</em></div>
+        <div class="prize" style="--k:4"><b>특별</b><strong>신세계 상품권</strong><span>5만원권</span><em>5명</em></div>
+        <div class="prize" style="--k:5"><b>특별</b><strong>아웃백 상품권</strong><span>5만원권</span><em>5명</em></div>
+      </div>
+      <p class="msg-note reveal" style="--d:2.2s">월례회 입장 때 받은 추첨권으로 진행</p>
+    </section>
+
+    <!-- 2분기 GWP · 표지 -->
+    <section id="gwp-q2" class="slide slide--msg slide--story">
+      <div class="eyebrow" data-scramble>Q2 GWP · 2026.06.23 TUE</div>
+      <h3 class="msg-title msg-title--xl" data-split="words">AI 첫발,<br>함께 내딛다</h3>
+      <div class="term reveal" style="--d:1s" aria-hidden="true">
+        <div class="term__bar"><i></i><i></i><i></i><span>gwp-2026-q2</span></div>
+        <div class="term__body">
+          <p><em>$</em> <span data-type="ai.first_step(team=&quot;선행기구개발그룹&quot;)"></span></p>
+          <p class="ok"><span data-type="✓ python · web · assistant — 3 activities ready" data-type-delay="1.6"></span></p>
+          <p class="ok"><span data-type="✓ 함께 내딛는 첫걸음" data-type-delay="3.2"></span><i class="caret"></i></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2분기 GWP · 세 가지 AI 활동 + 소감 -->
+    <section id="gwp-q2-acts" class="slide slide--msg slide--story">
+      <div class="eyebrow" data-scramble>Q2 GWP · Activities</div>
+      <h3 class="msg-title" data-split="words">세 가지 AI 활동으로 각자의 첫 결과물을 만들었다</h3>
+      <div class="acts">
+        <div class="act reveal" style="--d:1s">
+          <div class="act__viz viz-py" aria-hidden="true">
+            <p><em>&gt;&gt;&gt;</em> <span data-type="print(&quot;Hello, AI&quot;)" data-type-delay="1.4"></span></p>
+            <p class="out"><span data-type="Hello, AI" data-type-delay="2.6"></span></p>
+          </div>
+          <b>01 · 파이썬 개발</b><span>AI의 도움으로 나만의 파이썬 프로그램</span>
+        </div>
+        <div class="act reveal" style="--d:1.15s">
+          <div class="act__viz viz-web" aria-hidden="true">
+            <div class="url">yonchelee.github.io/<span data-type="my-page" data-type-delay="1.5"></span></div>
+            <i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i>
+          </div>
+          <b>02 · 웹페이지 · GitHub</b><span>웹페이지를 만들어 GitHub에 올리고 공유</span>
+        </div>
+        <div class="act reveal" style="--d:1.3s">
+          <div class="act__viz viz-bot" aria-hidden="true">
+            <p class="me" style="--k:0">회의록 요약해줘</p>
+            <p class="ai" style="--k:1">핵심 3가지로 정리했어요 ✓</p>
+            <p class="me" style="--k:2">고마워!</p>
+          </div>
+          <b>03 · AI 어시스턴트</b><span>나만의 AI 어시스턴트를 만들어 보기</span>
+        </div>
+        <div class="act reveal" style="--d:1.45s">
+          <div class="act__viz viz-talk" aria-hidden="true">
+            <p>“생각보다 쉬웠어요”</p><i style="--k:0">♥</i><i style="--k:1">♥</i><i style="--k:2">♥</i>
+          </div>
+          <b>+ GWP 소감</b><span>참여 소감 남기기 · 소감도 추첨 대상</span>
+        </div>
+      </div>
+      <p class="msg-note reveal" style="--d:2s">등록한 모든 분을 대상으로 활동별 · 전체 경품 추첨</p>
+    </section>
+
+    <!-- 2분기 GWP · 하루의 흐름과 숫자 -->
+    <section id="gwp-q2-day" class="slide slide--msg slide--story">
+      <div class="eyebrow" data-scramble>Q2 GWP · The Day</div>
+      <h3 class="msg-title" data-split="words">배우고, 나누고, 함께 즐긴 하루</h3>
+      <div class="flow">
+        <div class="flow__line" aria-hidden="true"><i></i></div>
+        <div class="flow__step" style="--k:0"><b>01</b><strong>오프닝</strong><span>그룹 인사</span></div>
+        <div class="flow__step" style="--k:1"><b>02</b><strong>그룹 활동</strong><span>AI 첫발 · 팀 빌딩</span></div>
+        <div class="flow__step" style="--k:2"><b>03</b><strong>파트별 만찬</strong><span>파트가 고른 식당</span></div>
+        <div class="flow__step" style="--k:3"><b>04</b><strong>선물 추첨</strong><span>&amp; 마무리</span></div>
+      </div>
+      <div class="stats">
+        <div class="stat reveal" style="--d:2.2s"><b data-count="138" data-suffix="명">138명</b><span>선물 예산 기준 인원</span></div>
+        <div class="stat reveal" style="--d:2.35s"><b data-count="10" data-suffix="만원">10만원</b><span>인당 행사비</span></div>
+        <div class="stat reveal" style="--d:2.5s"><b data-count="276" data-suffix="만원">276만원</b><span>선물 예산 · 인당 2만원</span></div>
+      </div>
     </section>
 
     <!-- Part 2 · 이루다 (제목) -->
@@ -634,6 +929,19 @@
         el.textContent = out;
         if (k < 1) el._sr = requestAnimationFrame(step);
       })(performance.now());
+    }
+
+    // ----- Typing: data-type="text" types itself out on arrival (data-type-delay in s) -----
+    function typeOut(el) {
+      var text = el.getAttribute('data-type');
+      clearTimeout(el._tt);
+      if (REDUCED) { el.textContent = text; return; }
+      el.textContent = '';
+      var i = 0, delay = 400 + (parseFloat(el.getAttribute('data-type-delay')) || 0) * 1000;
+      (function tick() {
+        el.textContent = text.slice(0, i);
+        if (i++ < text.length) el._tt = setTimeout(tick, i === 1 ? delay : 34 + Math.random() * 40);
+      })();
     }
 
     // ----- Count-up: a number with data-count="1234" runs up to it on arrival -----
@@ -853,6 +1161,7 @@
         slides[current].classList.add('in-view');
         slides[current].querySelectorAll('[data-scramble]').forEach(scramble);
         slides[current].querySelectorAll('[data-count]').forEach(countUp);
+        slides[current].querySelectorAll('[data-type]').forEach(typeOut);
       }, veiled ? VEIL_IN : 0);
       // clear the others only after the slide finishes moving, so the
       // outgoing slide doesn't blank out mid-transition
