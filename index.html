@@ -1061,7 +1061,7 @@
       </div>
       <p class="voices__sr" id="voiceText" aria-live="polite"></p>
       <div class="voices__foot reveal" style="--d:1s">
-        <b id="voiceIdx">01</b><span>/ <i id="voiceTotal">03</i></span><em>— 2분기 GWP 참여자 소감</em>
+        <b id="voiceIdx">01</b><span>/ <i id="voiceTotal">10</i></span><em>— 2분기 GWP 참여자 소감</em>
       </div>
     </section>
 
@@ -1542,10 +1542,19 @@
 
     // ----- Q2 voices: an LED dot board; each reflection sweeps in as lit dots -----
     // Positive reflections from the Q2 GWP 소감 (no names — the repo is public).
+    // Picked from the 81 entries (activity 4 in the gwp-2026-2nd D1 database); long
+    // ones are cut to one sentence, wording kept as written.
     var VOICES = [
-      '여기에 소감 ①',
-      '여기에 소감 ②',
-      '여기에 소감 ③'
+      '새로운 세상을 보았습니다.',
+      '실습해보니 AI 활용이 어렵지 않다는 걸 알게 되었습니다.',
+      'AI를 업무에 어떻게 활용할 수 있을지 막막했는데, 오늘 덕분에 구체적인 첫 발을 내딛을 수 있었습니다.',
+      '처음엔 따라가기 어려웠지만 한번 해보니 못 할 것은 없구나 싶었습니다.',
+      '오류를 무서워하지 않아도 된다는 걸 느꼈습니다.',
+      '기술이 더 이상 개발자만의 영역이 아님을 실감하게 해준 의미 있는 시간이었습니다.',
+      '‘도전하면 할 수 있다’는 것을 깨달았습니다.',
+      '가장 값진 것은 기술 그 자체보다, “나도 할 수 있다”는 자신감입니다.',
+      'GWP에서 배운 건 기술이 아니라 — 가능성이었다.',
+      'AI와 함께하는 첫 발, 잘 내딛었습니다.'
     ];
     var voiceOn = (function () {
       var cv = document.getElementById('voiceDots');
