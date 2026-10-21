@@ -678,6 +678,96 @@
     .chapter { bottom:16vh; }
   }
 
+  /* ===== Showreel theme (default; ?theme=liquid brings back the liquid look) =====
+     Flat colour fields, heavy type, flat tiles, hard cuts under a colour-bar wipe,
+     a REC timecode HUD. Each slide picks its field with tone-k/b/w/y/v. */
+  .tone-k { --bg:#04060c; --fg:#fff;    --tile:#141b30; --tilefg:#fff;    --tacc:#5B8CFF; --acc:#2F5BFF; }
+  .tone-b { --bg:#2F5BFF; --fg:#fff;    --tile:#1C3DD6; --tilefg:#fff;    --tacc:#FFD43B; --acc:#FFD43B; }
+  .tone-w { --bg:#F2F2EE; --fg:#04060c; --tile:#04060c; --tilefg:#fff;    --tacc:#FFD43B; --acc:#04060c; }
+  .tone-y { --bg:#FFD43B; --fg:#04060c; --tile:#04060c; --tilefg:#FFD43B; --tacc:#FFD43B; --acc:#04060c; }
+  .tone-v { --bg:#B44BF5; --fg:#fff;    --tile:#7B22C9; --tilefg:#fff;    --tacc:#FFD43B; --acc:#fff; }
+
+  .theme-reel body { background:#04060c; }
+  .theme-reel .fx-field, .theme-reel .grid, .theme-reel .vignette { display:none; }
+  /* hard cuts: the track jumps once the wipe has covered the frame */
+  .theme-reel .track { transition:transform 0s linear .24s; }
+  .theme-reel .slide { transform:none !important; opacity:1 !important; filter:none !important;
+    transition:none; background:var(--bg); color:var(--fg); }
+
+  /* type: heavier, tighter, no glow */
+  .theme-reel .headline, .theme-reel .title, .theme-reel .msg-title { filter:none; color:inherit; }
+  .theme-reel .headline { font-weight:900; letter-spacing:-.05em; }
+  .theme-reel .headline--xl { font-size:clamp(120px,21vw,380px) !important; }
+  .theme-reel .msg-title { font-weight:900; letter-spacing:-.035em; }
+  .theme-reel .title { font-weight:900; letter-spacing:-.04em; font-size:clamp(64px,9.4vw,190px) !important; }
+  .theme-reel .wi { background:none; color:inherit; -webkit-text-fill-color:currentColor; }
+  .theme-reel .slide.in-view .wi, .theme-reel .slide.in-view .title .wi { animation:none; }
+  .theme-reel :is(.subhead, .msg-note, .team, .legend) { color:inherit; opacity:.78; }
+  .theme-reel :is(.eyebrow, .kicker) { color:inherit; opacity:.85;
+    font-family:"SFMono-Regular",Consolas,monospace; letter-spacing:.32em; }
+  .theme-reel .eyebrow::before { content:''; display:inline-block; width:.7em; height:.7em; margin-right:.9em;
+    vertical-align:-.05em; background:#ff2d55; }
+  .theme-reel .rule { height:4px; background:currentColor; box-shadow:none; }
+  .theme-reel .slide--story .num { color:inherit; text-decoration:underline; text-decoration-thickness:.08em;
+    text-underline-offset:.12em; }
+
+  /* chapter dressing in the field colour */
+  .theme-reel .chapter { -webkit-text-stroke:2px var(--fg); opacity:.55; }
+  .theme-reel .slide.in-view .chapter { opacity:.55; }
+  .theme-reel .chapter .of { color:var(--fg); }
+  .theme-reel .marquee--a { -webkit-text-stroke:1.5px var(--fg); opacity:.22; font-weight:900; }
+  .theme-reel .slide.in-view .marquee--a { opacity:.22; }
+  .theme-reel .marquee--b { color:var(--fg); }
+  .theme-reel .slide.in-view .marquee--b { opacity:.5; }
+
+  /* glass → flat tiles */
+  .theme-reel :is(.card, .stat, .step, .prize, .act, .duo__side) { background:var(--tile); color:var(--tilefg);
+    border:0; border-radius:14px; -webkit-backdrop-filter:none; backdrop-filter:none; box-shadow:none; }
+  .theme-reel :is(.card, .stat, .step, .prize, .act, .duo__side) :is(span, em, strong) { color:inherit; }
+  .theme-reel :is(.card, .step, .prize, .act, .duo__side) :is(span, em) { opacity:.75; }
+  .theme-reel .card em, .theme-reel .prize em { border-top-color:currentColor; }
+  .theme-reel :is(.card b, .prize b, .duo__side b) , .theme-reel .step::before { color:var(--tacc); }
+  .theme-reel .stat b { background:none; color:var(--tilefg); -webkit-text-fill-color:currentColor; }
+  .theme-reel .slide.in-view .prize--gold { animation:none; }
+  .theme-reel .prize--gold { outline:3px solid var(--tacc); outline-offset:-3px; }
+  .theme-reel .act__viz { border:0; border-radius:10px; }
+  .theme-reel .step:not(:last-child)::after { color:var(--fg); opacity:.6; }
+  .theme-reel .duo__link { background:var(--fg); }
+  .theme-reel .flow__line { background:currentColor; opacity:.2; }
+  .theme-reel .flow__line i { background:var(--fg); }
+  .theme-reel .flow__step b { background:var(--bg); color:var(--fg); border:3px solid var(--fg); box-shadow:none; }
+  .theme-reel .flow__step span { opacity:.75; }
+  .theme-reel .term { border:0; border-radius:12px; -webkit-backdrop-filter:none; backdrop-filter:none; background:#0b0f1c; }
+  .theme-reel .ring img { border:0; border-radius:10px; }
+  .theme-reel .moment-tags span { background:#fff; color:#04060c; border:0;
+    -webkit-backdrop-filter:none; backdrop-filter:none; font-weight:700; }
+  .theme-reel .glass { background:var(--fg); color:var(--bg); border:0; box-shadow:none;
+    -webkit-backdrop-filter:none; backdrop-filter:none; font-weight:700; }
+  .theme-reel .glass i { background:#ff2d55; box-shadow:none; }
+
+  /* the wipe: a flat bar in the next slide's accent, quicker than the curtain */
+  .theme-reel .veil { background:var(--veil,#ff2d55); }
+  .theme-reel .veil.go, .theme-reel .veil.back { animation-duration:.6s; }
+  .theme-reel .veil__label { display:none; }
+
+  /* chrome: flat bar, red capsule, white progress */
+  .theme-reel .progress { height:4px; background:#fff; box-shadow:none; mix-blend-mode:difference; }
+  .theme-reel .controls { background:#04060c; border:1px solid rgba(255,255,255,.22); box-shadow:none;
+    -webkit-backdrop-filter:none; backdrop-filter:none; }
+  .theme-reel .nav-dot { background:rgba(255,255,255,.45); }
+  .theme-reel .nav-dot.active { background:#ff2d55; box-shadow:none; }
+  .theme-reel .nav-arrow { background:transparent; border-color:rgba(255,255,255,.3); }
+  .theme-reel .nav-arrow:hover:not([disabled]) { background:#fff; color:#04060c; }
+
+  /* HUD: elapsed time since the deck opened, and where we are */
+  .hud-g { position:fixed; top:22px; left:26px; right:26px; z-index:128; pointer-events:none; display:none;
+    justify-content:space-between; font-family:"SFMono-Regular",Consolas,monospace;
+    font-size:clamp(11px,.95vw,14px); letter-spacing:.16em; color:#fff; mix-blend-mode:difference; }
+  .theme-reel .hud-g { display:flex; }
+  .hud-g i { display:inline-block; width:9px; height:9px; margin-right:10px; border-radius:50%;
+    background:#ff2d55; animation:blink 1s steps(1) infinite; }
+  body.embed-mode .hud-g, body.reel-playing .hud-g { opacity:0; }
+
   /* Respect reduced-motion: content simply appears, no curtain, no marquee, and
      the liquid field is drawn once per slide (the colours still follow the deck). */
   @media (prefers-reduced-motion: reduce) {
@@ -696,6 +786,7 @@
 <body>
   <!-- Progress + dot nav -->
   <div class="progress" id="progress"></div>
+  <div class="hud-g" aria-hidden="true"><span><i></i>REC <b id="hudTc">00:00:00</b></span><span id="hudPos">01 / 01</span></div>
   <button class="remote-btn" id="remoteBtn" title="리모컨 창 열기 (R)">&#9654; 리모컨</button>
   <div class="controls">
     <button class="nav-arrow nav-arrow--prev" id="prevBtn" aria-label="이전 페이지">&#8249;</button>
@@ -734,7 +825,7 @@
   <main class="deck" id="deck">
     <div class="track" id="track">
     <!-- 2026 쇼릴: 15초 오프닝 (?reel=1 일 때만 덱에 남는다) -->
-    <section id="reel" class="slide slide--reel">
+    <section id="reel" class="slide slide--reel tone-k">
       <div class="reel" id="reelBox" aria-label="2026 REPLAY 쇼릴">
         <!-- 00.0 counter -->
         <div class="sc sc1" style="--at:0s; --len:1.2s">
@@ -803,7 +894,7 @@
     </section>
 
     <!-- 0 · Title -->
-    <section id="intro" class="slide">
+    <section id="intro" class="slide tone-b">
       <div class="eyebrow" data-scramble>October Town Hall</div>
       <h1 class="title" data-split="words" style="font-size:clamp(56px,7.4vw,140px)">잇고, 이루고, 나아가다</h1>
       <div class="team" data-split="words" style="--d0:.75s">2026 복기 · 2027 구상</div>
@@ -811,7 +902,7 @@
     </section>
 
     <!-- 오늘의 결론: 피라미드의 꼭대기 — 답을 먼저 -->
-    <section id="answer" class="slide slide--msg">
+    <section id="answer" class="slide slide--msg tone-k">
       <div class="eyebrow" data-scramble>Today's Answer</div>
       <h2 class="msg-title" data-split="words">올해 우리는 사람을 잇고 성과를 이뤘습니다.<br>2027년, AX로 한 단계 더 나아갑니다.</h2>
       <div class="pillars">
@@ -822,14 +913,14 @@
     </section>
 
     <!-- Part 1 · 잇다 (제목) -->
-    <section id="part-connect" class="slide">
+    <section id="part-connect" class="slide tone-y">
       <h2 class="headline headline--xl" data-en="Connect">잇다</h2>
       <p class="subhead reveal" style="--d:1s">서로를 알고, AI를 함께 시작했다</p>
       <div class="rule" style="--d:.9s"></div>
     </section>
 
     <!-- 1분기 GWP · 표지 -->
-    <section id="gwp-q1" class="slide slide--msg slide--story">
+    <section id="gwp-q1" class="slide slide--msg slide--story tone-w">
       <div class="eyebrow" data-scramble>Q1 GWP · 2026.03.26 THU</div>
       <h3 class="msg-title msg-title--xl" data-split="words">관계를 읽다,<br>관계를 잇다</h3>
       <div class="duo">
@@ -840,7 +931,7 @@
     </section>
 
     <!-- 1분기 GWP · 그날의 사진: 3D 링 갤러리 -->
-    <section id="gwp-q1-moments" class="slide slide--msg slide--story slide--moments">
+    <section id="gwp-q1-moments" class="slide slide--msg slide--story slide--moments tone-k">
       <div class="moments-bg" aria-hidden="true"></div>
       <div class="eyebrow" data-scramble>Q1 GWP · Moments</div>
       <h3 class="msg-title" data-split="words">함께 웃고, 함께 축하했다</h3>
@@ -862,7 +953,7 @@
     </section>
 
     <!-- 1분기 GWP · 선물 추첨 -->
-    <section id="gwp-q1-gift" class="slide slide--msg slide--story">
+    <section id="gwp-q1-gift" class="slide slide--msg slide--story tone-v">
       <div class="eyebrow" data-scramble>Q1 GWP · Gift Raffle</div>
       <h3 class="msg-title reveal" style="--d:.2s"><span class="num" data-count="15">15</span>명에게 행운이 이어졌다</h3>
       <div class="prizes">
@@ -877,7 +968,7 @@
     </section>
 
     <!-- 2분기 GWP · 표지 -->
-    <section id="gwp-q2" class="slide slide--msg slide--story">
+    <section id="gwp-q2" class="slide slide--msg slide--story tone-k">
       <div class="eyebrow" data-scramble>Q2 GWP · 2026.06.23 TUE</div>
       <h3 class="msg-title msg-title--xl" data-split="words">AI 첫발,<br>함께 내딛다</h3>
       <div class="term reveal" style="--d:1s" aria-hidden="true">
@@ -891,7 +982,7 @@
     </section>
 
     <!-- 2분기 GWP · 세 가지 AI 활동 + 소감 -->
-    <section id="gwp-q2-acts" class="slide slide--msg slide--story">
+    <section id="gwp-q2-acts" class="slide slide--msg slide--story tone-w">
       <div class="eyebrow" data-scramble>Q2 GWP · Activities</div>
       <h3 class="msg-title" data-split="words">세 가지 AI 활동으로 각자의 첫 결과물을 만들었다</h3>
       <div class="acts">
@@ -928,7 +1019,7 @@
     </section>
 
     <!-- 2분기 GWP · 하루의 흐름과 숫자 -->
-    <section id="gwp-q2-day" class="slide slide--msg slide--story">
+    <section id="gwp-q2-day" class="slide slide--msg slide--story tone-b">
       <div class="eyebrow" data-scramble>Q2 GWP · The Day</div>
       <h3 class="msg-title" data-split="words">배우고, 나누고, 함께 즐긴 하루</h3>
       <div class="flow">
@@ -946,14 +1037,14 @@
     </section>
 
     <!-- Part 2 · 이루다 (제목) -->
-    <section id="part-achieve" class="slide">
+    <section id="part-achieve" class="slide tone-w">
       <h2 class="headline headline--xl" data-en="Achieve">이루다</h2>
       <p class="subhead reveal" style="--d:1s">본업 성과는 키우고, 일의 낭비는 줄였다</p>
       <div class="rule" style="--d:.9s"></div>
     </section>
 
     <!-- 특허 성과 (내용) — 수치는 확정되면 data-count 에 넣는다 -->
-    <section id="patent" class="slide slide--msg">
+    <section id="patent" class="slide slide--msg tone-k">
       <div class="eyebrow" data-scramble>Patents 2026</div>
       <h3 class="msg-title" data-split="words">○○건의 특허로 기술 자산을 쌓았습니다</h3>
       <div class="stats">
@@ -965,7 +1056,7 @@
     </section>
 
     <!-- 출장 효율화 (내용) -->
-    <section id="travel" class="slide slide--msg">
+    <section id="travel" class="slide slide--msg tone-y">
       <div class="eyebrow" data-scramble>Business Trips</div>
       <h3 class="msg-title" data-split="words">출장 ○○을 ○○% 줄였습니다</h3>
       <div class="stats">
@@ -986,14 +1077,14 @@
     </section>
 
     <!-- Part 3 · 나아가다 (제목) -->
-    <section id="part-forward" class="slide">
+    <section id="part-forward" class="slide tone-v">
       <h2 class="headline headline--xl" data-en="Move Forward">나아가다</h2>
       <p class="subhead reveal" style="--d:1s">AX로, 새 동료와 함께, 더 멀리</p>
       <div class="rule" style="--d:.9s"></div>
     </section>
 
     <!-- 회사 업무 AX 적용 (내용) -->
-    <section id="ax" class="slide slide--msg">
+    <section id="ax" class="slide slide--msg tone-k">
       <div class="eyebrow" data-scramble>AX at Work</div>
       <h3 class="msg-title" data-split="words">AX는 이미 시작됐습니다</h3>
       <div class="steps">
@@ -1005,14 +1096,14 @@
 
     <!-- 전입인원 소개 (내용) — 저장소가 공개라 이름·부서는 여기 쓰지 않는다.
          사내 깃헙 pages 페이지가 준비되면 slide--embed 로 바꿔 임베드한다. -->
-    <section id="newcomers" class="slide slide--msg">
+    <section id="newcomers" class="slide slide--msg tone-w">
       <div class="eyebrow" data-scramble>Welcome Aboard</div>
       <h3 class="msg-title" data-split="words">새로운 동료와 함께 갑니다</h3>
       <p class="msg-note reveal" style="--d:1s">전입인원 소개 · 사내 페이지 연결 예정</p>
     </section>
 
     <!-- 그룹장 말씀 -->
-    <section id="leader" class="slide slide--msg slide--leader" data-palette="5">
+    <section id="leader" class="slide slide--msg slide--leader tone-y" data-palette="5">
       <div class="eyebrow" data-scramble>2027 Vision</div>
       <h3 class="msg-title msg-title--xl" data-split="words">그룹장 말씀</h3>
       <div class="rule" style="--d:1s"></div>
@@ -1034,6 +1125,9 @@
         if (d) d.parentNode.removeChild(d);
       });
     }
+    // the showreel look is the default; ?theme=liquid brings back the liquid shader look
+    var THEME = /[?&]theme=liquid/.test(location.search) ? 'liquid' : 'reel';
+    document.documentElement.classList.add('theme-' + THEME);
     var REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     var track   = document.getElementById('track');
@@ -1192,7 +1286,7 @@
       if (REMOTE_MODE) return null;
       var cv = document.getElementById('fxField');
       var gl = null;
-      try { gl = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false, preserveDrawingBuffer: false }); } catch (e) {}
+      if (THEME === 'liquid') try { gl = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false, preserveDrawingBuffer: false }); } catch (e) {}
       var awake = false, raf = 0, last = 0, t = Math.random() * 50, energy = 0, dir = 1;
       var hex = function (h) { return [parseInt(h.substr(1, 2), 16) / 255, parseInt(h.substr(3, 2), 16) / 255, parseInt(h.substr(5, 2), 16) / 255]; };
       var cur = PALETTES[0].c.map(hex), to = cur.map(function (c) { return c.slice(); });
@@ -1357,7 +1451,7 @@
 
     // ----- Page transition: a curtain in the chapter colour, naming where we land -----
     var veil = document.getElementById('veil'), veilLabel = document.getElementById('veilLabel');
-    var VEIL_IN = 380;                              // ms until the curtain fully covers
+    var VEIL_IN = THEME === 'reel' ? 240 : 380;     // ms until the curtain fully covers
     function curtain(direction, index) {
       if (!veil || REDUCED || REMOTE_MODE || !direction) return false;
       var d = dots[index], sub = d && d.classList.contains('nav-dot--sub');
@@ -1368,10 +1462,21 @@
       veilLabel.appendChild(b);
       veilLabel.appendChild(document.createTextNode(d ? d.dataset.label.replace(/ 내용$/, '') : ''));
       if (sub) veilLabel.appendChild(document.createTextNode(' →'));
+      veil.style.setProperty('--veil', getComputedStyle(slides[index]).getPropertyValue('--acc').trim() || '#ff2d55');
       veil.classList.remove('go', 'back');
       void veil.offsetWidth;                         // restart the animation
       veil.classList.add(direction > 0 ? 'go' : 'back');
       return true;
+    }
+
+    // ----- HUD: REC timecode since the deck opened (mm:ss:frames) -----
+    var hudPos = document.getElementById('hudPos'), hudTc = document.getElementById('hudTc');
+    if (hudTc && THEME === 'reel' && !REMOTE_MODE) {
+      var hud0 = Date.now();
+      setInterval(function () {
+        var t = (Date.now() - hud0) / 1000, m = Math.floor(t / 60), sec = Math.floor(t % 60), f = Math.floor((t % 1) * 24);
+        hudTc.textContent = (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec + ':' + (f < 10 ? '0' : '') + f;
+      }, 100);
     }
 
     // ----- Render current carousel position -----
@@ -1397,6 +1502,7 @@
                    : slides[current].id === 'video' ? 'warm' : 'off');
       }
       pushRemote();
+      if (hudPos) hudPos.textContent = (current < 9 ? '0' : '') + (current + 1) + ' / ' + (TOTAL < 10 ? '0' : '') + TOTAL;
 
       // Cinematic depth: the focused slide sits forward, sharp and lit;
       // its neighbours fall back — smaller, dimmer, out of focus, tilted away.

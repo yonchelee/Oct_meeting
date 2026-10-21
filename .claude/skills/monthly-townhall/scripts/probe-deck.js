@@ -52,9 +52,13 @@ const ok = (cond, what, detail) => {
   ok(order, 'dots are in slide order');
 
   // ---- motion layer ----
-  ok(await pg.evaluate(() => fxField && fxField.state().awake), 'motion field runs on the intro');
+  const theme = await pg.evaluate(() => THEME);
+  ok(theme === 'reel' ? await pg.evaluate(() => document.documentElement.classList.contains('theme-reel')
+      && [...document.querySelectorAll('.slide:not(.slide--embed)')].every(s => /tone-[kbwyv]/.test(s.className)))
+    : await pg.evaluate(() => fxField && fxField.state().awake),
+    theme === 'reel' ? 'showreel theme: every own slide has a colour field' : 'motion field runs on the intro');
   await pg.waitForTimeout(3200);
-  ok(await pg.evaluate(() => fxField.state().gl), 'the liquid shader compiled (WebGL)');
+  if (theme === 'liquid') ok(await pg.evaluate(() => fxField.state().gl), 'the liquid shader compiled (WebGL)');
   ok(await pg.evaluate(() => { const e = document.querySelector('#intro .eyebrow');
     return e.textContent === e.dataset.text; }), 'the intro eyebrow decodes to its text');
   ok(await pg.evaluate(() => getComputedStyle(document.querySelector('#intro .title .wi')).transform === 'none'),
@@ -75,7 +79,7 @@ const ok = (cond, what, detail) => {
   // a title slide: field awake, hue changed, burst fired
   await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(150);
   const burst = await pg.evaluate(() => fxField.state());
-  ok(burst.awake && burst.energy > .3, 'moving the deck surges the field', `energy ${burst.energy}`);
+  if (theme === 'liquid') ok(burst.awake && burst.energy > .3, 'moving the deck surges the field', `energy ${burst.energy}`);
   ok(await pg.evaluate(() => document.getElementById('veil').classList.contains('go')), 'the curtain runs forward');
   await pg.waitForTimeout(2800);
   const hue = await pg.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--hue').trim());
@@ -102,7 +106,8 @@ const ok = (cond, what, detail) => {
   await pg.keyboard.press('Home'); await pg.waitForTimeout(800);
   ok(await pg.evaluate(() => document.querySelector('.track').style.transform === 'translate3d(0%, 0px, 0px)'),
     'Home returns to the first slide');
-  ok(await pg.evaluate(() => fxField.state().awake), 'the field wakes again on a dark slide');
+  if (theme === 'liquid') ok(await pg.evaluate(() => fxField.state().awake), 'the field wakes again on a dark slide');
+  ok(await pg.evaluate(() => /^01 \/ \d+$/.test(document.getElementById('hudPos').textContent)), 'the HUD counts the page');
 
   // every dot navigates
   let dotFails = 0;
