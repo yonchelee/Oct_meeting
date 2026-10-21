@@ -41,6 +41,7 @@ Team_townhall 덱에서 출발했고, 추첨 게임(Lucky Drop)은 빠졌으며 
   (`video`/`video-content` 임베드 영상).
 - 제목(`.headline`)과 `data-split` 요소는 스크립트가 단어(글자) 단위 `<span class="w"><span class="wi">`로 쪼갠다. 마크업에는
   평범한 텍스트로 쓰고, `reveal` 클래스를 붙이지 않는다.
+- 저장소가 공개라 **전입인원 이름·부서는 덱에 쓰지 않는다** — 사내 pages 페이지로 임베드.
 - 캐러셀의 `render();` 호출은 스크립트 **맨 끝 한 줄**이다.
 - 헤드리스 검증 환경은 GPU가 없어 4~8fps다. 모션이 "되는지"만 보고 부드러움은 사내 PC에서 본다.
 - 마무리 로컬 영상(`closing`)은 10월 행사에서 뺐다. 다시 넣으려면 Team_townhall 덱의

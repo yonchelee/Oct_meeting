@@ -161,6 +161,62 @@
     text-transform:uppercase; color:rgba(220,235,255,.28); }
   @keyframes marquee { from{transform:translateX(0);} to{transform:translateX(-50%);} }
 
+  /* ===== Message slides: one conclusion sentence + its evidence ===== */
+  .headline--xl { font-size:clamp(96px,15vw,260px) !important; letter-spacing:-.03em; }
+  .subhead { position:relative; z-index:1; margin-top:2.8vh; letter-spacing:.06em; }
+  .slide--msg .eyebrow { margin-bottom:3vh; }
+  .msg-title { position:relative; z-index:1; max-width:min(1500px,88vw);
+    font-size:clamp(30px,3.9vw,72px); font-weight:800; line-height:1.22; letter-spacing:-.015em;
+    filter:drop-shadow(0 0 26px hsla(var(--hue),90%,55%,.4)); }
+  .msg-title--xl { font-size:clamp(64px,9vw,170px); letter-spacing:-.02em; }
+  .msg-note { position:relative; z-index:1; margin-top:4vh;
+    font-size:clamp(14px,1.3vw,20px); color:rgba(214,232,255,.7); letter-spacing:.04em; }
+
+  /* glass panels shared by the pillars, stats and steps */
+  .card, .stat, .step { position:relative; text-align:left; border-radius:22px;
+    background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03));
+    border:1px solid rgba(255,255,255,.18);
+    -webkit-backdrop-filter:blur(18px) saturate(160%); backdrop-filter:blur(18px) saturate(160%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 18px 40px rgba(0,0,0,.28); }
+
+  /* 오늘의 결론: the three key lines under the answer */
+  .pillars { position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,1fr);
+    gap:clamp(12px,1.4vw,24px); width:min(1400px,88vw); margin-top:6vh; }
+  .card { display:flex; flex-direction:column; gap:10px; padding:clamp(18px,2vw,32px); }
+  .card b { font-size:clamp(12px,1vw,15px); letter-spacing:.3em; color:hsl(var(--hue),95%,75%); }
+  .card strong { font-size:clamp(26px,2.6vw,46px); font-weight:800; letter-spacing:-.01em; }
+  .card span { font-size:clamp(13px,1.1vw,17px); color:rgba(225,236,255,.85); }
+  .card em { font-style:normal; font-size:clamp(13px,1.05vw,16px); color:rgba(200,220,255,.6);
+    padding-top:10px; border-top:1px solid rgba(255,255,255,.12); }
+
+  /* evidence numbers */
+  .stats { position:relative; z-index:1; display:flex; justify-content:center;
+    gap:clamp(12px,1.6vw,28px); margin-top:6vh; }
+  .stat { min-width:clamp(160px,15vw,260px); padding:clamp(18px,2vw,30px) clamp(20px,2.2vw,34px); }
+  .stat b { display:block; font-size:clamp(44px,5vw,92px); font-weight:800; line-height:1;
+    font-variant-numeric:tabular-nums; letter-spacing:-.03em;
+    background:linear-gradient(180deg,#fff 30%,hsl(var(--hue),90%,78%));
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .stat span { display:block; margin-top:12px; font-size:clamp(13px,1.1vw,17px);
+    letter-spacing:.12em; color:rgba(210,228,255,.75); }
+
+  /* done → company → next */
+  .steps { position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,1fr);
+    gap:clamp(12px,1.4vw,24px); width:min(1400px,88vw); margin-top:6vh; counter-reset:step; }
+  .step { padding:clamp(18px,2vw,30px); counter-increment:step; }
+  .step::before { content:'0' counter(step); display:block; margin-bottom:12px;
+    font-size:clamp(12px,1vw,15px); letter-spacing:.3em; color:hsl(var(--hue),95%,75%); }
+  .step b { display:block; font-size:clamp(20px,1.9vw,32px); font-weight:800; margin-bottom:10px; }
+  .step span { font-size:clamp(13px,1.15vw,18px); line-height:1.6; color:rgba(220,234,255,.82); }
+  .step:not(:last-child)::after { content:'\2192'; position:absolute; right:-.9em; top:50%;
+    transform:translateY(-50%); font-size:clamp(16px,1.6vw,26px); color:rgba(255,255,255,.4); }
+
+  @media (max-width:780px) {
+    .pillars, .steps { grid-template-columns:1fr; }
+    .stats { flex-direction:column; }
+    .step:not(:last-child)::after { display:none; }
+  }
+
   /* ===== Intro slide ===== */
   .title { font-size:clamp(46px,5.4vw,88px); font-weight:800; letter-spacing:.04em;
     line-height:1.02; position:relative; z-index:1; margin:1.6vh 0 .4vh;
@@ -172,7 +228,7 @@
   .slide.in-view .title .wi { animation:liquid 9s linear calc(1s + var(--i) * .2s) infinite; }
   @keyframes liquid { from{background-position:0% 0;} to{background-position:300% 0;} }
   .team { font-size:clamp(22px,2.4vw,40px); font-weight:500; letter-spacing:.12em;
-    color:var(--white); position:relative; z-index:1; }
+    color:var(--white); position:relative; z-index:1; margin-top:2.2vh; }
   /* a liquid-glass pill: blurred, saturated, lit along its top edge */
   .glass { display:inline-flex; align-items:center; gap:10px; margin-top:4vh;
     padding:10px 20px; border-radius:999px; position:relative; z-index:1;
@@ -306,17 +362,19 @@
   <div class="controls">
     <button class="nav-arrow nav-arrow--prev" id="prevBtn" aria-label="이전 페이지">&#8249;</button>
     <nav class="nav-dots" id="navDots">
-      <button class="nav-dot" data-target="intro" data-label="소통"></button>
-      <button class="nav-dot" data-target="culture" data-label="함께 만드는 조직문화"></button>
-      <button class="nav-dot nav-dot--sub" data-target="culture-content" data-label="함께 만드는 조직문화 내용"></button>
-      <button class="nav-dot" data-target="video" data-label="The way we work"></button>
-      <button class="nav-dot nav-dot--sub" data-target="video-content" data-label="The way we work 내용"></button>
-      <button class="nav-dot" data-target="team-lead" data-label="성장하는 조직문화"></button>
-      <button class="nav-dot nav-dot--sub" data-target="team-lead-content" data-label="성장하는 조직문화 내용"></button>
-      <button class="nav-dot" data-target="mi-part" data-label="AX전략과 미래"></button>
-      <button class="nav-dot nav-dot--sub" data-target="mi-part-content" data-label="AX전략과 미래 내용"></button>
-      <button class="nav-dot" data-target="qna" data-label="소통이 필요해"></button>
-      <button class="nav-dot nav-dot--sub" data-target="qna-content" data-label="소통이 필요해 내용"></button>
+      <button class="nav-dot" data-target="intro" data-label="잇고, 이루고, 나아가다"></button>
+      <button class="nav-dot" data-target="answer" data-label="오늘의 결론"></button>
+      <button class="nav-dot" data-target="part-connect" data-label="Part 1 · 잇다"></button>
+      <button class="nav-dot nav-dot--sub" data-target="gwp-q1" data-label="1분기 GWP"></button>
+      <button class="nav-dot nav-dot--sub" data-target="gwp-q2" data-label="2분기 GWP"></button>
+      <button class="nav-dot" data-target="part-achieve" data-label="Part 2 · 이루다"></button>
+      <button class="nav-dot nav-dot--sub" data-target="patent" data-label="특허 성과"></button>
+      <button class="nav-dot nav-dot--sub" data-target="travel" data-label="출장 효율화"></button>
+      <button class="nav-dot nav-dot--sub" data-target="quick" data-label="퀵택배 효율화"></button>
+      <button class="nav-dot" data-target="part-forward" data-label="Part 3 · 나아가다"></button>
+      <button class="nav-dot nav-dot--sub" data-target="ax" data-label="업무 AX 적용"></button>
+      <button class="nav-dot nav-dot--sub" data-target="newcomers" data-label="전입인원 소개"></button>
+      <button class="nav-dot" data-target="leader" data-label="그룹장 말씀"></button>
     </nav>
     <button class="nav-arrow nav-arrow--next" id="nextBtn" aria-label="다음 페이지">&#8250;</button>
   </div>
@@ -332,90 +390,122 @@
   <!-- ===== Slides ===== -->
   <main class="deck" id="deck">
     <div class="track" id="track">
-    <!-- 1 · Title -->
+    <!-- 0 · Title -->
     <section id="intro" class="slide">
       <div class="eyebrow" data-scramble>October Town Hall</div>
-      <h1 class="title" data-split="chars" style="font-size:clamp(84px,12vw,200px)">소통</h1>
-      <div class="team" data-split="words" style="--d0:.75s">@ 선행기구개발그룹</div>
-      <div class="glass reveal" style="--d:1.4s"><i></i>2026 · 10</div>
+      <h1 class="title" data-split="words" style="font-size:clamp(56px,7.4vw,140px)">잇고, 이루고, 나아가다</h1>
+      <div class="team" data-split="words" style="--d0:.75s">2026 복기 · 2027 구상</div>
+      <div class="glass reveal" style="--d:1.4s"><i></i>선행기구개발그룹 · 2026. 10</div>
     </section>
 
-    <!-- 함께 만드는 조직문화 (제목) -->
-    <section id="culture" class="slide">
-      <h2 class="headline">함께 만드는 조직문화</h2>
-      <div class="rule" style="--d:.55s"></div>
-    </section>
-
-    <!-- 함께 만드는 조직문화 (내용) -->
-    <section id="culture-content" class="slide slide--embed">
-      <div class="embed-wrap">
-        <iframe src="https://pages.github.sec.samsung.net/yonche-lee/team_culture" title="함께 만드는 조직문화" allow="fullscreen"></iframe>
+    <!-- 오늘의 결론: 피라미드의 꼭대기 — 답을 먼저 -->
+    <section id="answer" class="slide slide--msg">
+      <div class="eyebrow" data-scramble>Today's Answer</div>
+      <h2 class="msg-title" data-split="words">올해 우리는 사람을 잇고 성과를 이뤘습니다.<br>2027년, AX로 한 단계 더 나아갑니다.</h2>
+      <div class="pillars">
+        <div class="card reveal" style="--d:1.1s"><b>01</b><strong>잇다</strong><span>1분기 GWP · 2분기 GWP</span><em>서로를 알고, AI를 함께 시작했다</em></div>
+        <div class="card reveal" style="--d:1.25s"><b>02</b><strong>이루다</strong><span>특허 · 출장 효율화 · 퀵택배 효율화</span><em>본업 성과는 키우고, 일의 낭비는 줄였다</em></div>
+        <div class="card reveal" style="--d:1.4s"><b>03</b><strong>나아가다</strong><span>업무 AX 적용 · 전입인원 · 그룹장 말씀</span><em>AX로, 새 동료와 함께, 더 멀리</em></div>
       </div>
-      <a class="embed-open" href="https://pages.github.sec.samsung.net/yonche-lee/team_culture"
+    </section>
+
+    <!-- Part 1 · 잇다 (제목) -->
+    <section id="part-connect" class="slide">
+      <h2 class="headline headline--xl" data-en="Connect">잇다</h2>
+      <p class="subhead reveal" style="--d:1s">서로를 알고, AI를 함께 시작했다</p>
+      <div class="rule" style="--d:.9s"></div>
+    </section>
+
+    <!-- 1분기 GWP (내용) -->
+    <section id="gwp-q1" class="slide slide--embed">
+      <div class="embed-wrap">
+        <iframe src="https://yonchelee.github.io/GWP-guide/" title="1분기 GWP · 관계를 읽다, 관계를 잇다" allow="fullscreen"></iframe>
+      </div>
+      <a class="embed-open" href="https://yonchelee.github.io/GWP-guide/"
          target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
     </section>
 
-    <!-- The way we work (제목) -->
-    <section id="video" class="slide">
-      <h2 class="headline">The way we work</h2>
-      <div class="rule" style="--d:.55s"></div>
-    </section>
-
-    <!-- The way we work (내용) -->
-    <section id="video-content" class="slide slide--embed">
+    <!-- 2분기 GWP (내용) -->
+    <section id="gwp-q2" class="slide slide--embed">
       <div class="embed-wrap">
-        <iframe src="https://pages.github.sec.samsung.net/yonche-lee/team_video" title="The way we work"
-                allow="autoplay; fullscreen; encrypted-media"></iframe>
+        <iframe src="https://gwp-2026-2nd-result.pages.dev/" title="2분기 GWP · AI 첫발, 함께 내딛다" allow="fullscreen"></iframe>
       </div>
-      <a class="embed-open" href="https://pages.github.sec.samsung.net/yonche-lee/team_video"
+      <a class="embed-open" href="https://gwp-2026-2nd-result.pages.dev/"
          target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
     </section>
 
-    <!-- 성장하는 조직문화 (제목) -->
-    <section id="team-lead" class="slide">
-      <h2 class="headline">성장하는 조직문화</h2>
-      <div class="rule" style="--d:.55s"></div>
+    <!-- Part 2 · 이루다 (제목) -->
+    <section id="part-achieve" class="slide">
+      <h2 class="headline headline--xl" data-en="Achieve">이루다</h2>
+      <p class="subhead reveal" style="--d:1s">본업 성과는 키우고, 일의 낭비는 줄였다</p>
+      <div class="rule" style="--d:.9s"></div>
     </section>
 
-    <!-- 성장하는 조직문화 (내용) -->
-    <section id="team-lead-content" class="slide slide--embed">
-      <div class="embed-wrap">
-        <iframe src="https://pages.github.sec.samsung.net/yonche-lee/team_leader" title="성장하는 조직문화" allow="fullscreen"></iframe>
+    <!-- 특허 성과 (내용) — 수치는 확정되면 data-count 에 넣는다 -->
+    <section id="patent" class="slide slide--msg">
+      <div class="eyebrow" data-scramble>Patents 2026</div>
+      <h3 class="msg-title" data-split="words">○○건의 특허로 기술 자산을 쌓았습니다</h3>
+      <div class="stats">
+        <div class="stat reveal" style="--d:1s"><b data-count="">○○</b><span>출원</span></div>
+        <div class="stat reveal" style="--d:1.15s"><b data-count="">○○</b><span>등록</span></div>
+        <div class="stat reveal" style="--d:1.3s"><b data-count="" data-suffix="%">○○</b><span>전년 대비</span></div>
       </div>
-      <a class="embed-open" href="https://pages.github.sec.samsung.net/yonche-lee/team_leader"
+      <p class="msg-note reveal" style="--d:1.5s">대표 특허 ○○○ · ○○○</p>
+    </section>
+
+    <!-- 출장 효율화 (내용) -->
+    <section id="travel" class="slide slide--msg">
+      <div class="eyebrow" data-scramble>Business Trips</div>
+      <h3 class="msg-title" data-split="words">출장 ○○을 ○○% 줄였습니다</h3>
+      <div class="stats">
+        <div class="stat reveal" style="--d:1s"><b data-count="">○○</b><span>출장 건수</span></div>
+        <div class="stat reveal" style="--d:1.15s"><b data-count="">○○</b><span>출장 비용</span></div>
+        <div class="stat reveal" style="--d:1.3s"><b data-count="" data-suffix="%">○○</b><span>절감률</span></div>
+      </div>
+      <p class="msg-note reveal" style="--d:1.5s">무엇을 바꿨나: ○○○</p>
+    </section>
+
+    <!-- 퀵택배 효율화 (내용) -->
+    <section id="quick" class="slide slide--embed">
+      <div class="embed-wrap">
+        <iframe src="https://yonchelee.github.io/Deliveryreduce/" title="퀵택배 효율화 · 바이브코딩을 활용한 업무 자동화" allow="fullscreen"></iframe>
+      </div>
+      <a class="embed-open" href="https://yonchelee.github.io/Deliveryreduce/"
          target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
     </section>
 
-    <!-- AX전략과 미래 (제목) -->
-    <section id="mi-part" class="slide">
-      <h2 class="headline">AX전략과 미래</h2>
-      <div class="rule" style="--d:.55s"></div>
+    <!-- Part 3 · 나아가다 (제목) -->
+    <section id="part-forward" class="slide">
+      <h2 class="headline headline--xl" data-en="Move Forward">나아가다</h2>
+      <p class="subhead reveal" style="--d:1s">AX로, 새 동료와 함께, 더 멀리</p>
+      <div class="rule" style="--d:.9s"></div>
     </section>
 
-    <!-- AX전략과 미래 (내용) -->
-    <section id="mi-part-content" class="slide slide--embed">
-      <div class="embed-wrap">
-        <iframe src="https://pages.github.sec.samsung.net/yonche-lee/team_mi" title="AX전략과 미래" allow="fullscreen"></iframe>
+    <!-- 회사 업무 AX 적용 (내용) -->
+    <section id="ax" class="slide slide--msg">
+      <div class="eyebrow" data-scramble>AX at Work</div>
+      <h3 class="msg-title" data-split="words">AX는 이미 시작됐습니다</h3>
+      <div class="steps">
+        <div class="step reveal" style="--d:1s"><b>우리가 해 본 것</b><span>2분기 GWP AI 첫발<br>퀵 분석 바이브코딩 자동화</span></div>
+        <div class="step reveal" style="--d:1.15s"><b>회사가 여는 것</b><span>업무 AX 적용 범위 ○○○<br>일정 ○○○</span></div>
+        <div class="step reveal" style="--d:1.3s"><b>우리가 할 것</b><span>○○○<br>○○○</span></div>
       </div>
-      <a class="embed-open" href="https://pages.github.sec.samsung.net/yonche-lee/team_mi"
-         target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
     </section>
 
-    <!-- Q&A (제목) -->
-    <section id="qna" class="slide">
-      <h2 class="headline">소통이 필요해</h2>
-      <div class="rule" style="--d:.55s"></div>
+    <!-- 전입인원 소개 (내용) — 저장소가 공개라 이름·부서는 여기 쓰지 않는다.
+         사내 깃헙 pages 페이지가 준비되면 slide--embed 로 바꿔 임베드한다. -->
+    <section id="newcomers" class="slide slide--msg">
+      <div class="eyebrow" data-scramble>Welcome Aboard</div>
+      <h3 class="msg-title" data-split="words">새로운 동료와 함께 갑니다</h3>
+      <p class="msg-note reveal" style="--d:1s">전입인원 소개 · 사내 페이지 연결 예정</p>
     </section>
 
-    <!-- Q&A (내용) -->
-    <section id="qna-content" class="slide slide--embed">
-      <div class="embed-wrap">
-        <iframe src="https://pages.github.sec.samsung.net/yonche-lee/team_qna" title="소통이 필요해" allow="fullscreen"></iframe>
-      </div>
-      <a class="embed-open" href="https://pages.github.sec.samsung.net/yonche-lee/team_qna"
-         target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
+    <!-- 그룹장 말씀 -->
+    <section id="leader" class="slide slide--msg slide--leader" data-palette="5">
+      <div class="eyebrow" data-scramble>2027 Vision</div>
+      <h3 class="msg-title msg-title--xl" data-split="words">그룹장 말씀</h3>
+      <div class="rule" style="--d:1s"></div>
     </section>
-
     </div>
   </main>
 
@@ -449,8 +539,8 @@
     var slideChapter = (function () {
       var out = [], ch = 0;
       slides.forEach(function (sl, i) {
-        if (i > 0 && !sl.classList.contains('slide--embed')) ch++;
-        out.push(ch);
+        if (i > 0 && sl.querySelector('.headline')) ch++;
+        out.push(sl.dataset.palette ? +sl.dataset.palette : ch);
       });
       return out;
     })();
@@ -458,12 +548,18 @@
 
     // ----- Kinetic type: split into masked words (or letters) -----
     function splitText(el, mode, delay) {
-      var text = el.textContent.replace(/\s+/g, ' ').trim();
-      el.setAttribute('aria-label', text);
+      // a <br> in the markup survives as a line break
+      el.innerHTML = el.innerHTML.replace(/<br\s*\/?>/gi, ' \n ');
+      var text = el.textContent.replace(/[ \t\r]+/g, ' ').replace(/ ?\n ?/g, '\n').trim();
+      el.setAttribute('aria-label', text.replace(/\n/g, ' '));
       el.textContent = '';
-      var parts = mode === 'chars' ? Array.prototype.slice.call(text) : text.split(' ');
-      parts.forEach(function (p, k) {
-        if (k && mode !== 'chars') el.appendChild(document.createTextNode(' '));
+      var parts = mode === 'chars' ? Array.prototype.slice.call(text.replace(/\n/g, '')) : text.split(/ |(?=\n)|(?<=\n)/);
+      var k = -1;
+      parts.forEach(function (p) {
+        if (p === '\n') { el.appendChild(document.createElement('br')); return; }
+        if (!p) return;
+        k++;
+        if (k && mode !== 'chars' && el.lastChild && el.lastChild.nodeName !== 'BR') el.appendChild(document.createTextNode(' '));
         var w = document.createElement('span'), wi = document.createElement('span');
         w.className = 'w'; w.setAttribute('aria-hidden', 'true');
         wi.className = 'wi'; wi.style.setProperty('--i', k); wi.textContent = p;
@@ -486,7 +582,7 @@
 
         var kick = document.createElement('div');
         kick.className = 'kicker'; kick.setAttribute('data-scramble', '');
-        kick.textContent = 'Chapter ' + n;
+        kick.textContent = 'Part ' + n;
         sl.insertBefore(kick, h);
 
         // odometer: each digit is a strip of 0-9 twice that rolls to its value
@@ -515,8 +611,8 @@
           m.appendChild(tr);
           sl.insertBefore(m, sl.firstChild);
         }
-        band('marquee--a', label + '  ✦  ', 4);
-        band('marquee--b', 'October Town Hall · 선행기구개발그룹 · Chapter ' + n + ' · ', 6);
+        band('marquee--a', label + '  ' + (h.dataset.en || '') + '  ✦  ', 4);
+        band('marquee--b', '2026 복기 · 2027 구상 · 선행기구개발그룹 · Part ' + n + ' · ', 6);
 
         splitText(h, 'words');
       });
@@ -537,6 +633,22 @@
         }
         el.textContent = out;
         if (k < 1) el._sr = requestAnimationFrame(step);
+      })(performance.now());
+    }
+
+    // ----- Count-up: a number with data-count="1234" runs up to it on arrival -----
+    // (left empty, the placeholder text stays as written)
+    function countUp(el) {
+      var to = parseFloat(el.dataset.count), suf = el.dataset.suffix || '';
+      if (isNaN(to)) return;
+      var dec = (String(el.dataset.count).split('.')[1] || '').length;
+      if (REDUCED) { el.textContent = to.toFixed(dec) + suf; return; }
+      cancelAnimationFrame(el._cu);
+      var start = performance.now() + 300, dur = 1400;
+      (function step(now) {
+        var k = Math.max(0, Math.min(1, (now - start) / dur)), e = 1 - Math.pow(1 - k, 4);
+        el.textContent = (to * e).toFixed(dec) + suf;
+        if (k < 1) el._cu = requestAnimationFrame(step);
       })(performance.now());
     }
 
@@ -679,7 +791,7 @@
       var ch = slideChapter[index];
       veilLabel.innerHTML = '';
       var b = document.createElement('b');
-      b.textContent = ch ? ((ch < 10 ? '0' : '') + ch) : 'Intro';
+      b.textContent = ch && slides[index].dataset.palette === undefined ? 'Part ' + ((ch < 10 ? '0' : '') + ch) : '';
       veilLabel.appendChild(b);
       veilLabel.appendChild(document.createTextNode(d ? d.dataset.label.replace(/ 내용$/, '') : ''));
       if (sub) veilLabel.appendChild(document.createTextNode(' →'));
@@ -740,6 +852,7 @@
         if (landing !== current) return;
         slides[current].classList.add('in-view');
         slides[current].querySelectorAll('[data-scramble]').forEach(scramble);
+        slides[current].querySelectorAll('[data-count]').forEach(countUp);
       }, veiled ? VEIL_IN : 0);
       // clear the others only after the slide finishes moving, so the
       // outgoing slide doesn't blank out mid-transition

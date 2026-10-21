@@ -1,6 +1,6 @@
 # index.html 해부
 
-약 46KB, 한 파일. 위에서부터 `<style>` → 마크업 → `<script>` 순서다.
+약 56KB, 한 파일. 위에서부터 `<style>` → 마크업 → `<script>` 순서다.
 
 ## 파일 지도
 
@@ -29,33 +29,60 @@
 render();                                 ← 스크립트 마지막 줄
 ```
 
-## 섹션
+## 섹션 — 피라미드 구조 (2026년 10월: 잇고, 이루고, 나아가다)
 
-현재 11장: `intro` / `culture`+`culture-content` / `video`+`video-content` /
-`team-lead`+`team-lead-content` / `mi-part`+`mi-part-content` /
-`qna`+`qna-content`. (마무리 영상은 뺐다 — 마지막 장은 `qna-content`.)
+현재 13장. 결론을 먼저 말하고(오늘의 결론), 그 아래 세 파트가 근거를 받친다.
 
-제목 슬라이드는 이 모양이다. 글자 크기·챕터 번호·키커·마퀴는 쓰지 않는다 —
-스크립트가 순서대로 만들어 붙인다.
+```
+intro          잇고, 이루고, 나아가다 · 2026 복기 · 2027 구상
+answer         오늘의 결론 — 핵심 메시지 + 세 파트 카드          (slide--msg)
+part-connect   Part 1 잇다      → gwp-q1, gwp-q2              (임베드)
+part-achieve   Part 2 이루다    → patent, travel (msg), quick (임베드)
+part-forward   Part 3 나아가다  → ax, newcomers (msg)
+leader         그룹장 말씀                                     (msg, data-palette="5")
+```
+
+**파트 제목** — `.headline`이 있는 장이 파트가 된다. 키커("Part 0N"), 오도미터 번호("01 / 03"),
+마퀴 띠, 팔레트는 스크립트가 순서대로 붙인다. `data-en`은 마퀴에 함께 흐르는 영문.
 
 ```html
-<!-- 새 주제 (제목) -->
-<section id="newtopic" class="slide">
-  <h2 class="headline">새 주제</h2>
-  <div class="rule" style="--d:.55s"></div>
+<section id="part-x" class="slide">
+  <h2 class="headline headline--xl" data-en="Connect">잇다</h2>
+  <p class="subhead reveal" style="--d:1s">이 파트의 결론 한 문장</p>
+  <div class="rule" style="--d:.9s"></div>
 </section>
 ```
+
+**메시지 장** (`slide--msg`) — 제목은 **결론 문장**으로 쓴다(피라미드 원칙). 근거는
+`.stats`(숫자 카드), `.steps`(3단계), `.pillars`(세 카드) 중 하나. `data-split="words"`는
+단어 리빌, `<br>`은 줄바꿈으로 유지된다. 숫자는 `data-count="27"`(소수 가능)과
+`data-suffix="%"`를 넣으면 도착할 때 카운트업한다 — 비워 두면 적힌 텍스트(○○) 그대로.
+
+```html
+<section id="x" class="slide slide--msg">
+  <div class="eyebrow" data-scramble>English Label</div>
+  <h3 class="msg-title" data-split="words">27건의 특허로 기술 자산을 쌓았습니다</h3>
+  <div class="stats">
+    <div class="stat reveal" style="--d:1s"><b data-count="27">27</b><span>출원</span></div>
+  </div>
+</section>
+```
+
+`data-palette="N"`을 주면 그 장만 `PALETTES[N]` 색을 쓴다(그룹장 말씀의 따뜻한 색).
 
 섹션을 추가·삭제할 때 같이 손볼 곳:
 
 1. `<section>` 마크업
 2. `<nav class="nav-dots">` 안의 점 (슬라이드와 **같은 순서**, `data-target`=id,
-   `data-label`=리모컨·툴팁 이름)
-3. `render()` 안의 id 분기 (`intro`, `video`/`video-content`)
+   `data-label`=리모컨·툴팁·커튼에 뜨는 이름, 파트 아래 장은 `nav-dot--sub`)
+3. `render()` 안의 id 분기 (`video`/`video-content` 임베드 영상 — 현재 덱에는 없음)
 
-슬라이드 수·챕터 번호·팔레트 배정·리모컨 목록은 전부 DOM에서 세므로 그 외 상수는 없다.
+슬라이드 수·파트 번호·팔레트 배정·리모컨 목록은 전부 DOM에서 세므로 그 외 상수는 없다.
 
 ## 임베드
+
+GitHub Pages(`yonchelee.github.io/...`) 자료도 같은 방식으로 임베드한다
+(1분기 GWP 안내, 퀵 자동화 발표). 2분기 GWP 결과는 Cloudflare Pages(`gwp-2026-2nd-result.pages.dev`).
 
 ```html
 <section id="x-content" class="slide slide--embed">

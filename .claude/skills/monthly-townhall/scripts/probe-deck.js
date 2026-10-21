@@ -81,8 +81,10 @@ const ok = (cond, what, detail) => {
   const hue = await pg.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--hue').trim());
   ok(hue === String(await pg.evaluate(() => slideHue[1])), 'the section hue follows the slide', hue);
   if (SHOTS) await pg.screenshot({ path: path.join(SHOTS, 'chapter.png') });
-  // its content (full-bleed embed): field asleep
-  await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(400);
+  // the first full-bleed embed: field asleep
+  await pg.evaluate(() => document.querySelectorAll('.nav-dot')[
+    [...document.querySelectorAll('.slide')].findIndex(s => s.classList.contains('slide--embed'))].click());
+  await pg.waitForTimeout(400);
   ok(await pg.evaluate(() => !fxField.state().awake && document.body.classList.contains('embed-mode')),
     'the field sleeps under a full-bleed page');
 
