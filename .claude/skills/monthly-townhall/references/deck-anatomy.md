@@ -36,7 +36,7 @@ render();                                 ← 스크립트 마지막 줄
 ```
 intro          잇고, 이루고, 나아가다 · 2026 복기 · 2027 구상
 answer         오늘의 결론 — 핵심 메시지 + 세 파트 카드          (slide--msg)
-part-connect   Part 1 잇다      → gwp-q1, gwp-q1-day, gwp-q1-gift,
+part-connect   Part 1 잇다      → gwp-q1, gwp-q1-moments, gwp-q1-gift,
                                  gwp-q2, gwp-q2-acts, gwp-q2-day  (모션 스토리 장)
 part-achieve   Part 2 이루다    → patent, travel (msg), quick (임베드)
 part-forward   Part 3 나아가다  → ax, newcomers (msg)
@@ -70,7 +70,7 @@ leader         그룹장 말씀                                     (msg, data-p
 ```
 
 **GWP 스토리 장** (`slide--msg slide--story`) — 임베드 대신 행사 내용을 직접 모션으로 다시 그린 장.
-1분기: 표지(읽다↔잇다) · 간트 타임라인(`.gantt`, 행마다 `--s`/`--e` 시각, 플레이헤드가 오후를 훑음) ·
+1분기: 표지(읽다↔잇다) · 현장 사진 3D 링 갤러리(`.ring`, `media/gwp-q1/01~10.jpg`, 흐린 배경 사진 위로 천천히 회전) ·
 선물 카드(`.prizes`, 뒤집히며 등장). 2분기: 표지(글래스 터미널 타이핑) · 활동 4카드(`.acts`, 파이썬·웹·
 어시스턴트·소감 미니 장면) · 흐름 4단계(`.flow`)와 숫자. 타이핑은 `data-type="문장"`과
 `data-type-delay="초"`. 원자료: `GWP-guide`, `2026_2nd_GWP`, `2026_2nd_GWP_result` 저장소.

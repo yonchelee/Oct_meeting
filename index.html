@@ -245,49 +245,35 @@
   .slide.in-view .duo__link i { animation:shuttle 2.4s ease-in-out 2.4s infinite; }
   @keyframes shuttle { 0%{left:0;opacity:0;} 15%,85%{opacity:1;} 50%{left:100%;} 100%{left:0;opacity:0;} }
 
-  /* Q1 day: a gantt that draws itself while a playhead sweeps the afternoon */
-  .gantt { position:relative; z-index:1; width:min(1500px,90vw); margin-top:5vh;
-    --name:clamp(200px,22vw,380px); }
-  .gantt__axis { position:relative; height:24px; margin-left:var(--name); margin-bottom:8px; }
-  .gantt__axis span { position:absolute; left:calc((var(--t) - var(--from)) / (var(--to) - var(--from)) * 100%);
-    transform:translateX(-50%); font-size:clamp(11px,.9vw,14px); letter-spacing:.08em;
-    color:rgba(210,228,255,.55); font-variant-numeric:tabular-nums; }
-  .gantt__row { display:flex; align-items:center; min-height:clamp(46px,6.4vh,72px);
-    border-top:1px solid rgba(255,255,255,.08); opacity:0; transform:translateX(-20px);
-    transition:opacity .6s ease, transform .8s cubic-bezier(.19,1,.22,1);
-    transition-delay:calc(.9s + var(--r) * .12s); }
-  .slide.in-view .gantt__row { opacity:1; transform:none; }
-  .gantt__row--all { border-top-color:rgba(255,200,97,.35); }
-  .gantt__name { flex:0 0 var(--name); text-align:left; padding-right:18px; }
-  .gantt__name b { display:block; font-size:clamp(15px,1.4vw,22px); font-weight:700; }
-  .gantt__name span { display:block; margin-top:3px; font-size:clamp(11px,.85vw,13px); color:rgba(200,220,255,.6); }
-  .gantt__lane { position:relative; flex:1 1 auto; height:clamp(28px,3.6vh,40px);
-    background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px calc(100% / 6)); }
-  .bar { position:absolute; top:0; bottom:0; border-radius:999px; font-style:normal;
-    left:calc((var(--s) - 13) / 6 * 100%); width:calc((var(--e) - var(--s)) / 6 * 100%);
-    display:flex; align-items:center; justify-content:center; white-space:nowrap;
-    font-size:clamp(11px,.9vw,14px); font-weight:700; color:#06101f; letter-spacing:.02em;
-    transform:scaleX(0); transform-origin:left center;
-    transition:transform 1.1s cubic-bezier(.19,1,.22,1);
-    transition-delay:calc(1.3s + (var(--s) - 13) * .35s); }
-  .slide.in-view .bar { transform:scaleX(1); }
-  .bar--read { background:var(--read); box-shadow:0 0 18px hsla(var(--hue),90%,60%,.5); }
-  .bar--link { background:var(--link); box-shadow:0 0 18px hsla(calc(var(--hue) + 70),88%,60%,.5); }
-  .bar--all { background:linear-gradient(90deg,#FFE29A,#FFB347); box-shadow:0 0 26px rgba(255,190,90,.65); }
-  .slide.in-view .bar--all { animation:allGlow 2.6s ease-in-out 3.6s infinite; }
-  @keyframes allGlow { 50%{box-shadow:0 0 44px 6px rgba(255,190,90,.85);} }
-  .gantt__head { position:absolute; top:24px; bottom:0; left:var(--name); width:2px; opacity:0;
-    background:linear-gradient(180deg,rgba(255,255,255,0),#fff 20%,#fff 80%,rgba(255,255,255,0));
-    box-shadow:0 0 12px 2px rgba(255,255,255,.6); }
-  .slide.in-view .gantt__head { animation:playhead 3.2s cubic-bezier(.45,0,.25,1) 1.2s both; }
-  @keyframes playhead { 0%{opacity:0;left:var(--name);} 8%{opacity:1;} 92%{opacity:1;}
-    100%{opacity:0;left:100%;} }
-  .legend { position:relative; z-index:1; display:flex; gap:22px; margin-top:3vh;
-    font-size:clamp(12px,1vw,15px); color:rgba(220,234,255,.8); }
-  .lg::before { content:''; display:inline-block; width:22px; height:8px; margin-right:8px;
-    border-radius:99px; vertical-align:middle; }
-  .lg--read::before { background:var(--read); } .lg--link::before { background:var(--link); }
-  .lg--all::before { background:var(--all); }
+  /* Q1 moments: the day's photos on a slowly turning 3D ring */
+  .slide--moments { justify-content:flex-start; padding-top:9vh; }
+  .moments-bg { position:absolute; inset:-6%; z-index:0; pointer-events:none;
+    background:url(media/gwp-q1/01.jpg) center/cover no-repeat;
+    filter:blur(34px) saturate(130%) brightness(.32); transform:scale(1.1); opacity:0;
+    transition:opacity 1.4s ease; }
+  .slide.in-view .moments-bg { opacity:1; animation:kenburns2 24s ease-in-out infinite alternate; }
+  @keyframes kenburns2 { from{transform:scale(1.1);} to{transform:scale(1.22) translate(-2%,1%);} }
+  .ring-stage { position:relative; z-index:1; width:100%; flex:0 0 auto; height:58vh;
+    perspective:1800px; perspective-origin:50% 30%; --w:min(17vw,25vh); --r:calc(var(--w) * 1.62); }
+  .ring-tilt { position:absolute; left:50%; top:40%; transform-style:preserve-3d; transform:rotateX(-7deg); }
+  .ring { transform-style:preserve-3d; animation:ringSpin 60s linear infinite; animation-play-state:paused; }
+  .slide.in-view .ring { animation-play-state:running; }
+  @keyframes ringSpin { from{transform:rotateY(0deg);} to{transform:rotateY(-360deg);} }
+  .ring figure { position:absolute; width:var(--w); height:calc(var(--w) * 1.36);
+    left:calc(var(--w) / -2); top:calc(var(--w) * -.68); margin:0;
+    transform:rotateY(calc(var(--i) * 36deg)) translateZ(var(--r));
+    backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+  .ring img { display:block; width:100%; height:100%; object-fit:cover; object-position:50% 28%;
+    border-radius:18px; border:1px solid rgba(255,255,255,.28);
+    box-shadow:0 24px 50px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.4);
+    opacity:0; transform:translateY(60px) scale(.7);
+    transition:opacity .8s ease, transform 1.2s cubic-bezier(.19,1,.22,1);
+    transition-delay:calc(.6s + var(--i) * .09s); }
+  .slide.in-view .ring img { opacity:1; transform:none; }
+  .moment-tags { position:relative; z-index:2; display:flex; gap:12px; margin:2.4vh 0 0; }
+  .moment-tags span { padding:8px 18px; border-radius:999px; font-size:clamp(12px,1.05vw,16px);
+    letter-spacing:.12em; color:#fff; background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.22); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); }
 
   /* Q1 gifts: cards flip up one after another */
   .prizes { position:relative; z-index:1; display:grid; grid-template-columns:repeat(6,1fr);
@@ -701,9 +687,9 @@
     .veil { display:none; }
     .mq-track, .glass i { animation:none !important; }
     .chapter, .chapter .strip, .marquee { transition:none !important; }
-    .gantt__row, .bar, .prize, .flow__step, .flow__line i, .duo__link {
+    .ring img, .prize, .flow__step, .flow__line i, .duo__link {
       opacity:1 !important; transform:none !important; transition:none !important; }
-    .gantt__head { display:none; }
+    .ring, .moments-bg { animation:none !important; }
   }
 </style>
 </head>
@@ -719,7 +705,7 @@
       <button class="nav-dot" data-target="answer" data-label="오늘의 결론"></button>
       <button class="nav-dot" data-target="part-connect" data-label="Part 1 · 잇다"></button>
       <button class="nav-dot nav-dot--sub" data-target="gwp-q1" data-label="1분기 GWP · 관계를 읽다, 관계를 잇다"></button>
-      <button class="nav-dot nav-dot--sub" data-target="gwp-q1-day" data-label="1분기 GWP · 하루의 흐름"></button>
+      <button class="nav-dot nav-dot--sub" data-target="gwp-q1-moments" data-label="1분기 GWP · 그날의 사진"></button>
       <button class="nav-dot nav-dot--sub" data-target="gwp-q1-gift" data-label="1분기 GWP · 선물 추첨"></button>
       <button class="nav-dot nav-dot--sub" data-target="gwp-q2" data-label="2분기 GWP · AI 첫발, 함께 내딛다"></button>
       <button class="nav-dot nav-dot--sub" data-target="gwp-q2-acts" data-label="2분기 GWP · 세 가지 AI 활동"></button>
@@ -853,38 +839,26 @@
       </div>
     </section>
 
-    <!-- 1분기 GWP · 하루의 흐름 -->
-    <section id="gwp-q1-day" class="slide slide--msg slide--story">
-      <div class="eyebrow" data-scramble>Q1 GWP · One Afternoon</div>
-      <h3 class="msg-title" data-split="words">따로 읽고, 함께 잇고, 한 식탁에 모였다</h3>
-      <div class="gantt" style="--from:13; --to:19">
-        <div class="gantt__axis" aria-hidden="true">
-          <span style="--t:13">13:00</span><span style="--t:14">14:00</span><span style="--t:15">15:00</span>
-          <span style="--t:16">16:00</span><span style="--t:17">17:00</span><span style="--t:18">18:00</span><span style="--t:19">19:00</span>
-        </div>
-        <div class="gantt__row" style="--r:0">
-          <div class="gantt__name"><b>DISC 평가</b><span>NE파트 · CMF2파트 · 센트럴파크 ART 8실</span></div>
-          <div class="gantt__lane"><i class="bar bar--read" style="--s:13.5; --e:15">13:30 – 15:00</i></div>
-        </div>
-        <div class="gantt__row" style="--r:1">
-          <div class="gantt__name"><b>팀빌딩</b><span>Hinge 개발Lab. · R5 B112</span></div>
-          <div class="gantt__lane"><i class="bar bar--read" style="--s:14; --e:16">14:00 – 16:00</i></div>
-        </div>
-        <div class="gantt__row" style="--r:2">
-          <div class="gantt__name"><b>레이저 서바이벌</b><span>패키지파트 · 접합기술파트 · 판타지움</span></div>
-          <div class="gantt__lane"><i class="bar bar--link" style="--s:14; --e:16">14:00 – 16:00</i></div>
-        </div>
-        <div class="gantt__row" style="--r:3">
-          <div class="gantt__name"><b>볼링</b><span>CMF1파트 · CMF3파트 · 판타지움</span></div>
-          <div class="gantt__lane"><i class="bar bar--link" style="--s:14; --e:16">14:00 – 16:00</i></div>
-        </div>
-        <div class="gantt__row gantt__row--all" style="--r:4">
-          <div class="gantt__name"><b>석식 · 전체 합류</b><span>망포 연화담</span></div>
-          <div class="gantt__lane"><i class="bar bar--all" style="--s:16.5; --e:18.5">16:30 – 18:30</i></div>
-        </div>
-        <div class="gantt__head" aria-hidden="true"></div>
+    <!-- 1분기 GWP · 그날의 사진: 3D 링 갤러리 -->
+    <section id="gwp-q1-moments" class="slide slide--msg slide--story slide--moments">
+      <div class="moments-bg" aria-hidden="true"></div>
+      <div class="eyebrow" data-scramble>Q1 GWP · Moments</div>
+      <h3 class="msg-title" data-split="words">함께 웃고, 함께 축하했다</h3>
+      <div class="moment-tags reveal" style="--d:1.2s"><span>연화담 석식</span><span>선물 추첨</span><span>월례회 추첨</span></div>
+      <div class="ring-stage" aria-label="1분기 GWP 현장 사진 10장">
+        <div class="ring-tilt"><div class="ring">
+          <figure style="--i:0"><img src="media/gwp-q1/01.jpg" alt="" loading="eager" decoding="async"></figure>
+          <figure style="--i:1"><img src="media/gwp-q1/02.jpg" alt="" loading="eager" decoding="async"></figure>
+          <figure style="--i:2"><img src="media/gwp-q1/03.jpg" alt="" loading="eager" decoding="async"></figure>
+          <figure style="--i:3"><img src="media/gwp-q1/04.jpg" alt="" loading="eager" decoding="async"></figure>
+          <figure style="--i:4"><img src="media/gwp-q1/05.jpg" alt="" loading="eager" decoding="async"></figure>
+          <figure style="--i:5"><img src="media/gwp-q1/06.jpg" alt="" loading="eager" decoding="async"></figure>
+          <figure style="--i:6"><img src="media/gwp-q1/07.jpg" alt="" loading="eager" decoding="async"></figure>
+          <figure style="--i:7"><img src="media/gwp-q1/08.jpg" alt="" loading="eager" decoding="async"></figure>
+          <figure style="--i:8"><img src="media/gwp-q1/09.jpg" alt="" loading="eager" decoding="async"></figure>
+          <figure style="--i:9"><img src="media/gwp-q1/10.jpg" alt="" loading="eager" decoding="async"></figure>
+        </div></div>
       </div>
-      <div class="legend reveal" style="--d:2.6s"><span class="lg lg--read">읽다</span><span class="lg lg--link">잇다</span><span class="lg lg--all">함께</span></div>
     </section>
 
     <!-- 1분기 GWP · 선물 추첨 -->
