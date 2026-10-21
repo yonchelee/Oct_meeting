@@ -401,6 +401,10 @@
   .voices__foot b { font-size:clamp(28px,3vw,52px); font-weight:900; }
   .voices__foot span { opacity:.6; } .voices__foot i { font-style:normal; }
   .voices__foot em { margin-left:16px; font-style:normal; opacity:.7; letter-spacing:.06em; }
+  .voices__foot strong { display:inline-block; font-family:inherit; font-weight:900; font-size:1.5em;
+    color:#FFD43B; letter-spacing:.02em; }
+  .voices__foot strong.pop { animation:whoPop .9s cubic-bezier(.2,.9,.25,1.3) .9s both; }
+  @keyframes whoPop { from{transform:translateY(60%) scale(.6);opacity:0;} to{transform:none;opacity:1;} }
   .voices__sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
 
   @media (max-width:780px) {
@@ -1061,7 +1065,7 @@
       </div>
       <p class="voices__sr" id="voiceText" aria-live="polite"></p>
       <div class="voices__foot reveal" style="--d:1s">
-        <b id="voiceIdx">01</b><span>/ <i id="voiceTotal">10</i></span><em>— 2분기 GWP 참여자 소감</em>
+        <b id="voiceIdx">01</b><span>/ <i id="voiceTotal">10</i></span><em>— <strong id="voiceWho"></strong> 님</em>
       </div>
     </section>
 
@@ -1541,20 +1545,20 @@
     })();
 
     // ----- Q2 voices: an LED dot board; each reflection sweeps in as lit dots -----
-    // Positive reflections from the Q2 GWP 소감 (no names — the repo is public).
+    // Positive reflections from the Q2 GWP 소감, with who wrote them (the user chose to show names).
     // Picked from the 81 entries (activity 4 in the gwp-2026-2nd D1 database); long
     // ones are cut to one sentence, wording kept as written.
     var VOICES = [
-      '새로운 세상을 보았습니다.',
-      '실습해보니 AI 활용이 어렵지 않다는 걸 알게 되었습니다.',
-      'AI를 업무에 어떻게 활용할 수 있을지 막막했는데, 오늘 덕분에 구체적인 첫 발을 내딛을 수 있었습니다.',
-      '클로드 코웍 처음 사용해 보았는데 앞으로 기대가 됩니다.',
-      '처음엔 어색했는데 막상 해보니까 꽤 재밌더라고요.',
-      '피가 되고 살이 된 GWP 2분기, AI 교육 재밌었습니다.',
-      '‘도전하면 할 수 있다’는 것을 깨달았습니다.',
-      '가장 값진 것은 기술 그 자체보다, “나도 할 수 있다”는 자신감입니다.',
-      'GWP에서 배운 건 기술이 아니라 — 가능성이었다.',
-      'AI와 함께하는 첫 발, 잘 내딛었습니다.'
+      { t: '새로운 세상을 보았습니다.', who: '김정철' },
+      { t: '실습해보니 AI 활용이 어렵지 않다는 걸 알게 되었습니다.', who: '신준철' },
+      { t: 'AI를 업무에 어떻게 활용할 수 있을지 막막했는데, 오늘 덕분에 구체적인 첫 발을 내딛을 수 있었습니다.', who: '손영언' },
+      { t: '클로드 코웍 처음 사용해 보았는데 앞으로 기대가 됩니다.', who: '이석규' },
+      { t: '처음엔 어색했는데 막상 해보니까 꽤 재밌더라고요.', who: '박영민' },
+      { t: '피가 되고 살이 된 GWP 2분기, AI 교육 재밌었습니다.', who: '오혜린' },
+      { t: '‘도전하면 할 수 있다’는 것을 깨달았습니다.', who: '손수영' },
+      { t: '가장 값진 것은 기술 그 자체보다, “나도 할 수 있다”는 자신감입니다.', who: '김건우' },
+      { t: 'GWP에서 배운 건 기술이 아니라 — 가능성이었다.', who: '백상인' },
+      { t: 'AI와 함께하는 첫 발, 잘 내딛었습니다.', who: '유중근' }
     ];
     var voiceOn = (function () {
       var cv = document.getElementById('voiceDots');
@@ -1582,7 +1586,7 @@
         dotPat = ctx.createPattern(p, 'repeat');
         noise = new Float32Array(cols * rows);
         for (var i = 0; i < noise.length; i++) noise[i] = Math.random();
-        masks = VOICES.map(build);
+        masks = VOICES.map(function (v) { return build(v.t); });
         return true;
       }
       // a reflection, wrapped and rendered at one pixel per dot
@@ -1647,7 +1651,10 @@
         cur = (k + VOICES.length) % VOICES.length;
         swap = performance.now();
         document.getElementById('voiceIdx').textContent = String(cur + 1).padStart(2, '0');
-        document.getElementById('voiceText').textContent = VOICES[cur];
+        document.getElementById('voiceText').textContent = VOICES[cur].t + ' — ' + VOICES[cur].who;
+        var who = document.getElementById('voiceWho');
+        who.textContent = VOICES[cur].who;
+        who.classList.remove('pop'); void who.offsetWidth; who.classList.add('pop');
         clearTimeout(timer);
         if (on && !REDUCED) timer = setTimeout(function () { show(cur + 1); }, HOLD + SWEEP);
       }
