@@ -6,21 +6,23 @@
 
 ```
 /* ===== Fixed backdrop ===== */          그라디언트 바탕 (모든 슬라이드 공용)
-/* ===== Motion field ===== */            오로라·먼지 캔버스, 필름 그레인, 수평선
-/* ===== Transition light sweep ===== */  슬라이드 전환 때 지나가는 빛줄기
+/* ===== Liquid field ===== */            WebGL 메시 그라디언트 캔버스, 도트 그리드
+/* ===== Page transition ===== */         챕터 색 커튼(.veil)
 /* ===== Carousel deck ===== */           .deck/.track/.slide, 3D 깊이 변환
-/* ===== Shared typography ===== */       .headline/.eyebrow/.kicker/.rule(+스파크)
-/* ===== Section titles ===== */          글자 등장, 챕터 번호, 궤도 링
-/* ===== Intro slide ===== */             파티클 타이틀
+/* ===== Kinetic type ===== */            마스크 리빌(.w/.wi), 스윈
+/* ===== Shared typography ===== */       .headline/.eyebrow/.kicker/.rule
+/* ===== Chapter dressing ===== */        오도미터 번호, 마퀴 띠
+/* ===== Intro slide ===== */             리퀴드 크롬 타이틀, 글래스 필
 /* ===== Embedded page ===== */           .embed-wrap, .embed-open
 /* ===== Closing video ===== */           .slide--video, .video-play
 /* ===== Presenter remote / Dot navigation / Carousel arrows ===== */
 
-// ----- Section hues -----                 슬라이드별 색상(HUES)
-// ----- Chapter dressing -----             챕터 번호·궤도·키커·글자 분리를 마크업에서 생성
-// ----- Motion field -----                 fxField.slide(index, dir, covered)
-// ----- Intro -----                        introFx(active)
-// ----- Transition light sweep -----       sweep(dir)
+// ----- Chapter palettes -----             PALETTES, slideChapter, slideHue
+// ----- Kinetic type -----                 splitText(el, mode)
+// ----- Chapter dressing -----             키커·번호·마퀴를 마크업에서 생성
+// ----- Scramble -----                     scramble(el)
+// ----- Liquid field -----                 fxField.slide(index, dir, covered)
+// ----- Page transition -----              curtain(dir, index)
 // ----- Render current carousel position ----- render() / goTo() / next() / prev()
 // ----- Presenter remote / Keyboard / Wheel / Touch / Titles fit / remote popup
 // ----- the embedded video page
@@ -33,7 +35,7 @@ render();                                 ← 스크립트 마지막 줄
 `team-lead`+`team-lead-content` / `mi-part`+`mi-part-content` /
 `qna`+`qna-content`. (마무리 영상은 뺐다 — 마지막 장은 `qna-content`.)
 
-제목 슬라이드는 이 모양이다. 글자 크기·챕터 번호·"Chapter 0N" 키커는 쓰지 않는다 —
+제목 슬라이드는 이 모양이다. 글자 크기·챕터 번호·키커·마퀴는 쓰지 않는다 —
 스크립트가 순서대로 만들어 붙인다.
 
 ```html
@@ -51,7 +53,7 @@ render();                                 ← 스크립트 마지막 줄
    `data-label`=리모컨·툴팁 이름)
 3. `render()` 안의 id 분기 (`intro`, `video`/`video-content`)
 
-슬라이드 수·챕터 번호·섹션 색·리모컨 목록은 전부 DOM에서 세므로 그 외 상수는 없다.
+슬라이드 수·챕터 번호·팔레트 배정·리모컨 목록은 전부 DOM에서 세므로 그 외 상수는 없다.
 
 ## 임베드
 

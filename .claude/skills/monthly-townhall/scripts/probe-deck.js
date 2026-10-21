@@ -3,8 +3,8 @@
 //   NODE_PATH=<dir with playwright>/node_modules node probe-deck.js [index.html] [--shots DIR]
 //
 // Checks: every slide is reachable, every nav dot points at a slide that
-// exists, the motion layer runs and sleeps where it should, the intro title
-// forms, the remote popup lists the deck, and the console stays clean.
+// exists, the liquid shader runs and sleeps where it should, the kinetic type
+// lands, the curtain runs, the remote popup lists the deck, and the console stays clean.
 // Exits non-zero if anything fails.
 const path = require('path');
 const { chromium } = require('playwright');
@@ -54,23 +54,29 @@ const ok = (cond, what, detail) => {
   // ---- motion layer ----
   ok(await pg.evaluate(() => fxField && fxField.state().awake), 'motion field runs on the intro');
   await pg.waitForTimeout(3200);
-  ok(await pg.evaluate(() => document.querySelector('#intro .title').classList.contains('formed')),
-    'the intro title forms out of the dust');
+  ok(await pg.evaluate(() => fxField.state().gl), 'the liquid shader compiled (WebGL)');
+  ok(await pg.evaluate(() => { const e = document.querySelector('#intro .eyebrow');
+    return e.textContent === e.dataset.text; }), 'the intro eyebrow decodes to its text');
+  ok(await pg.evaluate(() => getComputedStyle(document.querySelector('#intro .title .wi')).transform === 'none'),
+    'the intro title has risen out of its mask');
   if (SHOTS) await pg.screenshot({ path: path.join(SHOTS, 'intro.png') });
   const chapters = await pg.evaluate(() => document.querySelectorAll('.chapter').length);
   const titleSlides = await pg.evaluate(() =>
     [...document.querySelectorAll('.slide')].filter((s, i) => i > 0 && s.querySelector('.headline')).length);
-  ok(chapters === titleSlides, 'every section title has its chapter dressing', `${chapters}/${titleSlides}`);
+  const bands = await pg.evaluate(() => document.querySelectorAll('.marquee').length);
+  ok(chapters === titleSlides && bands === titleSlides * 2,
+    'every section title has its number and marquees', `${chapters} numbers, ${bands} bands / ${titleSlides}`);
   const label = await pg.evaluate(() => {
     const h = document.querySelector('.headline');
-    return h.getAttribute('aria-label') === [...h.querySelectorAll('.ch')].map(c => c.textContent).join('').replace(/ /g, ' ');
+    return h.getAttribute('aria-label') === [...h.querySelectorAll('.wi')].map(c => c.textContent).join(' ');
   });
   ok(label, 'split letters still read as the title');
 
   // a title slide: field awake, hue changed, burst fired
   await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(150);
   const burst = await pg.evaluate(() => fxField.state());
-  ok(burst.awake && burst.energy > .3, 'moving the deck throws the field', `energy ${burst.energy}`);
+  ok(burst.awake && burst.energy > .3, 'moving the deck surges the field', `energy ${burst.energy}`);
+  ok(await pg.evaluate(() => document.getElementById('veil').classList.contains('go')), 'the curtain runs forward');
   await pg.waitForTimeout(2800);
   const hue = await pg.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--hue').trim());
   ok(hue === String(await pg.evaluate(() => slideHue[1])), 'the section hue follows the slide', hue);
@@ -126,8 +132,10 @@ const ok = (cond, what, detail) => {
   const rp = await rctx.newPage();
   rp.on('pageerror', e => errs.push('reduced pageerror: ' + e.message));
   await rp.goto('file://' + DECK); await rp.waitForTimeout(600);
-  ok(await rp.evaluate(() => document.querySelector('#intro .title').classList.contains('formed')
-    && !fxField.state().awake), 'reduced motion: title shown at once, field still');
+  ok(await rp.evaluate(() => { const e = document.querySelector('#intro .eyebrow');
+    return e.textContent === 'October Town Hall' && !fxField.state().awake
+      && getComputedStyle(document.querySelector('#intro .title .wi')).transform === 'none'; }),
+    'reduced motion: text shown at once, field still');
   await rctx.close();
 
   // Opened from file://, the deck cannot reach the internal embeds and cannot
