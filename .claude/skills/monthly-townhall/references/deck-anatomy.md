@@ -1,6 +1,6 @@
 # index.html 해부
 
-약 55KB, 한 파일. 위에서부터 `<style>` → 마크업 → `<script>` 순서다.
+약 46KB, 한 파일. 위에서부터 `<style>` → 마크업 → `<script>` 순서다.
 
 ## 파일 지도
 
@@ -23,15 +23,15 @@
 // ----- Transition light sweep -----       sweep(dir)
 // ----- Render current carousel position ----- render() / goTo() / next() / prev()
 // ----- Presenter remote / Keyboard / Wheel / Touch / Titles fit / remote popup
-// ----- closing video / the embedded video page
+// ----- the embedded video page
 render();                                 ← 스크립트 마지막 줄
 ```
 
 ## 섹션
 
-현재 12장: `intro` / `culture`+`culture-content` / `video`+`video-content` /
+현재 11장: `intro` / `culture`+`culture-content` / `video`+`video-content` /
 `team-lead`+`team-lead-content` / `mi-part`+`mi-part-content` /
-`qna`+`qna-content` / `closing`.
+`qna`+`qna-content`. (마무리 영상은 뺐다 — 마지막 장은 `qna-content`.)
 
 제목 슬라이드는 이 모양이다. 글자 크기·챕터 번호·"Chapter 0N" 키커는 쓰지 않는다 —
 스크립트가 순서대로 만들어 붙인다.
@@ -49,7 +49,7 @@ render();                                 ← 스크립트 마지막 줄
 1. `<section>` 마크업
 2. `<nav class="nav-dots">` 안의 점 (슬라이드와 **같은 순서**, `data-target`=id,
    `data-label`=리모컨·툴팁 이름)
-3. `render()` 안의 id 분기 (`intro`, `closing`, `video`/`video-content`)
+3. `render()` 안의 id 분기 (`intro`, `video`/`video-content`)
 
 슬라이드 수·챕터 번호·섹션 색·리모컨 목록은 전부 DOM에서 세므로 그 외 상수는 없다.
 
@@ -70,9 +70,6 @@ render();                                 ← 스크립트 마지막 줄
 
 ## 영상
 
-**로컬 mp4 (`closing`)** — `media/closing.mp4`, H.264/AAC. 도착 시 소리와 함께 자동재생을
-시도하고, 막히면 음소거 재생 + "소리 켜기" 버튼. 화면 클릭 → 전체화면. `closingVideoOn(active)`.
-
 **사내 페이지 임베드 (`video-content`)** — `embedVideoOn(where)`가 제목 슬라이드에서
 미리 로드(`warm`), 내용 슬라이드에서 `?autoplay=1&muted=1`로 새로고침(`play`),
 벗어나면 src를 비운다(`off`).
@@ -80,6 +77,6 @@ render();                                 ← 스크립트 마지막 줄
 ## 조작
 
 - **키보드** → / ↓ / PageDown / Space = 다음, ← / ↑ / PageUp = 이전, Home / End,
-  `R` = 리모컨. 입력 중·전체화면 영상 중에는 키를 가로채지 않는다.
+  `R` = 리모컨. 입력 중·전체화면 중에는 키를 가로채지 않는다.
 - **리모컨** 같은 파일을 `?remote=1`로 팝업으로 연다. 그 모드에서는 모션이 돌지 않는다.
   본 화면과 `postMessage`(`townhall-cmd` / `townhall-state`)로 주고받는다.

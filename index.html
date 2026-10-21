@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>소통 · 기구개발팀 October Town Hall</title>
+<title>소통 · 선행기구개발그룹 October Town Hall</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -205,27 +205,6 @@
   /* drop the cinematic vignette while a full-bleed page is on screen */
   .vignette { transition:opacity .45s ease; }
   body.embed-mode .vignette { opacity:0; }
-  /* ===== Closing video: full-bleed, one click to browser fullscreen ===== */
-  .slide--video { padding:0; background:#000; cursor:pointer; }
-  .slide--video video { position:absolute; inset:0; width:100%; height:100%;
-    object-fit:cover; background:#000; }
-  .video-play { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-    display:flex; flex-direction:column; align-items:center; gap:10px;
-    padding:26px 34px; border-radius:24px; cursor:pointer; color:#fff;
-    background:rgba(3,11,26,.55); border:1px solid rgba(255,255,255,.25);
-    -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
-    box-shadow:0 10px 40px rgba(3,11,26,.5), 0 0 30px 2px var(--accent-glow);
-    transition:opacity .3s ease, transform .3s ease; }
-  .video-play__icon { font-size:clamp(40px,5vw,72px); line-height:1; }
-  .video-play__label { font-size:clamp(14px,1.3vw,20px); font-weight:600; letter-spacing:.1em; }
-  .video-play:hover { transform:translate(-50%,-50%) scale(1.05); }
-  .slide--video.playing .video-play { opacity:0; pointer-events:none; }
-  /* started muted because the browser refused sound: the button stays up */
-  .slide--video.playing.silent .video-play { opacity:.92; pointer-events:auto;
-    padding:14px 22px; }
-  .slide--video.playing.silent .video-play__icon { font-size:clamp(22px,2.4vw,36px); }
-  .slide--video:fullscreen video { object-fit:contain; }
-
   /* ===== Progress bar ===== */
   .progress { position:fixed; top:0; left:0; height:3px; width:0%; z-index:200;
     background:linear-gradient(90deg,var(--deep-blue),hsl(var(--hue),75%,55%));
@@ -341,7 +320,6 @@
       <button class="nav-dot nav-dot--sub" data-target="mi-part-content" data-label="AX전략과 미래 내용"></button>
       <button class="nav-dot" data-target="qna" data-label="소통이 필요해"></button>
       <button class="nav-dot nav-dot--sub" data-target="qna-content" data-label="소통이 필요해 내용"></button>
-      <button class="nav-dot" data-target="closing" data-label="마무리 영상"></button>
     </nav>
     <button class="nav-arrow nav-arrow--next" id="nextBtn" aria-label="다음 페이지">&#8250;</button>
   </div>
@@ -364,7 +342,7 @@
       <div class="eyebrow reveal" style="--d:.1s">October Town Hall</div>
       <h1 class="title" style="font-size:clamp(72px,10vw,168px); letter-spacing:.06em">소통</h1>
       <div class="at reveal" style="--d:2.1s">@</div>
-      <div class="team reveal" style="--d:2.25s">기구개발팀</div>
+      <div class="team reveal" style="--d:2.25s">선행기구개발그룹</div>
       <div class="title-rule"></div>
     </section>
 
@@ -444,15 +422,6 @@
          target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
     </section>
 
-    <!-- 마무리 영상: full-bleed, plays when the slide arrives -->
-    <section id="closing" class="slide slide--embed slide--video">
-      <video id="closingVideo" src="media/closing.mp4" playsinline preload="auto"
-             aria-label="마무리 영상"></video>
-      <button class="video-play" id="closingPlay" aria-label="재생">
-        <span class="video-play__icon">&#9654;</span>
-        <span class="video-play__label">재생</span>
-      </button>
-    </section>
     </div>
   </main>
 
@@ -796,8 +765,6 @@
       if (fxField) fxField.slide(current, direction, covered);
       if (direction && !covered) sweep(direction);
       if (introFx) introFx(slides[current].id === 'intro');
-      // the closing video plays when its slide arrives and rests when it leaves
-      if (typeof closingVideoOn === 'function') closingVideoOn(slides[current].id === 'closing');
       if (typeof embedVideoOn === 'function') {
         embedVideoOn(slides[current].id === 'video-content' ? 'play'
                    : slides[current].id === 'video' ? 'warm' : 'off');
@@ -890,7 +857,7 @@
       if (e.defaultPrevented) return;
       var tg = e.target;
       if (tg && /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName)) return;
-      if (document.fullscreenElement) return;   // the fullscreen video owns the keys
+      if (document.fullscreenElement) return;   // a fullscreen frame owns the keys
       if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].indexOf(e.key) !== -1) {
         e.preventDefault(); next();
       } else if (['ArrowLeft', 'ArrowUp', 'PageUp'].indexOf(e.key) !== -1) {
@@ -962,11 +929,11 @@
     // ----- the remote popup -----
     (function () {
       if (!REMOTE_MODE) return;
-      document.title = '리모컨 · 소통 @ 기구개발팀';
+      document.title = '리모컨 · 소통 @ 선행기구개발그룹';
       var ui = document.createElement('div');
       ui.className = 'remote-ui';
       ui.innerHTML =
-        '<div class="remote-head"><b>소통 @ 기구개발팀</b><span>리모컨 · <span id="rmPos">–</span></span></div>' +
+        '<div class="remote-head"><b>소통 @ 선행기구개발그룹</b><span>리모컨 · <span id="rmPos">–</span></span></div>' +
         '<div class="remote-big"><button id="rmPrev">&#8249; 이전</button><button id="rmNext">다음 &#8250;</button></div>' +
         '<ol class="remote-list" id="rmList"></ol>' +
         '<div class="remote-hint" id="rmHint">← → 또는 Space 키로 넘길 수 있습니다. 이 창이 열려 있는 동안 본 화면의 하단 컨트롤은 숨겨집니다.</div>';
@@ -1014,70 +981,6 @@
       // a heartbeat keeps the deck's bar hidden while this window lives
       send('hello');
       setInterval(function () { send('hello'); }, 1500);
-    })();
-
-    // ----- closing video: plays on arrival, click for fullscreen, rests on leaving -----
-    var closingVideoOn = (function () {
-      var sec = document.getElementById('closing');
-      var v = document.getElementById('closingVideo');
-      var btn = document.getElementById('closingPlay');
-      if (!sec || !v || !btn) return null;
-      var label = btn.querySelector('.video-play__label');
-      function setPlaying(on) { sec.classList.toggle('playing', on); }
-      // A browser will refuse to start a video with sound on its own. Ask for
-      // sound first; if that is refused, start it muted — the picture always
-      // runs — and offer one click to turn the sound on.
-      function tryPlay(withSound) {
-        v.muted = !withSound;
-        var p = v.play();
-        if (!p || !p.then) { setPlaying(true); return; }
-        p.then(function () {
-          setPlaying(true);
-          sec.classList.toggle('silent', v.muted);
-          if (v.muted) label.textContent = '소리 켜기';
-        }).catch(function () {
-          if (withSound) { tryPlay(false); return; }   // second try, muted
-          setPlaying(false);
-          label.textContent = '재생';
-        });
-      }
-      function goFull() {
-        var el = sec;
-        var rf = el.requestFullscreen || el.webkitRequestFullscreen;
-        if (rf && !document.fullscreenElement) { try { rf.call(el); } catch (e) {} }
-      }
-      function leaveFull() {
-        if (document.fullscreenElement && document.exitFullscreen) {
-          document.exitFullscreen().catch(function () {});
-        }
-      }
-      btn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        v.muted = false; sec.classList.remove('silent');
-        label.textContent = '재생';
-        tryPlay(true); goFull();
-      });
-      sec.addEventListener('click', function () {
-        if (v.paused || v.muted) {
-          v.muted = false; sec.classList.remove('silent');
-          label.textContent = '재생';
-          tryPlay(true); goFull();
-        } else { v.pause(); setPlaying(false); }
-      });
-      v.addEventListener('play', function () { setPlaying(true); });
-      v.addEventListener('pause', function () { setPlaying(false); });
-      v.addEventListener('ended', function () {
-        setPlaying(false); leaveFull();
-        sec.classList.remove('silent');
-        label.textContent = '다시 재생';
-      });
-      return function (active) {
-        if (active) { v.currentTime = 0; tryPlay(true); }
-        else {
-          if (!v.paused) v.pause();
-          setPlaying(false); sec.classList.remove('silent'); leaveFull();
-        }
-      };
     })();
 
     // ----- the embedded video page -----
