@@ -37,7 +37,7 @@ render();                                 ← 스크립트 마지막 줄
 intro          잇고, 이루고, 나아가다 · 2026 복기 · 2027 구상
 answer         오늘의 결론 — 핵심 메시지 + 세 파트 카드          (slide--msg)
 part-connect   Part 1 잇다      → gwp-q1, gwp-q1-moments, gwp-q1-gift,
-                                 gwp-q2, gwp-q2-acts, gwp-q2-day  (모션 스토리 장)
+                                 gwp-q2, gwp-q2-acts, gwp-q2-voices  (모션 스토리 장)
 part-achieve   Part 2 이루다    → patent, travel (msg), quick (임베드)
 part-forward   Part 3 나아가다  → ax, newcomers (msg)
 leader         그룹장 말씀                                     (msg, data-palette="5")
@@ -73,7 +73,7 @@ leader         그룹장 말씀                                     (msg, data-p
 1분기: 표지(읽다↔잇다) · 현장 사진 3D 링 갤러리(`.ring`, `media/gwp-q1/01~10.jpg`, 흐린 배경 사진 위로 천천히 회전) ·
 행운의 주인공(`#gwp-q1-gift`, 스포트라이트 플립: 상품 티켓 카드가 들어와 뒤집히면 당첨 사진 → 날아가고 다음.
 `GIFTS` 배열이 사진↔상품 짝이고 마지막이 1등 PS5. 카드 클릭=다음, 썸네일 클릭=그 장으로). 2분기: 표지(글래스 터미널 타이핑) · 활동 4카드(`.acts`, 파이썬·웹·
-어시스턴트·소감 미니 장면) · 흐름 4단계(`.flow`)와 숫자. 타이핑은 `data-type="문장"`과
+어시스턴트·소감 미니 장면) · 소감 LED 도트 전광판(`#gwp-q2-voices`, `VOICES` 배열의 긍정 소감이 대각선으로 쓸며 바뀜, 클릭=다음, 이름은 넣지 않음). 타이핑은 `data-type="문장"`과
 `data-type-delay="초"`. 원자료: `GWP-guide`, `2026_2nd_GWP`, `2026_2nd_GWP_result` 저장소.
 
 `data-palette="N"`을 주면 그 장만 `PALETTES[N]` 색을 쓴다(그룹장 말씀의 따뜻한 색).
