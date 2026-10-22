@@ -38,7 +38,7 @@ intro          잇고, 이루고, 나아가다 · 2026 복기 · 2027 구상
 answer         오늘의 결론 — 핵심 메시지 + 세 파트 카드          (slide--msg)
 part-connect   Part 1 잇다      → gwp-q1, gwp-q1-moments, gwp-q1-gift,
                                  gwp-q2, gwp-q2-acts, gwp-q2-voices  (모션 스토리 장)
-part-achieve   Part 2 이루다    → patent, travel (msg), quick (임베드)
+part-achieve   Part 2 이루다    → patent (사내 임베드 oct_patent), travel (msg), quick (임베드)
 part-forward   Part 3 나아가다  → ax, newcomers (msg)
 leader         그룹장 말씀                                     (msg, data-palette="5")
 ```
