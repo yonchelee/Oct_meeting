@@ -29,18 +29,19 @@
 render();                                 ← 스크립트 마지막 줄
 ```
 
-## 섹션 — 피라미드 구조 (2026년 10월: 잇고, 이루고, 나아가다)
+## 섹션 — 피라미드 구조 (2026년 10월 테마: NEXT CHAPTER)
 
 현재 18장(맨 앞 쇼릴 포함, `?reel=0`이면 17장). 결론을 먼저 말하고(오늘의 결론), 그 아래 세 파트가 근거를 받친다.
 
 ```
-intro          잇고, 이루고, 나아가다 · 2026 복기 · 2027 구상
-answer         핵심 메시지 — 결론 두 문장 + 세 파트 카드          (slide--msg)
-part-connect   Part 1 잇다      → gwp-q1, gwp-q1-moments, gwp-q1-gift,
-                                 gwp-q2, gwp-q2-acts, gwp-q2-voices  (모션 스토리 장)
-part-achieve   Part 2 이루다    → patent (사내 임베드 oct_patent), travel (msg), quick (임베드)
-part-forward   Part 3 나아가다  → ax, newcomers (msg)
-leader         그룹장 말씀                                     (msg, data-palette="5")
+opening        NEXT CHAPTER — 차분한 3단계 오프닝(기본). →로 테마 → 2026 돌아보기 → 2027 방향
+answer         핵심 메시지 + 세 카드                              (slide--msg)
+part-connect   Chapter 01 조직문화   → gwp-q1, gwp-q1-moments, gwp-q1-gift,
+                                      gwp-q2, gwp-q2-acts, gwp-q2-voices
+part-achieve   Chapter 02 성과 · 효율 → patent (사내 임베드), travel (msg), quick (임베드)
+part-forward   Next Chapter 2027 방향 → ax (일하는 방식), newcomers (msg)
+leader         그룹장 말씀
+(reel, intro)  ?reel=1 이면 15초 쇼릴 + 제목 장으로 시작, ?open=title 이면 제목 장만
 ```
 
 **파트 제목** — `.headline`이 있는 장이 파트가 된다. 키커("Part 0N"), 오도미터 번호("01 / 03"),

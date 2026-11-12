@@ -32,12 +32,19 @@ const ok = (cond, what, detail) => {
   pg.on('pageerror', e => errs.push('pageerror: ' + e.message));
   pg.on('console', m => { if (m.type() === 'error') errs.push('console: ' + m.text()); });
 
-  // the opener first: on by default, first slide, plays on load
+  // the default opening: one slide that builds in three steps before moving on
   await pg.goto('file://' + DECK); await pg.waitForTimeout(900);
+  ok(await pg.evaluate(() => document.querySelector('.slide').id === 'opening'), 'the calm opening starts the deck');
+  await pg.keyboard.press('ArrowRight'); await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(200);
+  ok(await pg.evaluate(() => current === 0 && slides[0].dataset.step === '2'), 'arrow keys walk the opening steps first');
+  await pg.keyboard.press('ArrowRight'); await pg.waitForTimeout(400);
+  ok(await pg.evaluate(() => current === 1), 'then the deck moves on');
+  // the showreel is still there on request
+  await pg.goto('file://' + DECK + '?reel=1'); await pg.waitForTimeout(900);
   ok(await pg.evaluate(() => document.querySelector('.slide').id === 'reel'
-    && document.getElementById('reelBox').classList.contains('play')), 'the showreel opens the deck and plays');
-  // the rest of the checks walk the deck without it
-  await pg.goto('file://' + DECK + '?reel=0');
+    && document.getElementById('reelBox').classList.contains('play')), '?reel=1 opens with the showreel');
+  // the rest of the checks walk the deck from the plain title slide
+  await pg.goto('file://' + DECK + '?open=title');
   await pg.waitForTimeout(800);
 
   const slides = await pg.evaluate(() => [...document.querySelectorAll('.slide')].map(s => s.id));
@@ -151,7 +158,7 @@ const ok = (cond, what, detail) => {
   const rctx = await br.newContext({ viewport: { width: 1280, height: 720 }, reducedMotion: 'reduce' });
   const rp = await rctx.newPage();
   rp.on('pageerror', e => errs.push('reduced pageerror: ' + e.message));
-  await rp.goto('file://' + DECK + '?reel=0'); await rp.waitForTimeout(600);
+  await rp.goto('file://' + DECK + '?open=title'); await rp.waitForTimeout(600);
   ok(await rp.evaluate(() => { const e = document.querySelector('#intro .eyebrow');
     return e.textContent === 'October Town Hall' && !fxField.state().awake
       && getComputedStyle(document.querySelector('#intro .title .wi')).transform === 'none'; }),
