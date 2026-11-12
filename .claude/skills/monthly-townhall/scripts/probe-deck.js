@@ -134,11 +134,15 @@ const ok = (cond, what, detail) => {
 
   // the winners slide: a ticket flips to a photo, then the next one comes in
   await pg.evaluate(() => document.querySelector('.nav-dot[data-target="gwp-q1-gift"]').click());
-  await pg.waitForTimeout(2600);
+  await pg.waitForTimeout(1300);
   ok(await pg.evaluate(() => document.getElementById('gcard').classList.contains('flipped')
     && document.querySelectorAll('#giftThumbs button').length === GIFTS.length), 'the winner card flips to its photo');
-  await pg.evaluate(() => document.getElementById('gcard').click()); await pg.waitForTimeout(300);
-  ok(await pg.evaluate(() => document.getElementById('giftIdx').textContent === '02'), 'clicking the card moves to the next winner');
+  // jump to the 5th by thumbnail, then a click on the card moves to the 6th
+  await pg.evaluate(() => document.querySelectorAll('#giftThumbs button')[4].click());
+  await pg.evaluate(() => document.getElementById('gcard').click()); await pg.waitForTimeout(200);
+  ok(await pg.evaluate(() => document.getElementById('giftIdx').textContent === '06'), 'clicking the card moves to the next winner');
+  await pg.waitForTimeout(2100);
+  ok(await pg.evaluate(() => document.getElementById('giftIdx').textContent === '07'), 'winners advance on their own every two seconds');
 
   // the presenter remote
   await pg.keyboard.press('Home'); await pg.waitForTimeout(600);
