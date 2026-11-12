@@ -403,7 +403,7 @@
   .voices__foot em { margin-left:16px; font-style:normal; opacity:.7; letter-spacing:.06em; }
   .voices__foot strong { display:inline-block; font-family:inherit; font-weight:900; font-size:1.5em;
     color:#FFD43B; letter-spacing:.02em; }
-  .voices__foot strong.pop { animation:whoPop .9s cubic-bezier(.2,.9,.25,1.3) .9s both; }
+  .voices__foot strong.pop { animation:whoPop .4s cubic-bezier(.2,.9,.25,1.3) .3s both; }
   @keyframes whoPop { from{transform:translateY(60%) scale(.6);opacity:0;} to{transform:none;opacity:1;} }
   .voices__sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
 
@@ -1636,7 +1636,7 @@
       var maskC = document.createElement('canvas'), mctx = maskC.getContext('2d');
       var W = 0, H = 0, cell = 10, cols = 0, rows = 0, img = null, dotPat = null;
       var masks = [], cur = 0, from = -1, t0 = 0, swap = 0, raf = 0, on = false, timer = 0;
-      var noise = null, HOLD = 5200, SWEEP = 1300;
+      var noise = null, HOLD = 1400, SWEEP = 600;
       var LIT = [255, 212, 59], DIM = [34, 40, 58], FLASH = [255, 255, 255];
 
       function size() {
