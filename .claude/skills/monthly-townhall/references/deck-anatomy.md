@@ -37,7 +37,7 @@ render();                                 ← 스크립트 마지막 줄
 opening          NEXT CHAPTER — 3단계 오프닝(기본). Review 2026 → Preview 2027
 answer           목차 — 6챕터 세로 한 줄
 part-connect     Chapter 01 조직문화      → gwp-q1, gwp-q1-moments, gwp-q1-gift, gwp-q2, gwp-q2-acts, gwp-q2-voices, part-gwp (사내 임베드 nov_partGWP)
-part-celebrate   Chapter 02 그룹 축하소식 → celebrate (○○○ 자리), newcomers
+part-celebrate   Chapter 02 그룹 축하소식 → celebrate (사내 임베드 nov_prize), newcomers
 part-ax          Chapter 03 AX Synergy    → ax
 part-patent      Chapter 04 특허          → patent (사내 임베드 nov_patent)
 part-strategy    Chapter 05 중점추진전략  → strategy (사내 임베드 nov_str)
