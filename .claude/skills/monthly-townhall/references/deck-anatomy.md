@@ -39,8 +39,8 @@ answer           목차 — 6챕터 세로 한 줄
 part-connect     Chapter 01 조직문화      → gwp-q1, gwp-q1-moments, gwp-q1-gift, gwp-q2, gwp-q2-acts, gwp-q2-voices
 part-celebrate   Chapter 02 그룹 축하소식 → celebrate (○○○ 자리), newcomers
 part-ax          Chapter 03 AX Synergy    → ax
-part-patent      Chapter 04 특허          → patent (사내 임베드 oct_patent)
-part-strategy    Chapter 05 중점추진전략  → strategy (파트 7개 카드, ○○○ 자리)
+part-patent      Chapter 04 특허          → patent (사내 임베드 nov_patent)
+part-strategy    Chapter 05 중점추진전략  → strategy (사내 임베드 nov_str)
 leader           Chapter 06 그룹장님 말씀 (챕터 제목 장 자체가 마지막 장)
 (reel, intro)    ?reel=1 이면 15초 쇼릴 + 제목 장으로 시작, ?open=title 이면 제목 장만
 ```
