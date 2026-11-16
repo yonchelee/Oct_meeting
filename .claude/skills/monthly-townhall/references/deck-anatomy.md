@@ -34,15 +34,17 @@ render();                                 ← 스크립트 마지막 줄
 현재 18장(맨 앞 쇼릴 포함, `?reel=0`이면 17장). 결론을 먼저 말하고(오늘의 결론), 그 아래 세 파트가 근거를 받친다.
 
 ```
-opening        NEXT CHAPTER — 차분한 3단계 오프닝(기본). →로 테마 → 2026 돌아보기 → 2027 방향
-answer         핵심 메시지 + 세 카드                              (slide--msg)
-part-connect   Chapter 01 조직문화   → gwp-q1, gwp-q1-moments, gwp-q1-gift,
-                                      gwp-q2, gwp-q2-acts, gwp-q2-voices
-part-achieve   Chapter 02 성과 · 효율 → patent (사내 임베드), travel (msg), quick (임베드)
-part-forward   Next Chapter 2027 방향 → ax (일하는 방식), newcomers (msg)
-leader         그룹장 말씀
-(reel, intro)  ?reel=1 이면 15초 쇼릴 + 제목 장으로 시작, ?open=title 이면 제목 장만
+opening          NEXT CHAPTER — 3단계 오프닝(기본). Review 2026 → Preview 2027
+answer           목차 — 6챕터 세로 한 줄
+part-connect     Chapter 01 조직문화      → gwp-q1, gwp-q1-moments, gwp-q1-gift, gwp-q2, gwp-q2-acts, gwp-q2-voices
+part-celebrate   Chapter 02 그룹 축하소식 → celebrate (○○○ 자리), newcomers
+part-ax          Chapter 03 AX Synergy    → ax
+part-patent      Chapter 04 특허          → patent (사내 임베드 oct_patent)
+part-strategy    Chapter 05 중점추진전략  → strategy (파트 7개 카드, ○○○ 자리)
+leader           Chapter 06 그룹장님 말씀 (챕터 제목 장 자체가 마지막 장)
+(reel, intro)    ?reel=1 이면 15초 쇼릴 + 제목 장으로 시작, ?open=title 이면 제목 장만
 ```
+출장 효율화·퀵 자동화 장은 10월 행사에서 뺐다. 긴 챕터 이름은 `headline--md`(11vw)로 크기를 줄인다.
 
 **파트 제목** — `.headline`이 있는 장이 파트가 된다. 키커("Part 0N"), 오도미터 번호("01 / 03"),
 마퀴 띠, 팔레트는 스크립트가 순서대로 붙인다. `data-en`은 마퀴에 함께 흐르는 영문.

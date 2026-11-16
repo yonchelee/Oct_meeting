@@ -183,9 +183,16 @@
   .pillars { position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,1fr);
     gap:clamp(12px,1.4vw,24px); width:min(1400px,88vw); margin-top:6vh; }
   .card { display:flex; flex-direction:column; gap:10px; padding:clamp(18px,2vw,32px); }
-  .pillars--toc { row-gap:clamp(12px,1.4vw,24px); margin-top:5vh; }
-  .pillars--toc .card { gap:14px; padding:clamp(22px,2.4vw,40px); }
-  .pillars--toc .card strong { font-size:clamp(28px,2.9vw,52px); }
+  /* contents: one column, one row per chapter */
+  .pillars--toc { grid-template-columns:1fr; row-gap:1.1vh; width:min(980px,80vw); margin-top:3.6vh; }
+  .pillars--toc .card { flex-direction:row; align-items:baseline; gap:clamp(18px,2.4vw,44px);
+    padding:1.5vh clamp(20px,2.4vw,40px); }
+  .pillars--toc .card b { flex:0 0 auto; width:11em; white-space:nowrap; }
+  .pillars--toc .card strong { font-size:clamp(22px,3.4vh,44px); }
+  /* part strategies: four across */
+  .pillars--parts { grid-template-columns:repeat(4,1fr); width:min(1500px,90vw); margin-top:5vh; }
+  .pillars--parts .card strong { font-size:clamp(20px,1.9vw,34px); }
+  .pillars--parts .card span { font-size:clamp(14px,1.2vw,20px); }
   .card b { font-size:clamp(12px,1vw,15px); letter-spacing:.3em; color:hsl(var(--hue),95%,75%); }
   .card strong { font-size:clamp(26px,2.6vw,46px); font-weight:800; letter-spacing:-.01em; }
   .card span { font-size:clamp(13px,1.1vw,17px); color:rgba(225,236,255,.85); }
@@ -215,7 +222,7 @@
     transform:translateY(-50%); font-size:clamp(16px,1.6vw,26px); color:rgba(255,255,255,.4); }
 
   @media (max-width:780px) {
-    .pillars, .steps { grid-template-columns:1fr; }
+    .pillars, .steps, .pillars--parts { grid-template-columns:1fr; }
     .stats { flex-direction:column; }
     .step:not(:last-child)::after { display:none; }
   }
@@ -778,6 +785,7 @@
   .theme-reel .headline { font-weight:900; letter-spacing:-.05em; }
   .theme-reel .headline--xl { font-size:clamp(120px,21vw,380px) !important; }
   .theme-reel .headline--lg { font-size:clamp(84px,14.5vw,270px) !important; }
+  .theme-reel .headline--md { font-size:clamp(72px,11vw,210px) !important; }
   .theme-reel .msg-title { font-weight:900; letter-spacing:-.035em; }
   .theme-reel .title { font-weight:900; letter-spacing:-.04em; font-size:clamp(64px,9.4vw,190px) !important; }
   .theme-reel .wi { background:none; color:inherit; -webkit-text-fill-color:currentColor; }
@@ -877,14 +885,16 @@
       <button class="nav-dot nav-dot--sub" data-target="gwp-q2" data-label="2분기 GWP · AI 첫발, 함께 내딛다"></button>
       <button class="nav-dot nav-dot--sub" data-target="gwp-q2-acts" data-label="2분기 GWP · 세 가지 AI 활동"></button>
       <button class="nav-dot nav-dot--sub" data-target="gwp-q2-voices" data-label="2분기 GWP · 참여자 소감"></button>
-      <button class="nav-dot" data-target="part-achieve" data-label="Chapter 02 · 성과 · 효율"></button>
-      <button class="nav-dot nav-dot--sub" data-target="patent" data-label="특허 성과"></button>
-      <button class="nav-dot nav-dot--sub" data-target="travel" data-label="출장 효율화"></button>
-      <button class="nav-dot nav-dot--sub" data-target="quick" data-label="퀵택배 효율화"></button>
-      <button class="nav-dot" data-target="part-forward" data-label="Next Chapter · 2027 방향"></button>
-      <button class="nav-dot nav-dot--sub" data-target="ax" data-label="일하는 방식"></button>
+      <button class="nav-dot" data-target="part-celebrate" data-label="Chapter 02 · 그룹 축하소식"></button>
+      <button class="nav-dot nav-dot--sub" data-target="celebrate" data-label="그룹 축하소식"></button>
       <button class="nav-dot nav-dot--sub" data-target="newcomers" data-label="전입 인원 소개"></button>
-      <button class="nav-dot" data-target="leader" data-label="그룹장 말씀"></button>
+      <button class="nav-dot" data-target="part-ax" data-label="Chapter 03 · AX Synergy"></button>
+      <button class="nav-dot nav-dot--sub" data-target="ax" data-label="AX Synergy"></button>
+      <button class="nav-dot" data-target="part-patent" data-label="Chapter 04 · 특허"></button>
+      <button class="nav-dot nav-dot--sub" data-target="patent" data-label="특허 성과"></button>
+      <button class="nav-dot" data-target="part-strategy" data-label="Chapter 05 · 중점추진전략"></button>
+      <button class="nav-dot nav-dot--sub" data-target="strategy" data-label="파트별 중점추진전략"></button>
+      <button class="nav-dot" data-target="leader" data-label="Chapter 06 · 그룹장님 말씀"></button>
     </nav>
     <button class="nav-arrow nav-arrow--next" id="nextBtn" aria-label="다음 페이지">&#8250;</button>
   </div>
@@ -1005,14 +1015,14 @@
       <div class="pillars pillars--toc">
         <div class="card reveal" style="--d:1.00s"><b>CHAPTER 01</b><strong>조직문화</strong></div>
         <div class="card reveal" style="--d:1.12s"><b>CHAPTER 02</b><strong>그룹 축하소식</strong></div>
-        <div class="card reveal" style="--d:1.24s"><b>CHAPTER 03</b><strong>AX</strong></div>
+        <div class="card reveal" style="--d:1.24s"><b>CHAPTER 03</b><strong>AX Synergy</strong></div>
         <div class="card reveal" style="--d:1.36s"><b>CHAPTER 04</b><strong>특허</strong></div>
         <div class="card reveal" style="--d:1.48s"><b>CHAPTER 05</b><strong>중점추진전략</strong></div>
         <div class="card reveal" style="--d:1.60s"><b>CHAPTER 06</b><strong>그룹장님 말씀</strong></div>
       </div>
     </section>
 
-    <!-- Part 1 · 잇다 (제목) -->
+    <!-- Chapter 01 · 조직문화 (제목) -->
     <section id="part-connect" class="slide tone-y">
       <h2 class="headline headline--xl" data-en="Culture">조직문화</h2>
       <div class="rule" style="--d:.9s"></div>
@@ -1142,10 +1152,51 @@
       </div>
     </section>
 
-    <!-- Part 2 · 이루다 (제목) -->
-    <section id="part-achieve" class="slide tone-w">
-      <h2 class="headline headline--xl headline--lg" data-en="Results">성과 · 효율</h2>
-      <p class="subhead reveal" style="--d:1s">본업 성과는 키우고, 일의 낭비는 줄였다</p>
+    <!-- Chapter 02 · 그룹 축하소식 (제목) -->
+    <section id="part-celebrate" class="slide tone-b">
+      <h2 class="headline headline--xl headline--md" data-en="Celebrate">그룹 축하소식</h2>
+      <div class="rule" style="--d:.9s"></div>
+    </section>
+
+    <!-- 그룹 축하소식 (내용) — 소식을 받으면 ○○○ 자리를 채운다 -->
+    <section id="celebrate" class="slide slide--msg tone-w">
+      <div class="eyebrow" data-scramble>Congratulations</div>
+      <h3 class="msg-title" data-split="words">함께 축하합니다</h3>
+      <div class="pillars">
+        <div class="card reveal" style="--d:1s"><b>01</b><strong>○○○</strong><span>○○○</span></div>
+        <div class="card reveal" style="--d:1.12s"><b>02</b><strong>○○○</strong><span>○○○</span></div>
+        <div class="card reveal" style="--d:1.24s"><b>03</b><strong>○○○</strong><span>○○○</span></div>
+      </div>
+    </section>
+
+    <!-- 전입인원 소개 (내용) — 저장소가 공개라 이름·부서는 여기 쓰지 않는다.
+         사내 깃헙 pages 페이지가 준비되면 slide--embed 로 바꿔 임베드한다. -->
+    <section id="newcomers" class="slide slide--msg tone-k">
+      <div class="eyebrow" data-scramble>Welcome Aboard</div>
+      <h3 class="msg-title" data-split="words">새로운 구성원을 소개합니다</h3>
+      <p class="msg-note reveal" style="--d:1s">전입 인원 소개 · 사내 페이지 연결 예정</p>
+    </section>
+
+    <!-- Chapter 03 · AX Synergy (제목) -->
+    <section id="part-ax" class="slide tone-v">
+      <h2 class="headline headline--xl headline--md" data-en="Synergy">AX Synergy</h2>
+      <div class="rule" style="--d:.9s"></div>
+    </section>
+
+    <!-- AX Synergy (내용) -->
+    <section id="ax" class="slide slide--msg tone-k">
+      <div class="eyebrow" data-scramble>AX Synergy</div>
+      <h3 class="msg-title" data-split="words">반복 업무는 줄이고, 본업에 집중합니다</h3>
+      <div class="steps">
+        <div class="step reveal" style="--d:1s"><b>추진 실적</b><span>2분기 GWP AI 실습<br>퀵 비용 분석 자동화 (수 시간 → 수 분)</span></div>
+        <div class="step reveal" style="--d:1.15s"><b>전사 계획</b><span>업무 AX 적용 범위 ○○○<br>일정 ○○○</span></div>
+        <div class="step reveal" style="--d:1.3s"><b>그룹 추진 계획</b><span>○○○<br>○○○</span></div>
+      </div>
+    </section>
+
+    <!-- Chapter 04 · 특허 (제목) -->
+    <section id="part-patent" class="slide tone-y">
+      <h2 class="headline headline--xl" data-en="Patents">특허</h2>
       <div class="rule" style="--d:.9s"></div>
     </section>
 
@@ -1158,59 +1209,33 @@
          target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
     </section>
 
-    <!-- 출장 효율화 (내용) -->
-    <section id="travel" class="slide slide--msg tone-y">
-      <div class="eyebrow" data-scramble>Business Trips</div>
-      <h3 class="msg-title" data-split="words">출장 ○○을 ○○% 절감했습니다</h3>
-      <div class="stats">
-        <div class="stat reveal" style="--d:1s"><b data-count="">○○</b><span>출장 건수</span></div>
-        <div class="stat reveal" style="--d:1.15s"><b data-count="">○○</b><span>출장 비용</span></div>
-        <div class="stat reveal" style="--d:1.3s"><b data-count="" data-suffix="%">○○</b><span>절감률</span></div>
-      </div>
-      <p class="msg-note reveal" style="--d:1.5s">주요 개선 사항: ○○○</p>
-    </section>
-
-    <!-- 퀵택배 효율화 (내용) -->
-    <section id="quick" class="slide slide--embed">
-      <div class="embed-wrap">
-        <iframe src="https://yonchelee.github.io/Deliveryreduce/" title="퀵택배 효율화 · 바이브코딩을 활용한 업무 자동화" allow="fullscreen"></iframe>
-      </div>
-      <a class="embed-open" href="https://yonchelee.github.io/Deliveryreduce/"
-         target="_blank" rel="noopener">새 탭에서 열기 &#8599;</a>
-    </section>
-
-    <!-- Part 3 · 나아가다 (제목) -->
-    <section id="part-forward" class="slide tone-v">
-      <h2 class="headline headline--xl headline--lg" data-en="Next Chapter" data-kicker="Next Chapter">2027 방향</h2>
-      <p class="subhead reveal" style="--d:1s">새 동료와 함께, 더 멀리</p>
+    <!-- Chapter 05 · 중점추진전략 (제목) -->
+    <section id="part-strategy" class="slide tone-b">
+      <h2 class="headline headline--xl headline--md" data-en="Strategy">중점추진전략</h2>
       <div class="rule" style="--d:.9s"></div>
     </section>
 
-    <!-- 회사 업무 AX 적용 (내용) -->
-    <section id="ax" class="slide slide--msg tone-k">
-      <div class="eyebrow" data-scramble>Way of Working</div>
-      <h3 class="msg-title" data-split="words">반복 업무는 줄이고, 본업에 집중합니다</h3>
-      <div class="steps">
-        <div class="step reveal" style="--d:1s"><b>추진 실적</b><span>2분기 GWP AI 실습<br>퀵 비용 분석 자동화 (수 시간 → 수 분)</span></div>
-        <div class="step reveal" style="--d:1.15s"><b>전사 계획</b><span>업무 AX 적용 범위 ○○○<br>일정 ○○○</span></div>
-        <div class="step reveal" style="--d:1.3s"><b>그룹 추진 계획</b><span>○○○<br>○○○</span></div>
+    <!-- 파트별 중점추진전략 (내용) — 파트별 전략을 받으면 ○○○ 자리를 채운다 -->
+    <section id="strategy" class="slide slide--msg tone-w">
+      <div class="eyebrow" data-scramble>Key Strategies 2027</div>
+      <h3 class="msg-title" data-split="words">파트별 중점추진전략</h3>
+      <div class="pillars pillars--parts">
+        <div class="card reveal" style="--d:1.00s"><b>01</b><strong>NE파트</strong><span>○○○</span></div>
+        <div class="card reveal" style="--d:1.08s"><b>02</b><strong>CMF1파트</strong><span>○○○</span></div>
+        <div class="card reveal" style="--d:1.16s"><b>03</b><strong>CMF2파트</strong><span>○○○</span></div>
+        <div class="card reveal" style="--d:1.24s"><b>04</b><strong>CMF3파트</strong><span>○○○</span></div>
+        <div class="card reveal" style="--d:1.32s"><b>05</b><strong>패키지파트</strong><span>○○○</span></div>
+        <div class="card reveal" style="--d:1.40s"><b>06</b><strong>접합기술파트</strong><span>○○○</span></div>
+        <div class="card reveal" style="--d:1.48s"><b>07</b><strong>Hinge 개발Lab.</strong><span>○○○</span></div>
       </div>
     </section>
 
-    <!-- 전입인원 소개 (내용) — 저장소가 공개라 이름·부서는 여기 쓰지 않는다.
-         사내 깃헙 pages 페이지가 준비되면 slide--embed 로 바꿔 임베드한다. -->
-    <section id="newcomers" class="slide slide--msg tone-w">
-      <div class="eyebrow" data-scramble>Welcome Aboard</div>
-      <h3 class="msg-title" data-split="words">새로운 구성원을 소개합니다</h3>
-      <p class="msg-note reveal" style="--d:1s">전입 인원 소개 · 사내 페이지 연결 예정</p>
+    <!-- Chapter 06 · 그룹장님 말씀 (제목) -->
+    <section id="leader" class="slide tone-y" data-palette="5">
+      <h2 class="headline headline--xl headline--md" data-en="Message">그룹장님 말씀</h2>
+      <div class="rule" style="--d:.9s"></div>
     </section>
 
-    <!-- 그룹장 말씀 -->
-    <section id="leader" class="slide slide--msg slide--leader tone-y" data-palette="5">
-      <div class="eyebrow" data-scramble>Next Chapter · 2027</div>
-      <h3 class="msg-title msg-title--xl" data-split="words">그룹장 말씀</h3>
-      <div class="rule" style="--d:1s"></div>
-    </section>
     </div>
   </main>
 
